@@ -327,7 +327,7 @@ const Stocks = ({ match }) => {
                         value={items.thickness}
                         onChange={handleChange}
                         placeholder="Thickness"
-                        min="0"
+                        min="0.1"
                         type="number"
                         name="thickness"
                         required
@@ -389,7 +389,7 @@ const Stocks = ({ match }) => {
                     <select
                       aria-label="Default select example"
                       name="guardfilm"
-                      onChange={handleChange}
+                          onChange={handleChange}
                       value={items.guardfilm || ""}
                       className="w-100"
                       required

@@ -13,7 +13,7 @@ const BillingList = ({ match }) => {
   const fetchData = async () => {
     const token =
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuZXdVc2VyIjp7Il9pZCI6IjYwNTFkMDBkZWRhN2RkYTIwOWJmZjY2NyIsInVzZXJuYW1lIjoiYWRtaW4iLCJwYXNzd29yZCI6IjIxMjMyZjI5N2E1N2E1YTc0Mzg5NGEwZTRhODAxZmMzIn0sImlhdCI6MTYxNzYxNjE0NiwiZXhwIjoxNjE3NzAyNTQ2fQ.oMYd1wQIpCxxRlnl-XNX2oY2YYOlarjK3jk-SSOxdqw";
-    await Axios.get("http://65.0.129.68/api/v1/BillingManagement/all", {
+    await Axios.get("http://13.234.31.236:3001/BillingManagement/all", {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",

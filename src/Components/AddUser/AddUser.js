@@ -61,7 +61,7 @@ const AddUser = () => {
       const token =
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuZXdVc2VyIjp7Il9pZCI6IjYwM2IzNDM5MzViODI2MjBhMDg5ZTkwNyIsInVzZXJuYW1lIjoiYWRtaW4iLCJwYXNzd29yZCI6ImFkbWluIn0sImlhdCI6MTYxNTg5MTU2MSwiZXhwIjoxNjE1OTc3OTYxfQ.exU8x5APvJBqlVKtIHHSYrqXMNKu38GyusySo-ZxCp4";
       await Axios.post(
-        "http://65.0.129.68/api/v1/user_management/create",
+        "http://13.234.31.236:3001/user_management/create",
         formData,
         {
           headers: {
@@ -90,7 +90,7 @@ const AddUser = () => {
       }, 2000);
     }
   };
-
+  
   return (
     <>
       <Modal
@@ -99,7 +99,7 @@ const AddUser = () => {
         show={show}
         onHide={() => setShow(false)}
       >
-        <Modal.Header className="modal_header  ">
+        <Modal.Header className="modal_header">
           <Container>
             <Row>
               <div>
@@ -139,7 +139,7 @@ const AddUser = () => {
         </Modal.Header>
         <form onSubmit={handleSubmit} autoComplete="off" autoCapitalize="true">
           <Modal.Body className="modal_body">
-            <Container className="col-lg-12  ">
+            <Container className="col-lg-12">
               <Row
                 style={{
                   justifyContent: "center",
@@ -337,7 +337,7 @@ const AddUser = () => {
           <div className="d-flex">
             <h4>Users</h4>
             <button className="add_btn ms-auto" onClick={handleShow}>
-              <i class="fas fa-plus me-2"></i>AddUser
+              <i class="fas fa-plus me-2">AddUser</i>
             </button>
           </div>
         </Row>

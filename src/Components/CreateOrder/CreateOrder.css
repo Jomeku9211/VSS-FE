@@ -177,6 +177,11 @@
   width: 100%;
 }
 
+#result{
+  background: white;
+  height: 33px;
+}
+
 /* .overflow::-webkit-scrollbar {
   display: none;
 } */

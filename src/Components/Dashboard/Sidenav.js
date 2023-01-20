@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, useHistory, useRouteMatch } from "react-router-dom";
 import "./dashboard.css";
-const Sidenav = ({ match }) => {
+const Sidenav = ({  match }) => {
   const { path } = useRouteMatch();
   // console.log(path);
   const history = useHistory();
@@ -46,7 +46,7 @@ const Sidenav = ({ match }) => {
             <p className="nav_text">Orders</p>
           </div>
           <div>
-            <Link className="nav_link" to={`${match}/addUser`}>
+            <Link className="nav_link" to={`${match}/AddUser`}>
               <i class="fas fa-user-plus"></i>
             </Link>
             <p className="nav_text">Users</p>

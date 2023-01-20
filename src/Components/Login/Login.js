@@ -39,7 +39,7 @@ const Login = (props) => {
     setLoading(true);
     setTimeout(async () => {
       await axios
-        .post("http://65.0.129.68/api/v1/admin", userData)
+        .post("http://13.234.31.236:3001/admin", userData)
         .then((response) => {
           if (response.data.status === "true") {
             localStorage.setItem("token", response.data.data.token);

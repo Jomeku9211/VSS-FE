@@ -39,8 +39,8 @@ const CreateOrder = () => {
       value.feets.typeof === isNaN
         ? 0
         : value.feets * 304.8 + value.inche.typeof === isNaN
-        ? 0
-        : value.inche * 25.4
+          ? 0
+          : value.inche * 25.4
     );
     setTotalMM(result);
   };
@@ -132,7 +132,7 @@ const CreateOrder = () => {
   const handleClick = async (e) => {
     e.preventDefault();
     await Axios.get(
-      `http://65.0.129.68/api/v1/sales/availableStock?product=${checked}&company=${company}&grade=${grade}&topcolor=${color}&coatingnum=${coating}&temper=${temper}&guardfilm=${guard}`,
+      `http://13.234.31.236:3001/sales/availableStock?product=${checked}&company=${company}&grade=${grade}&topcolor=${color}&coatingnum=${coating}&temper=${temper}&guardfilm=${guard}`,
       {
         headers: {
           Authorization: `Bearer ${secret.token}`,
@@ -211,6 +211,18 @@ const CreateOrder = () => {
       setNewProduct(order);
     });
   };
+
+  function multiplyBy() {
+    var thickness = document.getElementById("thicknes").value;
+    var width = document.getElementById("width").value;
+    var length = document.getElementById("length").value;
+    var result = document.getElementById("result");
+    var totalWeight = thickness * width * length;
+    result.innerHTML = totalWeight;
+    desc.weight(totalWeight)
+  }
+
+
 
   return (
     <>
@@ -728,11 +740,13 @@ const CreateOrder = () => {
                                 <Row>
                                   <label for="thickness">Thickness</label>
                                   <input
+                                    id="thicknes"
                                     type="number"
                                     name="thickness"
                                     placeholder="Thickness"
                                     className="custom_input"
                                     onChange={handleDesc}
+                                    onInput={multiplyBy}
                                     value={
                                       desc.thickness.length === 0
                                         ? ""
@@ -751,11 +765,13 @@ const CreateOrder = () => {
                                 <Row>
                                   <label>Length</label>
                                   <input
+                                    id="length"
                                     type="number"
                                     name="length"
                                     placeholder="Length"
                                     className="custom_input"
                                     onChange={handleDesc}
+                                    onInput={multiplyBy}
                                     value={desc.length || ""}
                                     required
                                   />
@@ -768,13 +784,15 @@ const CreateOrder = () => {
                               </Col>
                               <Col className="m-2">
                                 <Row>
-                                  <label for="thickness">Width</label>
+                                  <label for="width">Width</label>
                                   <input
-                                    type="number"
+                                    id="width"
+                                    type="text"
                                     placeholder="Width"
                                     className="custom_input"
                                     name="width"
                                     onChange={handleDesc}
+                                    onInput={multiplyBy}
                                     value={desc.width || ""}
                                     required
                                   />
@@ -810,19 +828,23 @@ const CreateOrder = () => {
                                 <Row>
                                   <label for="length">Weight</label>
                                   <input
+                                    id="weight"
                                     type="number"
                                     placeholder="Weight"
                                     name="weight"
-                                    value={desc.weight || ""}
                                     className="subfields"
                                     onChange={handleDesc}
                                     required
                                   />
+
                                   {desc.weight.length === 0 && (
                                     <span style={{ color: "red" }}>
                                       *Required
                                     </span>
                                   )}
+                                </Row>
+                                <Row>
+                                  <p>Weight: <span id="result"></span></p>
                                 </Row>
                               </Col>
                               <Col className="m-1"></Col>

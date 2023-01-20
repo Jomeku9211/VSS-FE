@@ -112,7 +112,7 @@ const Purchase_Order = (props) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    await Axios.post("http://65.0.129.68/api/v1/purchaseStock/create", formData)
+    await Axios.post("http://13.234.31.236:3001/purchaseStock/create", formData)
       .then((response) => {
         if (response.status === 200) {
           setLoading(false);
