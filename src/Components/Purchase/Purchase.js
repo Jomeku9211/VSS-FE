@@ -19,7 +19,7 @@ const Purchase = ({ match }) => {
 
   const getAllPosts = async () => {
     setTimeout(async () => {
-      await Axios.get("http://65.0.129.68/api/v1/purchaseStock/get").then(
+      await Axios.get("http://13.234.31.236:3001/purchaseStock/get").then(
         (response) => {
           console.log(response);
           const data = response.data.res;

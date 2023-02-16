@@ -3,7 +3,7 @@ const Company = [
   { id: "NA", name: "NA" },
   { id: "NSAIL", name: "NSAIL" },
   { id: "JSW", name: "JSW" },
-  { id: "UTTAM", name: "UTTAM" },
+  { id: "Manoj", name: "Manoj" },
   { id: "AMNS", name: "AMNS" },
   { id: "TATA", name: "TATA" },
   { id: "ESSAR", name: "ESSAR" },
@@ -50,13 +50,13 @@ const Color = [
 const Coating = [
   { id: "", name: "Coating" },
   { id: "NA", name: "NA" },
-  { id: "70", name: "70" },
-  { id: "80", name: "80" },
-  { id: "90", name: "90" },
-  { id: "120", name: "120" },
-  { id: "150 ", name: "150" },
-  { id: "180", name: "180" },
-  { id: "275", name: "275" },
+  { id: "70", name: "Az70" },
+  { id: "80", name: "Az100" },
+  { id: "90", name: "Az150" },
+  { id: "120", name: "GSM80" },
+  { id: "150 ", name: "GSM90" },
+  { id: "180", name: "GSM120" },
+  { id: "275", name: "GSM180" },
 ];
 
 const Temper = [
