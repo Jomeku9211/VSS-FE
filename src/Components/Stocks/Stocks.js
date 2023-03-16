@@ -46,10 +46,10 @@ const Stocks = ({ match }) => {
     temper: items.temper,
     grade: items.grade,
     topcolor: items.topcolor,
-    thickness: parseInt(items.thickness),
+    thickness: encodeURIComponent(items.thickness),
     width: parseInt(items.width),
     length: parseInt(items.length),
-    coating: parseInt(items.coating),
+    coating: encodeURIComponent(items.coating),
     weight: parseInt(items.weight),
     pcs: parseInt(items.pcs),
     guardfilm: items.guardfilm,
@@ -328,7 +328,7 @@ const Stocks = ({ match }) => {
                         onChange={handleChange}
                         placeholder="Thickness"
                         min="0.1"
-                        type="number"
+                        type="encodeURIComponent"
                         name="thickness"
                         required
                       />
