@@ -52,9 +52,14 @@ const Dash_Home = ({ match, location, history }) => {
                 <ViewMoreList match={match.path} />
               </div>
             </Route>
+            {/* <Route exact path={`${match.path}/addUser`}>
+              <div className="addUser">
+                <AddUser match={match.path}/>
+              </div>
+            </Route> */}
             <Route exact path={`${match.path}/addUser`}>
               <div className="addUser">
-                <AddUser />
+                <AddUser match={match.path}/>
               </div>
             </Route>
             <Route exact path={`${match.path}/stocks`}>

@@ -23,7 +23,7 @@ const ListOrder = ({ match }) => {
       setTimeout(async () => {
         const token =
           "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuZXdVc2VyIjp7Il9pZCI6IjYwM2IzNDM5MzViODI2MjBhMDg5ZTkwNyIsInVzZXJuYW1lIjoiYWRtaW4iLCJwYXNzd29yZCI6ImFkbWluIn0sImlhdCI6MTYxNTg5MTU2MSwiZXhwIjoxNjE1OTc3OTYxfQ.exU8x5APvJBqlVKtIHHSYrqXMNKu38GyusySo-ZxCp4";
-        await Axios.get("http://65.0.129.68/api/v1/BillingManagement/all", {
+        await Axios.get("http://13.234.31.236:3001/BillingManagement/all", {
           headers: { Authorization: `Bearer ${token}` },
         }).then((res) => {
           const response = res.data;
@@ -42,7 +42,7 @@ const ListOrder = ({ match }) => {
         <Container>
           <>
             <Row style={{ marginTop: "20px" }}>
-              <div className="w-100" style={{ display: "flex" }}>
+              <div style={{ display: "flex", width: "64%" }}>
                 <h4 style={{ color: "#7d8488" }}>Orders</h4>
 
                 <Col className="col-lg-4 ms-auto">

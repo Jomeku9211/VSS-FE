@@ -46,10 +46,10 @@ const Stocks = ({ match }) => {
     temper: items.temper,
     grade: items.grade,
     topcolor: items.topcolor,
-    thickness: parseInt(items.thickness),
+    thickness:encodeURIComponent(items.thickness),
     width: parseInt(items.width),
     length: parseInt(items.length),
-    coating: parseInt(items.coating),
+    coating: encodeURIComponent(items.coating),
     weight: parseInt(items.weight),
     pcs: parseInt(items.pcs),
     guardfilm: items.guardfilm,
@@ -327,8 +327,8 @@ const Stocks = ({ match }) => {
                         value={items.thickness}
                         onChange={handleChange}
                         placeholder="Thickness"
-                        min="0"
-                        type="number"
+                        min="0.1"
+                        type="encodeURIComponent"
                         name="thickness"
                         required
                       />
@@ -389,7 +389,7 @@ const Stocks = ({ match }) => {
                     <select
                       aria-label="Default select example"
                       name="guardfilm"
-                      onChange={handleChange}
+                          onChange={handleChange}
                       value={items.guardfilm || ""}
                       className="w-100"
                       required
@@ -467,7 +467,7 @@ const Stocks = ({ match }) => {
             style={{ justifyContent: "left", display: "grid" }}
           >
             <h3 className="">Stocks</h3>
-            <span className="mt-2 mx-3 ">Total weight:10,000 tonn</span>
+            <span className=" mx-3 ">Total weight:10,000 tonn</span>
           </Container>
           <Container
             className=""
@@ -504,7 +504,7 @@ const Stocks = ({ match }) => {
               <tr>
                 <th
                   style={{
-                    color: "cornflowerblue",
+                    color: "black",
                     borderRight: "1px solid lightgray",
                   }}
                 >
@@ -512,7 +512,7 @@ const Stocks = ({ match }) => {
                 </th>
                 <th
                   style={{
-                    color: "cornflowerblue",
+                    color: "black",
                     borderRight: "1px solid lightgray",
                   }}
                 >
@@ -521,7 +521,7 @@ const Stocks = ({ match }) => {
 
                 <th
                   style={{
-                    color: "cornflowerblue",
+                    color: "black",
                     borderRight: "1px solid lightgray",
                   }}
                 >
@@ -529,7 +529,7 @@ const Stocks = ({ match }) => {
                 </th>
                 <th
                   style={{
-                    color: "cornflowerblue",
+                    color: "black",
                     borderRight: "1px solid lightgray",
                   }}
                 >
@@ -537,7 +537,7 @@ const Stocks = ({ match }) => {
                 </th>
                 <th
                   style={{
-                    color: "cornflowerblue",
+                    color: "black",
                     borderRight: "1px solid lightgray",
                   }}
                 >
@@ -545,7 +545,7 @@ const Stocks = ({ match }) => {
                 </th>
                 <th
                   style={{
-                    color: "cornflowerblue",
+                    color: "black",
                     borderRight: "1px solid lightgray",
                   }}
                 >
@@ -553,7 +553,7 @@ const Stocks = ({ match }) => {
                 </th>
                 <th
                   style={{
-                    color: "cornflowerblue",
+                    color: "black",
                     borderRight: "1px solid lightgray",
                   }}
                 >
@@ -561,7 +561,7 @@ const Stocks = ({ match }) => {
                 </th>
                 <th
                   style={{
-                    color: "cornflowerblue",
+                    color: "black",
                     borderRight: "1px solid lightgray",
                   }}
                 >
@@ -569,7 +569,7 @@ const Stocks = ({ match }) => {
                 </th>
                 <th
                   style={{
-                    color: "cornflowerblue",
+                    color: "black",
                     borderRight: "1px solid lightgray",
                   }}
                 >
@@ -577,7 +577,7 @@ const Stocks = ({ match }) => {
                 </th>
                 <th
                   style={{
-                    color: "cornflowerblue",
+                    color: "black",
                     borderRight: "1px solid lightgray",
                   }}
                 >
@@ -586,7 +586,7 @@ const Stocks = ({ match }) => {
 
                 <th
                   style={{
-                    color: "cornflowerblue",
+                    color: "black",
                     borderRight: "1px solid lightgray",
                   }}
                 >
@@ -594,7 +594,7 @@ const Stocks = ({ match }) => {
                 </th>
                 <th
                   style={{
-                    color: "cornflowerblue",
+                    color: "black",
                     borderRight: "1px solid lightgray",
                   }}
                 >
@@ -602,7 +602,7 @@ const Stocks = ({ match }) => {
                 </th>
                 <th
                   style={{
-                    color: "cornflowerblue",
+                    color: "black",
                     borderRight: "1px solid lightgray",
                   }}
                 >
@@ -610,7 +610,7 @@ const Stocks = ({ match }) => {
                 </th>
                 <th
                   style={{
-                    color: "cornflowerblue",
+                    color: "black",
                     borderRight: "1px solid lightgray",
                   }}
                 >

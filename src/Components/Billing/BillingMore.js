@@ -173,7 +173,7 @@ const BillingMore = () => {
                 <Col>{val.topcolor}</Col>
               </Row>
               <Row className="col-xl-8 col-lg-8 ">
-                <Col>Pcs</Col>
+                <Col>pcs</Col>
                 <Col>-</Col>
                 {/* <Col>{val.pcs}</Col> */}
                 <Col>
@@ -192,7 +192,7 @@ const BillingMore = () => {
                 <Col>
                   <input
                     className="subfields"
-                    name="Weight"
+                    name="weight"
                     type="number"
                   ></input>
                 </Col>
@@ -202,8 +202,13 @@ const BillingMore = () => {
                 <Col>-</Col>
                 <Col>{val.length}</Col>
               </Row>
+              {/* <Row className="col-xl-8 col-lg-8 ">
+                <Col>pcs</Col>
+                <Col>-</Col>
+                <Col>{val.pcs}</Col>
+              </Row> */}
               <Row className="col-xl-8 col-lg-8 ">
-                <Col>width</Col>
+                <Col>Weight</Col>
                 <Col>-</Col>
                 <Col>{val.width}</Col>
               </Row>

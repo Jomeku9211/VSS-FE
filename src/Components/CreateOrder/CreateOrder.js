@@ -45,6 +45,26 @@ const CreateOrder = () => {
     setTotalMM(result);
   };
 
+  
+
+  const [orderList, setOrderList] = useState([{ orders: "" }]);
+
+  const handleOrderAdd = () => {
+    setOrderList([...orderList, { servise: "" }]);
+  };
+
+  const handleOrderRemove = (index, e) => {
+    const list = [...orderList];
+    list.splice(index, 1);
+    setOrderList(list);
+  };
+  const handleOrderChange = (index, e) => {
+    const { name, value } = e.target;
+    const list = [...orderList];
+    list[index][name] = value;
+    setOrderList(list);
+  };
+
   const datemili = new Date();
   const miliseconds = datemili.getTime().toString();
 
@@ -58,6 +78,7 @@ const CreateOrder = () => {
     deliveryDate: "",
     products: newProduct,
   });
+
   const [desc, setDesc] = useState({
     thickness: "",
     length: "",
@@ -113,6 +134,7 @@ const CreateOrder = () => {
     setDesc({ ...desc, [e.target.name]: e.target.value });
   };
   const handleRate = (e) => {
+    
     e.preventDefault();
     setRate(() => {
       setRate(e.target.value);
@@ -132,7 +154,7 @@ const CreateOrder = () => {
   const handleClick = async (e) => {
     e.preventDefault();
     await Axios.get(
-      `http://65.0.129.68/api/v1/sales/availableStock?product=${checked}&company=${company}&grade=${grade}&topcolor=${color}&coatingnum=${coating}&temper=${temper}&guardfilm=${guard}`,
+      `http://13.234.31.236:3001/sales/availableStock?product=${checked}&company=${company}&grade=${grade}&topcolor=${color}&coatingnum=${coating}&temper=${temper}&guardfilm=${guard}`,
       {
         headers: {
           Authorization: `Bearer ${secret.token}`,
@@ -211,6 +233,27 @@ const CreateOrder = () => {
       setNewProduct(order);
     });
   };
+
+  function multiplyBy() {
+    var thickness = document.getElementById("thicknes").value;
+    var width = document.getElementById("width").value;
+    var length = document.getElementById("length").value;
+    var result = document.getElementById("result");
+    var toWeight = document.getElementById("");
+    var totalWeight = thickness * width * length;
+    var toWeight=thickness*width*length*7.85;
+    
+    // 00000000000000000000000000000000
+    result.innerHTML=toWeight;
+    desc.weight(toWeight)
+    // 00000000000000000000000000000000000000000
+    
+    result.innerHTML = totalWeight;
+    desc.weight(totalWeight);
+  }
+  function myWeight() {
+    document.getElementById("myResult").value = multiplyBy();
+  }
 
   return (
     <>
@@ -591,7 +634,7 @@ const CreateOrder = () => {
                     </Row>
                   </Row>
                   <Row>
-                    {/* ++++++++++++AFTER ORder section ++++++++++++ */}
+                    {/* ++++++++++++AFTER Order section ++++++++++++ */}
                     <Container>
                       <div className="afterOrder">
                         {isNotAvailable && (
@@ -728,11 +771,13 @@ const CreateOrder = () => {
                                 <Row>
                                   <label for="thickness">Thickness</label>
                                   <input
+                                    id="thicknes"
                                     type="number"
                                     name="thickness"
                                     placeholder="Thickness"
                                     className="custom_input"
                                     onChange={handleDesc}
+                                    onInput={multiplyBy}
                                     value={
                                       desc.thickness.length === 0
                                         ? ""
@@ -747,34 +792,18 @@ const CreateOrder = () => {
                                   )}
                                 </Row>
                               </Col>
+                              
                               <Col className="m-2">
                                 <Row>
-                                  <label>Length</label>
+                                  <label for="width">Width</label>
                                   <input
-                                    type="number"
-                                    name="length"
-                                    placeholder="Length"
-                                    className="custom_input"
-                                    onChange={handleDesc}
-                                    value={desc.length || ""}
-                                    required
-                                  />
-                                  {desc.length.length === 0 && (
-                                    <span style={{ color: "red" }}>
-                                      *Required
-                                    </span>
-                                  )}
-                                </Row>
-                              </Col>
-                              <Col className="m-2">
-                                <Row>
-                                  <label for="thickness">Width</label>
-                                  <input
-                                    type="number"
+                                    id="width"
+                                    type="text"
                                     placeholder="Width"
                                     className="custom_input"
                                     name="width"
                                     onChange={handleDesc}
+                                    onInput={multiplyBy}
                                     value={desc.width || ""}
                                     required
                                   />
@@ -787,45 +816,154 @@ const CreateOrder = () => {
                               </Col>
                             </Row>
                             <Row>
-                              <Col className="m-1">
-                                <Row>
-                                  <label for="pcs">Pcs.</label>
-                                  <input
-                                    type="number"
-                                    placeholder="Pcs"
-                                    name="pcs"
-                                    value={desc.pcs || ""}
-                                    className="subfields"
-                                    onChange={handleDesc}
-                                    required
-                                  />
-                                  {desc.pcs.length === 0 && (
-                                    <span style={{ color: "red" }}>
-                                      *Required
-                                    </span>
-                                  )}
-                                </Row>
-                              </Col>
-                              <Col className="m-1">
-                                <Row>
-                                  <label for="length">Weight</label>
-                                  <input
-                                    type="number"
-                                    placeholder="Weight"
-                                    name="weight"
-                                    value={desc.weight || ""}
-                                    className="subfields"
-                                    onChange={handleDesc}
-                                    required
-                                  />
-                                  {desc.weight.length === 0 && (
-                                    <span style={{ color: "red" }}>
-                                      *Required
-                                    </span>
-                                  )}
-                                </Row>
-                              </Col>
-                              <Col className="m-1"></Col>
+                              {orderList.map((singleOrder, index) => {
+                                return (
+                                  <div key={index} style={{ display: "flex" }}>
+                                    <Col className="m-3">
+                                      <Row>
+                                        <label for="length">Length</label>
+                                        <input
+                                          id="weight"
+                                          type="number"
+                                          placeholder="length"
+                                          name="weight"
+                                          className="subfields"
+                                          onChange={(e) => {
+                                            handleDesc();
+                                            myWeight();
+                                            handleOrderChange(e,index);
+                                            
+                                            
+                                          }}
+                                          required
+                                        />
+                                        {desc.weight.length === 0 && (
+                                          <span style={{ color: "red" }}>
+                                            *Required
+                                          </span>
+                                        )}
+                                      </Row>
+                                      {/* <Row>
+                                        <p id="weight">TotalWeight: <span id="result"></span></p>
+                                      </Row> */}
+                                    </Col>
+                                    <Col className="m-3">
+                                      <Row>
+                                        <label
+                                          for="pcs"
+                                          style={{ marginLeft: "10px" }}
+                                        >
+                                          Pcs.
+                                        </label>
+                                        <input
+                                          style={{ marginLeft: "10px" }}
+                                          type="number"
+                                          placeholder="Pcs"
+                                          name="pcs"
+                                          // value={desc.pcs || ""}
+                                          value={singleOrder.order}
+                                          onChange={(e) =>
+                                            handleOrderChange(index, e)
+                                           
+                                          }
+                                          className="subfields"
+                                          // onChange={handleDesc}
+                                          required
+                                        />
+                                        {desc.pcs.length === 0 && (
+                                          <span
+                                            style={{
+                                              color: "red",
+                                              marginLeft: "10px",
+                                            }}
+                                          >
+                                            *Required
+                                          </span>
+                                        )}
+                                      </Row>
+                                    </Col>
+                                    <Col className="m-3">
+                                      <Row>
+                                        <label
+                                          for="weight"
+                                          style={{ marginLeft: "20px" }}
+                                        >
+                                          Weight
+                                        </label>
+                                        <input
+                                          style={{ marginLeft: "20px" }}
+                                          id="weight"
+                                          type="number"
+                                          placeholder="weight"
+                                          name="weight"
+                                          className="subfields"
+                                          onChange={(e) => {
+                                            handleDesc();
+                                            myWeight();
+                                    
+                                          }}
+                                          required
+                                        />
+                                        {desc.weight.length === 0 && (
+                                          <span
+                                            style={{
+                                              color: "red",
+                                              marginLeft: "20px",
+                                            }}
+                                          >
+                                            *Required
+                                          </span>
+                                        )}
+                                      </Row>
+                                      <Row>
+                                        {/* <p id="weight">Weight: <span id="result"></span></p> */}
+                                      </Row>
+                                    </Col>
+
+                                   
+                                    
+                                    <Col className="m-3">
+                                      <Row className="mt-3 ml-6 ml-auto col-3">
+                                        {orderList.length - 1 === index &&
+                                          orderList.length < 40 && (
+                                            <button
+                                              style={{ marginLeft: "40px" }}
+                                              className="addButton"
+                                              onClick={handleOrderAdd}
+                                              // onClick={() => {
+                                              //   handleClick();
+                                              //   handleOrderAdd();
+                                                
+                                                
+                                              // }}
+                                             
+                                            >
+                                              <i class="fas fa-plus-circle"></i>
+                                            </button>
+                                          )
+                                        }
+                                      </Row>
+                                      <Row>
+                                        {orderList.length >1 && (
+                                          <button
+                                            className="deleteButton"
+                                            onClick={() =>
+                                              handleOrderRemove(index)
+                                            }
+                                          >
+                                            <i class="fas fa-minus-circle"></i>
+                                          </button>
+                                        )}
+                                      </Row>
+                                    </Col>
+                                  </div>
+                                );
+                               
+                              })} 
+                               
+                            </Row>
+                            <Row>
+                                <p id="weight">TotalWeight: <span id="result"></span></p>
                             </Row>
                           </Container>
                         </Container>
@@ -848,6 +986,8 @@ const CreateOrder = () => {
                             <Col className="m-3">
                               <Row>
                                 <label for="thickness">Rate(GST%)</label>
+
+                             
                                 <input
                                   type="text"
                                   value={total || ""}
@@ -936,6 +1076,7 @@ const CreateOrder = () => {
                     </Col>
                     <Col>
                       <p>{inputs.clientName}</p>
+                     
                     </Col>
                   </Row>
                   <Row>

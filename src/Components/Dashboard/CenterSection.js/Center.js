@@ -24,7 +24,7 @@ const Center = ({ match }) => {
       try {
         const token =
           "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuZXdVc2VyIjp7Il9pZCI6IjYwM2IzNDM5MzViODI2MjBhMDg5ZTkwNyIsInVzZXJuYW1lIjoiYWRtaW4iLCJwYXNzd29yZCI6ImFkbWluIn0sImlhdCI6MTYxNTg5MTU2MSwiZXhwIjoxNjE1OTc3OTYxfQ.exU8x5APvJBqlVKtIHHSYrqXMNKu38GyusySo-ZxCp4";
-        await Axios.get("http://65.0.129.68/api/v1/total/getadmin", {
+        await Axios.get("http://13.234.31.236/api/v1/total/getadmin", {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
@@ -49,7 +49,7 @@ const Center = ({ match }) => {
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuZXdVc2VyIjp7Il9pZCI6IjYwM2IzNDM5MzViODI2MjBhMDg5ZTkwNyIsInVzZXJuYW1lIjoiYWRtaW4iLCJwYXNzd29yZCI6ImFkbWluIn0sImlhdCI6MTYxNTg5MTU2MSwiZXhwIjoxNjE1OTc3OTYxfQ.exU8x5APvJBqlVKtIHHSYrqXMNKu38GyusySo-ZxCp4";
       await Axios.get(
         // "65.0.129.68/api/v1/graph/getAdmin?startDate=2020-11-21&endDate=2022-01-01",
-        "http://65.0.129.68/api/v1/BillingManagement/RecentWeeklyOrder",
+        "http://13.234.31.236/api/v1/BillingManagement/RecentWeeklyOrder",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -141,95 +141,6 @@ const Center = ({ match }) => {
           </Row>
         </Container> */}
          {/* ----------------------------- */}
-      
-        <Container>
-          <Row>
-            <div className="fixTableHead">
-              <Table
-                size="sm"
-                className="table"
-                style={{
-                  justifyContent: "center",
-                }}
-              >
-                <div
-                  style={{
-                    justifyContent: "center",
-                    alignItems: "center",
-                    display: "flex",
-                  }}
-                >
-                  <thead
-                    style={{
-                      textAlign: "center",
-                      justifyContent: "center",
-                      maxHeight: "40",
-                    }}
-                  >
-                    Recent Orders
-                  </thead>
-                </div>
-
-                <tbody>
-                  <tr
-                    style={{
-                      textAlign: "left",
-                      justifyContent: "center",
-                      height: "10%",
-                    }}
-                  >
-                    <td>
-                      <b>#</b>
-                    </td>
-                    <td>
-                      <b>Client</b>
-                    </td>
-                    <td>
-                      <b>Order Id</b>
-                    </td>
-                    <td>
-                      <b>Date</b>
-                    </td>
-                    <td>
-                      <b>City</b>
-                    </td>
-                  </tr>
-
-                  {order?.length > 0 ? (
-                    order?.length !== 0 ? (
-                      order?.map((val, ind) => (
-                        <tr key={val._id} style={{ padding: "10px" }}>
-                          <td>{ind + 1}</td>
-                          <td>{val?.clientName}</td>
-                          <td>{val?.orderId}</td>
-                          <td>{val?.deliveryDate}</td>
-                          <td>{val?.city}</td>
-                        </tr>
-                      ))
-                    ) : (
-                      <Container
-                        style={{
-                          justifyContent: "center",
-                          alignItems: "center",
-                          display: "flex",
-                        }}
-                      >
-                        <LoaderComp
-                          type={"TailSpin"}
-                          height={40}
-                          hidden={false}
-                          color={"#0e2434"}
-                        />
-                      </Container>
-                    )
-                  ) : (
-                    "No Such data found"
-                  )}
-                </tbody>
-              </Table>
-            </div>
-          </Row>
-        </Container>
       </Container>
     </>
   );

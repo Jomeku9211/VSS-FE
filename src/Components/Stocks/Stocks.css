@@ -1,14 +1,16 @@
 .outer_most_container {
   justify-content: center;
   align-items: left;
-  display: block;
   margin-top: 25px;
+  /* position: absolute; */
 }
 .heading_section > h3 {
   color: gray;
 }
 .heading_section > span {
+  position: absolute;
   color: #294146;
+  margin-top: 120px;
 }
 .product > select {
   border: none;
@@ -76,11 +78,14 @@ table tr:first-child th:last-child {
   box-shadow: 0px 2px 6px lightgray;
 }
 .addStock_button {
-  background-color: #98520c;
+  background-color: #65cc5a;
   color: white;
   padding: 10px;
   border: none;
   border-radius: 12px;
+  position: absolute;
+  margin-left: 435px;
+  margin-top: 104px;
   box-shadow: 0px 2px 6px grey;
 }
 .modal-header {
