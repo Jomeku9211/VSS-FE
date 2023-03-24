@@ -45,8 +45,6 @@ const CreateOrder = () => {
     setTotalMM(result);
   };
 
-  
-
   const [orderList, setOrderList] = useState([{ orders: "" }]);
 
   const handleOrderAdd = () => {
@@ -134,7 +132,6 @@ const CreateOrder = () => {
     setDesc({ ...desc, [e.target.name]: e.target.value });
   };
   const handleRate = (e) => {
-    
     e.preventDefault();
     setRate(() => {
       setRate(e.target.value);
@@ -238,21 +235,20 @@ const CreateOrder = () => {
     var thickness = document.getElementById("thicknes").value;
     var width = document.getElementById("width").value;
     var length = document.getElementById("length").value;
+    var pcs =document.getElementById("pcs").value;
     var result = document.getElementById("result");
-    var toWeight = document.getElementById("");
-    var totalWeight = thickness * width * length;
-    var toWeight=thickness*width*length*7.85;
+    var totalWeight = document.getElementById("subfields");
+
+    var totalWeight = thickness * width * length * pcs * 7.85;
     
-    // 00000000000000000000000000000000
-    result.innerHTML=toWeight;
-    desc.weight(toWeight)
-    // 00000000000000000000000000000000000000000
-    
+
     result.innerHTML = totalWeight;
     desc.weight(totalWeight);
   }
+ 
   function myWeight() {
     document.getElementById("myResult").value = multiplyBy();
+    
   }
 
   return (
@@ -270,6 +266,7 @@ const CreateOrder = () => {
               style={{
                 height: "auto",
                 textAlign: "center",
+
               }}
             >
               Congrats !! Orders Created SuccessFully
@@ -792,7 +789,7 @@ const CreateOrder = () => {
                                   )}
                                 </Row>
                               </Col>
-                              
+
                               <Col className="m-2">
                                 <Row>
                                   <label for="width">Width</label>
@@ -831,9 +828,7 @@ const CreateOrder = () => {
                                           onChange={(e) => {
                                             handleDesc();
                                             myWeight();
-                                            handleOrderChange(e,index);
-                                            
-                                            
+                                            handleOrderChange(e, index);
                                           }}
                                           required
                                         />
@@ -843,9 +838,6 @@ const CreateOrder = () => {
                                           </span>
                                         )}
                                       </Row>
-                                      {/* <Row>
-                                        <p id="weight">TotalWeight: <span id="result"></span></p>
-                                      </Row> */}
                                     </Col>
                                     <Col className="m-3">
                                       <Row>
@@ -857,14 +849,14 @@ const CreateOrder = () => {
                                         </label>
                                         <input
                                           style={{ marginLeft: "10px" }}
+                                          id="pcs"
                                           type="number"
                                           placeholder="Pcs"
                                           name="pcs"
                                           // value={desc.pcs || ""}
-                                          value={singleOrder.order}
+                                          value={singleOrder.orders}
                                           onChange={(e) =>
                                             handleOrderChange(index, e)
-                                           
                                           }
                                           className="subfields"
                                           // onChange={handleDesc}
@@ -900,7 +892,6 @@ const CreateOrder = () => {
                                           onChange={(e) => {
                                             handleDesc();
                                             myWeight();
-                                    
                                           }}
                                           required
                                         />
@@ -920,8 +911,6 @@ const CreateOrder = () => {
                                       </Row>
                                     </Col>
 
-                                   
-                                    
                                     <Col className="m-3">
                                       <Row className="mt-3 ml-6 ml-auto col-3">
                                         {orderList.length - 1 === index &&
@@ -933,18 +922,15 @@ const CreateOrder = () => {
                                               // onClick={() => {
                                               //   handleClick();
                                               //   handleOrderAdd();
-                                                
-                                                
+
                                               // }}
-                                             
                                             >
                                               <i class="fas fa-plus-circle"></i>
                                             </button>
-                                          )
-                                        }
+                                          )}
                                       </Row>
                                       <Row>
-                                        {orderList.length >1 && (
+                                        {orderList.length > 1 && (
                                           <button
                                             className="deleteButton"
                                             onClick={() =>
@@ -958,12 +944,15 @@ const CreateOrder = () => {
                                     </Col>
                                   </div>
                                 );
-                               
-                              })} 
-                               
+                              })}
                             </Row>
                             <Row>
-                                <p id="weight">TotalWeight: <span id="result"></span></p>
+                              <p id="weight">
+                                TotalWeight: <span id="result"></span>
+
+                              </p>
+                            
+                              
                             </Row>
                           </Container>
                         </Container>
@@ -980,14 +969,13 @@ const CreateOrder = () => {
                                   onChange={handleRate}
                                   placeholder="Rate"
                                   className="subfields"
+                                  
                                 />
                               </Row>
                             </Col>
                             <Col className="m-3">
                               <Row>
                                 <label for="thickness">Rate(GST%)</label>
-
-                             
                                 <input
                                   type="text"
                                   value={total || ""}
@@ -1076,7 +1064,6 @@ const CreateOrder = () => {
                     </Col>
                     <Col>
                       <p>{inputs.clientName}</p>
-                     
                     </Col>
                   </Row>
                   <Row>
