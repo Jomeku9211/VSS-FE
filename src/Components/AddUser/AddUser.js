@@ -159,6 +159,7 @@ const AddUser = () => {
                         borderRadius: "50%",
                         border: "6px solid lightgrey",
                         boxShadow: "0px 2px 6px grey",
+                      
                       }}
                     />
                   ) : (
@@ -337,6 +338,7 @@ const AddUser = () => {
           <div className="d-flex">
             <h4>Users</h4>
             <button className="add_btn ms-auto" onClick={handleShow}>
+              
               <i class="fas fa-plus me-2">AddUser</i>
             </button>
           </div>

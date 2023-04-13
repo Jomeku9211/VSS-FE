@@ -2,11 +2,12 @@
   background-color: #98520c;
   border: none;
   border-radius: 10px;
-  color: white;
+  color: rgb(248, 242, 242);
   height: 40px;
   padding: 5px;
   box-shadow: 0px 2px 6px grey;
 }
+
 .user_profile_container {
   height: auto;
   border-radius: 20px;
@@ -15,6 +16,7 @@
   background-color: #f5fafd;
   position: relative;
 }
+
 .image_back_container {
   justify-content: center;
   align-items: center;
@@ -30,16 +32,19 @@
   box-shadow: 0px 2px 6px rgb(148, 148, 148);
   cursor: pointer;
 }
+
 .p_tag {
   font-size: 13px;
   color: #294146;
   font-weight: 800;
 }
+
 .profileName {
   font-size: 15px;
   color: #294146;
   font-weight: 900;
 }
+
 .editButton {
   height: 20px;
   width: 30px;
@@ -49,6 +54,7 @@
   font-size: 15px;
   float: right;
 }
+
 .deleteButton {
   height: 20px;
   width: 30px;
@@ -58,23 +64,29 @@
   font-size: 15px;
   float: right;
 }
+
 .modal_header {
   justify-content: center;
   align-items: center;
   background-color: #f2f2f2;
 }
+
 .modal_title {
   font-size: 20px;
 }
+
 .modal_body {
+
   background-color: #f2f2f2;
   justify-content: center;
   align-items: center;
   display: grid;
 }
+
 .modal_footer {
   background-color: #f2f2f2;
 }
+
 .modal_input {
   border: none;
   border-radius: 10px;
@@ -85,19 +97,23 @@
   font-size: 16px;
   outline-style: none;
 }
+
 .modal {
   justify-content: center;
   align-items: center;
   display: grid;
 }
+
 .form-select {
   color: grey;
   outline-style: none;
 }
+
 .close {
   border: none;
   background-color: transparent;
 }
+
 .submit_button {
   border: none;
   background-color: #98520c;
@@ -106,6 +122,7 @@
   border-radius: 10px;
   box-shadow: 0px 2px 6px grey;
 }
+
 .close_button {
   border: none;
   background-color: #add;
@@ -114,22 +131,26 @@
   border-radius: 10px;
   box-shadow: 0px 2px 6px grey;
 }
+
 .custom-file {
   border: none;
   border-radius: 10px;
   box-shadow: 0px 2px 6px grey;
   margin-top: 10px;
 }
-.custom-file > input[type="file"] {
+
+.custom-file>input[type="file"] {
   border: none;
   background-color: transparent;
 }
+
 .file_container {
   justify-content: center;
   align-items: center;
   display: grid;
   margin-top: 20px;
 }
+
 .file_button {
   background-color: #cddde8;
   border: none;

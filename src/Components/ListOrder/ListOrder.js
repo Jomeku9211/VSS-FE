@@ -42,7 +42,7 @@ const ListOrder = ({ match }) => {
         <Container>
           <>
             <Row style={{ marginTop: "20px" }}>
-              <div className="w-100" style={{ display: "flex" }}>
+              <div style={{ display: "flex", width: "64%" }}>
                 <h4 style={{ color: "#7d8488" }}>Orders</h4>
 
                 <Col className="col-lg-4 ms-auto">

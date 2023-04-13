@@ -68,43 +68,43 @@ const BillingList = ({ match }) => {
                     </Container>
                   </Row>
                   <Row>
-                    <Col className="col-xl-3 col-lg-3 col-md-3 col-sm-3 heading">
+                    <Col className="col-xl-3 col-lg-3 col-md-3 col-sm-3 heading1">
                       FirmName
                     </Col>
-                    <Col className="col-xl-1 col-lg-1 col-md-1 col-sm-1">-</Col>
-                    <Col className="col-xl-7 col-lg-7 col-md-7 col-sm-7 content">
+                    {/* <Col className="col-xl-1 col-lg-1 col-md-1 col-sm-1">-</Col> */}
+                    <Col className="col-xl-7 col-lg-7 col-md-7 col-sm-7 content1">
                       {val.firmName}
                     </Col>
                   </Row>
 
                   <Row>
-                    <Col className="col-xl-3 col-lg-3 col-md-3 col-sm-3 heading">
+                    <Col className="col-xl-3 col-lg-3 col-md-3 col-sm-3 heading1">
                       Phone
                     </Col>
-                    <Col className="col-xl-1 col-lg-1 col-md-1 col-sm-1">-</Col>
-                    <Col className="col-xl-7 col-lg-7 col-md-7 col-sm-7 content">
+                    {/* <Col className="col-xl-1 col-lg-1 col-md-1 col-sm-1">-</Col> */}
+                    <Col className="col-xl-7 col-lg-7 col-md-7 col-sm-7 content1">
                       {val.phone_no}
                     </Col>
                   </Row>
                   <Row>
-                    <Col className="col-xl-3 col-lg-3 col-md-3 col-sm-3 heading">
+                    <Col className="col-xl-3 col-lg-3 col-md-3 col-sm-3 heading1">
                       Address
                     </Col>
-                    <Col className="col-xl-1 col-lg-1 col-md-1 col-sm-1">-</Col>
-                    <Col className="col-xl-7 col-lg-7 col-md-7 col-sm-7 content">
+                    {/* <Col className="col-xl-1 col-lg-1 col-md-1 col-sm-1">-</Col> */}
+                    <Col className="col-xl-7 col-lg-7 col-md-7 col-sm-7 content1">
                       {val.address}
                     </Col>
                   </Row>
                   <Row>
-                    <Col className="col-xl-3 col-lg-3 col-md-3 col-sm-3 heading">
+                    <Col className="col-xl-3 col-lg-3 col-md-3 col-sm-3 heading1">
                       City
                     </Col>
-                    <Col className="col-xl-1 col-lg-1 col-md-1 col-sm-1">-</Col>
-                    <Col className="col-xl-7 col-lg-7 col-md-7 col-sm-7 content">
+                    {/* <Col className="col-xl-1 col-lg-1 col-md-1 col-sm-1">-</Col> */}
+                    <Col className="col-xl-7 col-lg-7 col-md-7 col-sm-7 content1 ">
                       {val.city}
                     </Col>
                   </Row>
-                  <Row>
+                  {/* <Row>
                     <Col className="col-xl-3 col-lg-3 col-md-3 col-sm-3 heading">
                       FirmName
                     </Col>
@@ -112,7 +112,7 @@ const BillingList = ({ match }) => {
                     <Col className="col-xl-7 col-lg-7 col-md-7 col-sm-7 content">
                       {val.sales_name}
                     </Col>
-                  </Row>
+                  </Row> */}
                   <Row>
                     <Container className="d-flex">
                       <Link

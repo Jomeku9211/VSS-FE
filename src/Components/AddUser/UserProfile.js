@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Container, Col, Row } from "react-bootstrap";
-import Axios from "axios";
+import axios from "axios";
 import LoaderComp from "../Loader/LoaderComp";
 import EditModal from "./EditModal";
+
 
 const UserProfile = () => {
   const [user, setUser] = useState([]);
@@ -17,7 +18,7 @@ const UserProfile = () => {
       setTimeout(async () => {
         const token =
           "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuZXdVc2VyIjp7Il9pZCI6IjYwM2IzNDM5MzViODI2MjBhMDg5ZTkwNyIsInVzZXJuYW1lIjoiYWRtaW4iLCJwYXNzd29yZCI6ImFkbWluIn0sImlhdCI6MTYxNTg5MTU2MSwiZXhwIjoxNjE1OTc3OTYxfQ.exU8x5APvJBqlVKtIHHSYrqXMNKu38GyusySo-ZxCp4";
-        await Axios.get("http://13.234.31.236:3001/user_management", {
+        await axios.get("http://13.234.31.236:3001/user_management", {
           headers: { Authorization: `Bearer ${token}` },
         }).then((res) => {
           if (!res) {
@@ -34,12 +35,14 @@ const UserProfile = () => {
     fetchData();
   }, [user, loading, error]);
 
-  const handleConfirm = (val, e) => {
+  // const handleConfirm=(val,e)=>
+  const handleConfirm = (val,e) => {
     e.preventDefault();
     // eslint-disable-next-line no-restricted-globals
     const toDelete = confirm("Want to Delete this User?");
     if (toDelete) {
       handleDelete(val, e);
+      // handleDelete(id);
     }
   };
 
@@ -50,11 +53,12 @@ const UserProfile = () => {
 
   const handleDelete = async (val, e) => {
     e.preventDefault();
-
+   
     const token =
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuZXdVc2VyIjp7Il9pZCI6IjYwM2IzNDM5MzViODI2MjBhMDg5ZTkwNyIsInVzZXJuYW1lIjoiYWRtaW4iLCJwYXNzd29yZCI6ImFkbWluIn0sImlhdCI6MTYxNTg5MTU2MSwiZXhwIjoxNjE1OTc3OTYxfQ.exU8x5APvJBqlVKtIHHSYrqXMNKu38GyusySo-ZxCp4";
-    await Axios.delete(
-      `http://65.0.129.68/api/v1/user_management/delete/${val._id}`,
+    await axios.delete(
+      `http://65.0.129.68/api/v1/user_management/delete/${val.id}`,
+      
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -64,12 +68,21 @@ const UserProfile = () => {
       }
     ).then((res) => {
       console.log(res);
+      
     });
   };
+      // const handleDelete= (id)=>{
+      //     axios.delete(`http://65.0.129.68/api/v1/user_management/${id}`)
+      //     .then(res=>{
+      //       alert('record has deleted');
+
+      //     }).catch(err=>console.log(err))
+      // }
+
   return (
     <>
       {/* EDIT MODEL CONTAINER */}
-       <EditModal show={show} setShow={setShow} id={editId} />
+      <EditModal show={show} setShow={setShow} id={editId} />
 
       {/* USER PROFILE */}
       {user.length > 0 ? (
@@ -95,6 +108,7 @@ const UserProfile = () => {
                         <button
                           className="deleteButton mt-2"
                           onClick={(e) => handleConfirm(val, e)}
+                       
                           align="right"
                           style={{ color: "maroon" }}
                         >
@@ -107,7 +121,8 @@ const UserProfile = () => {
                             fluid
                             className="image_back_container justify-content-center  m-3  ms-auto"
                           >
-                            <img alt="/"
+                            <img
+                              alt="/"
                               src={
                                 val.user_image !== ""
                                   ? "http://" + val.user_image

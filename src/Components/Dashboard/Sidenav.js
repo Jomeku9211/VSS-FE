@@ -57,12 +57,12 @@ const Sidenav = ({  match }) => {
             </Link>
             <p className="nav_text">Stocks</p>
           </div>
-          <div>
+          {/* <div>
             <Link className="nav_link" to={`${match}/purchase`}>
               <i class="fas fa-cart-arrow-down"></i>
             </Link>
             <p className="nav_text">Purchase</p>
-          </div>
+          </div> */}
           <div>
             <Link className="nav_link" to={`${match}/billing`}>
               <i class="fas fa-file-invoice"></i>
