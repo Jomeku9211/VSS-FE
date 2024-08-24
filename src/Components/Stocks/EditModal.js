@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState} from "react";
 import { Container, Col, Row, Modal } from "react-bootstrap";
 import LoaderComp from "../Loader/LoaderComp";
 import Axios from "axios";
@@ -44,28 +44,32 @@ const EditModal = ({ lgEditShow, setLgEditShow, id }) => {
     pcs: parseInt(item?.pcs),
     guardfilm: item?.guardfilm,
   };
-  console.log(formData);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        Axios.get(`${secret.Ip}/Stock_M/getby/${id}`, {
-          headers: {
-            Authorization: `Bearer ${secret.token}`,
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-          },
-        }).then((response) => {
-          const values = response?.data.res;
-          setItem(() => {
-            setItem(values);
+        if (id) { // Check if id exists
+          const response = await Axios.get(`${secret.Ip}/Stock_M/getby/${id}`, {
+            headers: {
+              Authorization: `Bearer ${secret.token}`,
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*",
+            },
           });
-        });
+          console.log(response);
+          const values = response?.data.res;
+          console.log("value", values);
+          setItem(values);
+          console.log("item",item)
+        }
       } catch (error) {
         console.log(error.message);
       }
     };
     fetchData();
-  }, [id]);
+
+  }, [id]); // Add id as a dependency
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -82,6 +86,8 @@ const EditModal = ({ lgEditShow, setLgEditShow, id }) => {
           if (response.status === 200) {
             setLoading(false);
             setSuccessfull(true);
+    window.location.reload();
+
           }
         });
         setTimeout(() => {
@@ -138,7 +144,7 @@ const EditModal = ({ lgEditShow, setLgEditShow, id }) => {
                     onChange={handleChange}
                     required
                   >
-                    <option selected>{item?.product}</option>
+                    <option value>{item?.product}</option>
                     <option value="GPC">GPC</option>
                     <option value="GPS">GPS</option>
                     <option value="GP ROLL">GP ROLL</option>
@@ -157,7 +163,7 @@ const EditModal = ({ lgEditShow, setLgEditShow, id }) => {
                     onChange={handleChange}
                     required
                   >
-                    <option selected>{item?.company}</option>
+                    <option value>{item?.company}</option>
                     <option value="NA">NA</option>
                     <option value="NSAIL">NSAIL</option>
                     <option value="JSW">JSW</option>
@@ -180,7 +186,7 @@ const EditModal = ({ lgEditShow, setLgEditShow, id }) => {
                     className="w-100"
                     required
                   >
-                    <option selected>{item?.grade}</option>
+                    <option value>{item?.grade}</option>
                     <option value="">NA</option>
                     <option value="PRIME">PRIME</option>
                     <option value="SECOND">SECOND</option>
@@ -195,7 +201,7 @@ const EditModal = ({ lgEditShow, setLgEditShow, id }) => {
                     className="w-100"
                     required
                   >
-                    <option selected>{item?.topcolor}</option>
+                    <option value>{item?.topcolor}</option>
                     <option value="REG">REG</option>
                     <option value="SP">SP</option>
                     <option value="TL">TL</option>
@@ -221,7 +227,7 @@ const EditModal = ({ lgEditShow, setLgEditShow, id }) => {
                     className="w-100"
                     required
                   >
-                    <option selected>{item?.coating}</option>
+                    <option value>{item?.coating}</option>
                     <option value="">NA</option>
                     <option value="70">70</option>
                     <option value="80">80</option>
@@ -239,7 +245,7 @@ const EditModal = ({ lgEditShow, setLgEditShow, id }) => {
                     className="w-100"
                     required
                   >
-                    <option selected>{item?.temper}</option>
+                    <option value>{item?.temper}</option>
                     <option value="Full Hard">Full Hard</option>
                     <option value="Semi Hard">Semi Hard</option>
                     <option value="Soft">Soft</option>
@@ -257,48 +263,18 @@ const EditModal = ({ lgEditShow, setLgEditShow, id }) => {
                 <Col>
                   <label>Thickness</label>
                   <Container className="measure_conatiner">
-                    <input
-                      placeholder="Thickness"
-                      min="0"
-                      type="number"
-                      name="thickness"
-                      onChange={handleChange}
-                      value={item?.thickness || ""}
-                      placeholder="Thickness"
-                      required
-                    />
                     <span className="py-2">mm</span>
                   </Container>
                 </Col>
                 <Col>
                   <label>Width</label>
                   <Container className="measure_conatiner">
-                    <input
-                      placeholder="width"
-                      min="0"
-                      type="number"
-                      name="width"
-                      onChange={handleChange}
-                      value={item?.width || ""}
-                      placeholder="Width"
-                      required
-                    />
                     <span className="py-2">mm</span>
                   </Container>
                 </Col>
                 <Col>
                   <label>length</label>
                   <Container className="measure_conatiner">
-                    <input
-                      name="length"
-                      placeholder="length"
-                      min="0"
-                      type="number"
-                      value={item?.length || ""}
-                      onChange={handleChange}
-                      placeholder="length"
-                      required
-                    />
                     <span className="py-2">mm</span>
                   </Container>
                 </Col>
@@ -309,16 +285,6 @@ const EditModal = ({ lgEditShow, setLgEditShow, id }) => {
                 <Col>
                   <label>Pcs</label>
                   <Container className="measure_conatiner ">
-                    <input
-                      name="pcs"
-                      placeholder="Pcs"
-                      min="0"
-                      type="number"
-                      required
-                      onChange={handleChange}
-                      value={item?.pcs || ""}
-                      placeholder="pcs"
-                    />
                     <span className="py-2">mm</span>
                   </Container>
                 </Col>
@@ -331,7 +297,7 @@ const EditModal = ({ lgEditShow, setLgEditShow, id }) => {
                     className="w-100"
                     required
                   >
-                    <option selected>{item?.guardfilm}</option>
+                    <option value>{item?.guardfilm}</option>
                     <option value="">NA</option>
                     <option value="Without">Without</option>
                     <option value="SkyLine">Skyline</option>

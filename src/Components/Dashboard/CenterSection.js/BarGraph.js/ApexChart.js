@@ -1,14 +1,51 @@
-import React, { Component  } from "react"; 
-// import React , {useEffect ,useState} "react"
+import React, { useEffect, useState } from "react"; 
 import ReactApexChart from "react-apexcharts";
 import axios from "axios";
-export default class ApexChart extends Component {
+import secret from "../../../config.js";
 
-//   componentDidMount() {
-//     // send HTTP request
-//     // save it to the state
-// }
+const ApexChart = () => {
+  const [weight, setWeight] = useState()
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`${secret.Ip}/salesManger/Totalweight`, {
+          headers: {
+            Authorization: `Bearer ${secret.token}`,
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+          },
+        });
+        setWeight(response.data.totalweight)
+        console.log("ToTal  tonn", response.data.totalweight);
+      } catch (error) {
+        console.error("Error fetching total weight:", error);
+      }
+    };
 
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await axios.get(`${secret.Ip}/Stock_M/get`, {
+        headers: {
+          Authorization: `Bearer ${secret.token}`,
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
+      }).then((response) => {
+        console.log("response.data.res",response.data.res);
+      });
+    };
+    fetchData();
+  }, []);
+
+  return (
+    <Chart />
+  );
+}
+
+class Chart extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -91,9 +128,10 @@ export default class ApexChart extends Component {
           series={this.state.series}
           type="bar"
           height={350}
-          // width={1000}
         />
       </div>
     );
   }
 }
+
+export default ApexChart;

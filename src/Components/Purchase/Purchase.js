@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import Axios from "axios";
 import LoaderComp from "../Loader/LoaderComp";
 import BillingPagination from "../Billing/BillingPagination";
+import secret from '../config'
 
 const Purchase = ({ match }) => {
   const [item, setItem] = useState([]);
@@ -19,7 +20,7 @@ const Purchase = ({ match }) => {
 
   const getAllPosts = async () => {
     setTimeout(async () => {
-      await Axios.get("http://13.234.31.236:3001/purchaseStock/get").then(
+        await Axios.get(`${secret.Ip}/purchaseStock/get`).then(
         (response) => {
           console.log(response);
           const data = response.data.res;
@@ -38,7 +39,7 @@ const Purchase = ({ match }) => {
         <Container className="heading_container mt-4 d-flex">
           <h4 className="purchase_heading">Purchase Stocks</h4>
 
-          <Link className="ms-auto" to={`${match}/purchase_order`}>
+          <Link className="ms-auto" to={`/purchase_order`}>
             <button className="purchase_button">
               <i className="fas fa-plus m-1"></i>Purchase
             </button>
@@ -121,7 +122,7 @@ const Purchase = ({ match }) => {
                               textDecoration: "none",
                               color: "#0e2434",
                             }}
-                            to={`${match}/purchase/${val._id}`}
+                            to={`/purchase/${val._id}`}
                           >
                             View More..
                           </Link>

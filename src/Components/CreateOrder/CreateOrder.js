@@ -1,13 +1,15 @@
-import React, { useState, useEffect } from "react";
-import "./CreateOrder";
-import "./CreateOrder.css";
-import { Container, Col, Row, Badge, Form, Alert } from "react-bootstrap";
-import Axios from "axios";
-import LoaderComp from "../Loader/LoaderComp";
-import Constants from "../constants";
-import secret from "../config";
+import React, { useState, useEffect } from 'react';
+import './CreateOrder.css';
+import { Container, Col, Row, Badge, Form, Alert } from 'react-bootstrap';
+import Axios from 'axios';
+import LoaderComp from '../Loader/LoaderComp';
+import Constants from '../constants';
+import secret from '../config';
+import '../../Styles/Cart.css';
+
+
+
 const CreateOrder = () => {
-  const [date, setDate] = useState("");
   const [checked, setChecked] = useState("");
   const [company, setCompany] = useState("");
   const [guard, setGuard] = useState("");
@@ -16,57 +18,37 @@ const CreateOrder = () => {
   const [grade, setGrade] = useState("");
   const [rate, setRate] = useState("");
   const [gst, setGst] = useState("");
-  const [total, setTotal] = useState(gst);
-  const [coating, setCoating] = useState(0);
+  const [total, setTotal] = useState(0);
+  const [coating, setCoating] = useState("");
   const [newProduct, setNewProduct] = useState([]);
-  const [checkedValue, setCheckedValue] = useState("");
   const [failureAlert, setFailureAlert] = useState(false);
   const [successAlert, setSuccessAlert] = useState(false);
-  const [isNotAvailable, setIsNotAvailable] = useState(false);
-  const [value, setValue] = useState({
-    feets: 0,
-    inche: 0,
-  });
-  const [totalMM, setTotalMM] = useState(0);
-  const updateHandler = (e) => {
-    e.preventDefault();
-    setValue({ ...value, [e.target.name]: e.target.value });
-    const newFeet = parseInt(value.feets);
-    const newInches = parseInt(value.inces);
-    console.log("feet:", newFeet);
-    console.log("inches:", newInches);
-    let result = Number(
-      value.feets.typeof === isNaN
-        ? 0
-        : value.feets * 304.8 + value.inche.typeof === isNaN
-        ? 0
-        : value.inche * 25.4
-    );
-    setTotalMM(result);
-  };
+  const [totalWeight, setTotalWeight] = useState();
+
+  const [thickness, setThickness] = useState("");
+  const [width, setWidth] = useState("");
+  const [length, setLength] = useState("");
+  const [pcs, setPcs] = useState("");
 
   const [orderList, setOrderList] = useState([{ orders: "" }]);
+  const [cartItem, setCartItem] = useState([]);
 
-  const handleOrderAdd = () => {
-    setOrderList([...orderList, { servise: "" }]);
-  };
+  const [showCartItem, setShowCartItem] = useState(false);
+  const [isCartEmpty, setISCartEmpty] = useState(cartItem.length === 0);
+
+
+  let newArray = [];
 
   const handleOrderRemove = (index, e) => {
     const list = [...orderList];
     list.splice(index, 1);
     setOrderList(list);
   };
-  const handleOrderChange = (index, e) => {
-    const { name, value } = e.target;
-    const list = [...orderList];
-    list[index][name] = value;
-    setOrderList(list);
-  };
 
   const datemili = new Date();
   const miliseconds = datemili.getTime().toString();
 
-  const [inputs, setInputs] = useState({
+  const [ inputs, setInputs] = useState({
     firmName: "",
     clientName: "",
     orderId: miliseconds,
@@ -74,7 +56,7 @@ const CreateOrder = () => {
     city: "",
     phone_no: "",
     deliveryDate: "",
-    products: newProduct,
+    products: newArray,
   });
 
   const [desc, setDesc] = useState({
@@ -82,126 +64,89 @@ const CreateOrder = () => {
     length: "",
     width: "",
     pcs: "",
-    weight: "",
+    weight: totalWeight,
     checked: "",
   });
+  // const inputPro = inputs.products;
+  const prodctLength = cartItem.length;
 
-  const inputPro = inputs.products;
-  const prodctLength = inputPro.length;
   const productKey = miliseconds + "/" + `${checked}` + "/" + prodctLength;
+
   const product = {
-    company: company,
-    topcolor: color,
     select_product: checked,
+    company: company,
     grade: grade,
+    topcolor: color,
     coatingnum: parseInt(coating),
     temper: temper,
     guardfilm: guard,
-    thickness: parseInt(desc.thickness),
-    width: parseInt(desc.width),
-    length: parseInt(desc.length),
-    pcs: parseInt(desc.pcs),
-    weight: parseInt(desc.weight),
-    gst: parseInt(total),
-    rate: parseInt(rate),
-    productId: productKey,
-  };
+    weight: totalWeight,
+  };   
+
+
   const [loading, setLoading] = useState(false);
 
-  const today = new Date();
-  const dd = String(today.getDate()).padStart(2, "0");
-  const mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
-  const yyyy = today.getFullYear();
-  const todays = dd + "/" + mm + "/" + yyyy;
-  useEffect(() => {
-    setDate(todays);
-  }, []);
+
+  // Get today's date in the format YYYY-MM-DD
+  const today = new Date().toISOString().split("T")[0];
   const handleCheck = (e) => {
-    e.preventDefault();
     setChecked(e.target.value);
-    setCheckedValue((inputs) => {
-      setCheckedValue({ ...inputs, checked });
-    });
   };
   const handleChange = (e) => {
     e.preventDefault();
     setInputs({ ...inputs, [e.target.name]: e.target.value });
   };
-  const handleDesc = (e) => {
-    e.preventDefault();
-    setDesc({ ...desc, [e.target.name]: e.target.value });
+  const handlePhoneChange = (e) => {
+    const { name, value } = e.target;
+
+    // Allow only numeric values and limit the length to 10 digits
+    if (/^\d*$/.test(value) && value.length <= 10) {
+      setInputs({ ...inputs, [name]: value });
+    }
   };
   const handleRate = (e) => {
     e.preventDefault();
-    setRate(() => {
-      setRate(e.target.value);
-    });
+    setRate(e.target.value);
   };
 
   const sum = +rate * Number(18 / 100);
   const final = +sum + +rate;
   useEffect(() => {
-    setTotal(() => {
-      setTotal(final);
-    });
-    setGst(() => {
-      setGst(gst);
-    });
-  }, [rate]);
-  const handleClick = async (e) => {
-    e.preventDefault();
-    await Axios.get(
-      `http://13.234.31.236:3001/sales/availableStock?product=${checked}&company=${company}&grade=${grade}&topcolor=${color}&coatingnum=${coating}&temper=${temper}&guardfilm=${guard}`,
-      {
-        headers: {
-          Authorization: `Bearer ${secret.token}`,
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-        },
-      }
-    )
-      .then((response) => {
-        if (response.data.isAvailable === "True") {
-          inputs.products.push(product);
-          setNewProduct(() => {
-            setNewProduct(inputs.products);
-          });
-          console.log(newProduct);
-        } else {
-          setIsNotAvailable(true);
-          setTimeout(() => {
-            setIsNotAvailable(false);
-          }, 5000);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
+    setTotal(final);
+    setGst(gst);
+  }, [rate, final, gst]);
+
   const formData = {
-    firmName: inputs.firmName,
     clientName: inputs.clientName,
+    firmName: inputs.firmName,
     address: inputs.address,
     orderId: inputs.orderId,
     city: inputs.city,
     phone_no: parseInt(inputs.phone_no),
     deliveryDate: inputs.deliveryDate,
-    products: newProduct,
+    products: cartItem,
   };
 
+console.log(formData);
   const hadnleFormSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
-      console.log(formData);
+      console.log("formData", formData);
+      const token =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuZXdVc2VyIjp7Il9pZCI6IjYwM2IzNDM5MzViODI2MjBhMDg5ZTkwNyIsInVzZXJuYW1lIjoiYWRtaW4iLCJwYXNzd29yZCI6ImFkbWluIn0sImlhdCI6MTYxNTg5MTU2MSwiZXhwIjoxNjE1OTc3OTYxfQ.exU8x5APvJBqlVKtIHHSYrqXMNKu38GyusySo-ZxCp4";
+      console.log("enter in post fitchn data");
       await Axios.post(`${secret.Ip}/sales/create`, formData, {
         headers: {
-          Authorization: `Bearer ${secret.token}`,
+          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
           "Access-Control-Allow-Origin": "*",
         },
       }).then((response) => {
         setLoading(false);
+        console.log("response", response);
+        console.log("enter in post fitchn data");
+
         if (response.status === 201) {
           console.log(response);
           e.target.reset();
@@ -209,9 +154,10 @@ const CreateOrder = () => {
           setSuccessAlert(true);
           setTimeout(() => {
             setSuccessAlert(false);
-          }, 8000);
+            window.location.href = "/listOrder"
+          }, 1500);
         } else {
-          console.log(response);
+          console.log("Created order", response);
           setFailureAlert(true);
           setTimeout(() => {
             setFailureAlert(false);
@@ -221,35 +167,185 @@ const CreateOrder = () => {
     } catch (error) {
       setLoading(false);
       console.log(error);
+      setFailureAlert(true);
+      setTimeout(() => {
+        setFailureAlert(false);
+      }, 8000);
     }
   };
+
   const onDeleteByIndex = (ind) => {
     const order = newProduct;
     order.splice(ind, 1);
-    setNewProduct((input) => {
-      setNewProduct(order);
-    });
+    setNewProduct(order);
   };
 
-  function multiplyBy() {
-    var thickness = document.getElementById("thicknes").value;
-    var width = document.getElementById("width").value;
-    var length = document.getElementById("length").value;
-    var pcs =document.getElementById("pcs").value;
-    var result = document.getElementById("result");
-    var totalWeight = document.getElementById("subfields");
+const resetStates = () => {
+  setCompany(Constants.Company[0].id);
+  setGrade(Constants.Grade[0].id);
+  setColor(Constants.Color[0].id);
+  setCoating(Constants.Coating[0].id);
+  setTemper(Constants.Temper[0].id);
+  setGuard(Constants.Guard[0].id);
+  setLength("");
+  setPcs("");
+  setRate("");
+  setWidth("");
+  setThickness("");
+  setStockAvailable(false);
+  setChecked("");
+};
 
-    var totalWeight = thickness * width * length * pcs * 7.85;
-    
+const [stockAvailable, setStockAvailable] = useState(false);
 
-    result.innerHTML = totalWeight;
-    desc.weight(totalWeight);
+
+useEffect(() => {
+  const checkStockAvailability = async () => {
+    const weight = length * pcs * 7.86;
+    const rateBasic = weight;
+    const gstPercentage = 18;
+    const gstAmount = (gstPercentage / 100) * rateBasic;
+    const rateGst = rateBasic + gstAmount;
+
+    const product = {
+      select_product: checked,
+      company: company,
+      grade: grade,
+      topcolor: color,
+      coatingnum: parseInt(coating),
+      temper: temper,
+      guardfilm: guard,
+      weight: totalWeight,
+      length: length,
+      width: width,
+      thickness: thickness,
+      pcs: pcs,
+      rate_basic: rateBasic,
+      rate_gst: rateGst,
+    };
+
+    try {
+      const response = await Axios.get(
+        "http://3.109.125.33:3009/sales/availableStock",
+        {
+          params: product,
+          headers: {
+            Authorization: "Bearer THISISMYTOKENKEYNAME",
+          },
+        }
+      );
+
+      console.log("API response:", response.data);
+
+      if (response.data) {
+        setStockAvailable(true); // Product is available
+      } else {
+        setStockAvailable(false); // Product is not available
+      }
+    } catch (error) {
+      console.error("Error checking stock availability:", error);
+      setStockAvailable(false); // Error occurred, assume not available
+    }
+  };
+
+  // Trigger stock availability check whenever any of these inputs change
+  if (
+    company !== '' &&
+    grade !== '' &&
+    color !== '' &&
+    coating !== '' &&
+    temper !== '' &&
+    guard !== '' &&
+    thickness !== '' &&
+    width !== '' &&
+    length !== '' &&
+    pcs !== ''
+  ) {
+    checkStockAvailability();
   }
- 
-  function myWeight() {
-    document.getElementById("myResult").value = multiplyBy();
+}, [company, grade, color, coating, temper, guard, thickness, width, length, pcs]);
+
+
+
+    const handleAddToCart = async () => {
+        const weight = length * pcs * 7.86;
+
+      const rateBasic = weight;
+      const gstPercentage = 18;
+      const gstAmount = (gstPercentage / 100) * rateBasic;
+      const rateGst = rateBasic + gstAmount;
+
+      const product = {
+        select_product: checked,
+        company: company,
+        grade: grade,
+        topcolor: color,
+        coatingnum: parseInt(coating),
+        temper: temper,
+        guardfilm: guard,
+        weight: totalWeight,
+        length: length,
+        width: width,
+        thickness: thickness,
+        pcs: pcs,
+        rate_basic: rateBasic,
+        rate_gst: rateGst,
+      };
+
+
     
-  }
+            setCartItem([...cartItem, product]);
+            setShowCartItem(true);
+            setISCartEmpty(false);
+            const scrollPosition = document.body.scrollHeight * 0.35;
+            window.scrollTo(0, scrollPosition);
+            resetStates();
+    };
+
+
+  console.log(cartItem);
+  console.log(handleAddToCart);
+
+  
+
+  useEffect(() => {
+    const weight = length * pcs * 7.86;
+    setTotalWeight(weight);
+    setRate(weight);
+  }, [thickness, width, length, pcs]);
+
+  useEffect(() => {
+    setDesc((prevDesc) => ({
+      ...prevDesc,
+      weight: totalWeight,
+    }));
+  }, [totalWeight]);
+
+
+  const deletingCardItems = (index) => {
+     const updatedCartItems = cartItem.filter(
+       (_, itemIndex) => itemIndex !== index
+     );
+     setCartItem(updatedCartItems);
+
+     if (updatedCartItems.length === 0) {
+      setISCartEmpty(true);
+    }
+
+   };
+
+   const [todaysDate, setTodaysDate] = useState("");
+
+   useEffect(() => {
+    const today = new Date();
+    const formattedDate = today.toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+    setTodaysDate(formattedDate);
+  }, []);
+
 
   return (
     <>
@@ -266,7 +362,6 @@ const CreateOrder = () => {
               style={{
                 height: "auto",
                 textAlign: "center",
-
               }}
             >
               Congrats !! Orders Created SuccessFully
@@ -301,9 +396,9 @@ const CreateOrder = () => {
                     <Col className="col-lg-7">{inputs.orderId}</Col>
                   </Row>
                   <Row className="inputRow">
-                    <Col className="col-lg-4 label">Date</Col>
+                    <Col className="col-lg-4 label">Today's Date</Col>
                     <Col className="col-lg-1">-</Col>
-                    <Col className="col-lg-7">{date}</Col>
+                    <Col className="col-lg-7">{todaysDate}</Col>
                   </Row>
                   <Row className="inputRow">
                     <Col className="col-lg-4 label">Client Name</Col>
@@ -358,38 +453,22 @@ const CreateOrder = () => {
                     <Col className="col-lg-5">
                       <input
                         className="input_order"
-                        onChange={handleChange}
+                        onChange={handlePhoneChange}
                         value={inputs.phone_no}
                         type="number"
                         name="phone_no"
-                        data-maxLength="10"
-                        Placeholder="Phone No."
+                        placeholder="Phone No."
                         required
-                        maxLength="20"
+                        maxLength="10"
                       />
 
-                      {inputs.phone_no.length > 1 &&
-                        (inputs.phone_no.length < 10 ||
-                          inputs.phone_no.length > 10) && (
-                          <span style={{ color: "red" }}>
-                            * Must be of 10 digits
-                          </span>
-                        )}
+                      {inputs.phone_no.length != 10 }
                     </Col>
                   </Row>
                   <Row className="inputRow">
                     <Col className="col-lg-4 label">City</Col>
                     <Col className="col-lg-1">-</Col>
                     <Col className="col-lg-5">
-                      {/* <input
-                        className="input_order"
-                        onChange={handleChange}
-                        value={inputs.city}
-                        type="text"
-                        name="city"
-                        placeholder="City"
-                        required
-                      /> */}
                       <select
                         className="modal_input inputSelect"
                         aria-label="Default select example"
@@ -437,7 +516,7 @@ const CreateOrder = () => {
                         <option> Nainpur</option>
                         <option> Narsinghgarh </option>
                         <option> Neemuch </option>
-                        <option> Nepanagar </option>
+                        <option> Nepanagar </option>undefined
                         <option> Niwari </option>
                         <option> Nowgong </option>
                         <option> Nowrozabad </option>
@@ -505,6 +584,7 @@ const CreateOrder = () => {
                         name="deliveryDate"
                         placeholder="dd/mm/yyyy "
                         required
+                        min={today}
                       />
                     </Col>
                   </Row>
@@ -523,6 +603,7 @@ const CreateOrder = () => {
                               onChange={handleCheck}
                               name="checked"
                               value="GPC"
+                              checked={checked === 'GPC'}
                             />
                           </Col>
                           <Col>
@@ -535,6 +616,7 @@ const CreateOrder = () => {
                               onChange={handleCheck}
                               name="checked"
                               value="GPS"
+                              checked={checked === 'GPS'}
                             />
                           </Col>
                           <Col>
@@ -547,6 +629,7 @@ const CreateOrder = () => {
                               onChange={handleCheck}
                               name="checked"
                               value="Acce."
+                              checked={checked === 'Acce.'}
                             />
                           </Col>
                         </Row>
@@ -561,6 +644,8 @@ const CreateOrder = () => {
                               onChange={handleCheck}
                               name="checked"
                               value="GC"
+                              checked={checked === 'GC'}
+
                             />
                           </Col>
                           <Col>
@@ -573,6 +658,7 @@ const CreateOrder = () => {
                               onChange={handleCheck}
                               name="checked"
                               value="HR"
+                              checked={checked === 'HR'}
                             />
                           </Col>
                           <Col>
@@ -585,6 +671,7 @@ const CreateOrder = () => {
                               onChange={handleCheck}
                               name="checked"
                               value="CR"
+                              checked={checked === 'CR'}
                             />
                           </Col>
                         </Row>
@@ -599,6 +686,7 @@ const CreateOrder = () => {
                               onChange={handleCheck}
                               name="checked"
                               value="Color"
+                              checked={checked === 'Color'}
                             />
                           </Col>
                           <Col>
@@ -611,6 +699,7 @@ const CreateOrder = () => {
                               onChange={handleCheck}
                               name="checked"
                               value="Profile Sheet"
+                              checked={checked === 'Profile Sheet'}
                             />
                           </Col>
 
@@ -624,6 +713,8 @@ const CreateOrder = () => {
                               onChange={handleCheck}
                               name="checked"
                               value="GP ROLL"
+                              checked={checked === 'GP ROLL'}
+
                             />
                           </Col>
                         </Row>
@@ -634,7 +725,7 @@ const CreateOrder = () => {
                     {/* ++++++++++++AFTER Order section ++++++++++++ */}
                     <Container>
                       <div className="afterOrder">
-                        {isNotAvailable && (
+                        {successAlert && (
                           <div
                             style={{
                               justifyContent: "center",
@@ -663,85 +754,85 @@ const CreateOrder = () => {
                               <p>Product No. - {productKey}</p>
                             </Col>
                           </Row>
-                          <Row>
-                            <Col>
-                              <select
-                                className="inputSelect"
-                                aria-label="Default select example"
-                                defaultValue={company}
-                                onChange={(e) => {
-                                  setCompany(e.target.value);
-                                }}
-                                required
-                              >
-                                {Constants.Company.map((val) => (
-                                  <>
-                                    <option value={val.id}>{val.name}</option>
-                                  </>
-                                ))}
-                              </select>
-                            </Col>
-                            <Col>
-                              <select
-                                className="inputSelect"
-                                aria-label="Default select example"
-                                defaultValue={grade}
-                                onChange={(e) => {
-                                  setGrade(e.target.value);
-                                }}
-                                required
-                              >
-                                {Constants.Grade.map((val) => (
-                                  <>
-                                    <option value={val.id}>{val.name}</option>
-                                  </>
-                                ))}
-                              </select>
-                            </Col>
-                            <Col>
-                              <select
-                                className="inputSelect"
-                                aria-label="Default select example"
-                                defaultValue={color}
-                                onChange={(e) => setColor(e.target.value)}
-                                required
-                              >
-                                {Constants.Color.map((val) => (
-                                  <>
-                                    <option value={val.id}>{val.name}</option>
-                                  </>
-                                ))}
-                              </select>
-                            </Col>
-                          </Row>
-                          <Row className="mt-3">
-                            <Col>
-                              <select
-                                className="inputSelect"
-                                aria-label="Default select example"
-                                onChange={(e) => setCoating(e.target.value)}
-                                defaultValue={coating}
-                                required
-                              >
-                                {Constants.Coating.map((val) => (
-                                  <>
-                                    <option value={val.id}>{val.name}</option>
-                                  </>
-                                ))}
-                              </select>
-                            </Col>
-                            <Col>
+                            <Row>
+                              <Col>
+                                <select
+                                  className="inputSelect"
+                                  aria-label="Default select example"
+                                  value={company}
+                                  onChange={(e) => {
+                                    setCompany(e.target.value);
+                                  }}
+                                  // required  
+                                >
+                                  {Constants.Company.map((val, arr) => (
+                                    <option value={val.id} key={arr}>
+                                      {val.name}
+                                    </option>
+                                  ))}
+                                </select>
+                              </Col>
+                              <Col>
+                                <select
+                                  className="inputSelect"
+                                  aria-label="Default select example"
+                                  value={grade}
+                                  onChange={(e) => {
+                                    setGrade(e.target.value);
+                                  }}
+                                  // required
+                                >
+                                  {Constants.Grade.map((val, arr) => (
+                                    <option value={val.id} key={arr}>
+                                      {val.name}
+                                    </option>
+                                  ))}
+                                </select>
+                              </Col>
+                              <Col>
+                                <select
+                                  className="inputSelect"
+                                  aria-label="Default select example"
+                                  value={color}
+                                  onChange={(e) => setColor(e.target.value)}
+                                  // required
+                                >
+                                  {Constants.Color.map((val, arr) => (
+                                    <option value={val.id} key={arr}>
+                                      {val.name}
+                                    </option>
+                                  ))}
+                                </select>
+                              </Col>
+                            </Row>
+                            <Row className="mt-3">
+                              <Col>
+                                <select
+                                  className="inputSelect"
+                                  aria-label="Default select example"
+                                  onChange={(e) => setCoating(e.target.value)}
+                                  value={coating}
+                                  // required
+                                >
+                                  {Constants.Coating.map((val, arr) => (
+                                    <option value={val.id} key={arr}>
+                                      {val.name}
+                                    </option>
+                                  ))}
+                                </select>
+                              </Col>
+                              <Col>
                               <select
                                 className="inputSelect"
                                 aria-label="Default select example"
                                 onChange={(e) => setTemper(e.target.value)}
-                                defalutValue={temper}
-                                required
+                                value={temper}
+                                // required
                               >
-                                {Constants.Temper.map((val) => (
-                                  <>
-                                    <option value={val.id}>{val.name}</option>
-                                  </>
+                                {Constants.Temper.map((val, arr) => (
+                                  <option value={val.id} key={arr}>
+                                    {val.name}
+                                  </option>
                                 ))}
                               </select>
                             </Col>
@@ -750,65 +841,58 @@ const CreateOrder = () => {
                                 className="inputSelect"
                                 aria-label="Default select example"
                                 onChange={(e) => setGuard(e.target.value)}
-                                required
+                                value={guard}
+                                // required
                               >
-                                {Constants.Guard.map((val) => (
-                                  <>
-                                    <option value={val.id}>{val.name}</option>
-                                  </>
+                                {Constants.Guard.map((val, arr) => (
+                                  <option value={val.id} key={arr}>
+                                    {val.name}
+                                  </option>
                                 ))}
                               </select>
                             </Col>
                           </Row>
-                        </Container>
+                        </Container>  
                         <Container className="subInputs">
                           <Container className="insideInputs">
                             <Row>
                               <Col className="m-2">
                                 <Row>
-                                  <label for="thickness">Thickness</label>
+                                  <label htmlFor="thick">Thickness</label>
                                   <input
-                                    id="thicknes"
-                                    type="number"
-                                    name="thickness"
-                                    placeholder="Thickness"
+                                    type="text"
                                     className="custom_input"
-                                    onChange={handleDesc}
-                                    onInput={multiplyBy}
-                                    value={
-                                      desc.thickness.length === 0
-                                        ? ""
-                                        : desc.thickness
-                                    }
-                                    required
-                                  />
-                                  {desc.thickness.length === 0 && (
-                                    <span style={{ color: "red" }}>
-                                      *Required
-                                    </span>
-                                  )}
+                                    id="thickness"
+                                    placeholder="thickness"
+                                    onChange={(e) => {
+                                      setDesc({
+                                        ...desc,
+                                        thickness: e.target.value,
+                                      });
+                                      setThickness(e.target.value);
+                                    }}
+                                    value={thickness}
+                                  ></input>
                                 </Row>
                               </Col>
 
                               <Col className="m-2">
                                 <Row>
-                                  <label for="width">Width</label>
+                                  <label htmlFor="thick">Width</label>
+
                                   <input
-                                    id="width"
-                                    type="text"
-                                    placeholder="Width"
                                     className="custom_input"
-                                    name="width"
-                                    onChange={handleDesc}
-                                    onInput={multiplyBy}
-                                    value={desc.width || ""}
-                                    required
-                                  />
-                                  {desc.width.length === 0 && (
-                                    <span style={{ color: "red" }}>
-                                      *Required
-                                    </span>
-                                  )}
+                                    type="text"
+                                    placeholder="width"
+                                    value={width}
+                                    onChange={(e) => {
+                                      setDesc({
+                                        ...desc,
+                                        width: e.target.value,
+                                      });
+                                      setWidth(e.target.value);
+                                    }}
+                                  ></input>
                                 </Row>
                               </Col>
                             </Row>
@@ -818,49 +902,58 @@ const CreateOrder = () => {
                                   <div key={index} style={{ display: "flex" }}>
                                     <Col className="m-3">
                                       <Row>
-                                        <label for="length">Length</label>
+                                        <label htmlFor="length">Length</label>
                                         <input
+                                          style={{ width: "150px" }}
                                           id="weight"
                                           type="number"
                                           placeholder="length"
                                           name="weight"
                                           className="subfields"
                                           onChange={(e) => {
-                                            handleDesc();
-                                            myWeight();
-                                            handleOrderChange(e, index);
+                                            setDesc({
+                                              ...desc,
+                                              length: e.target.value,
+                                            });
+                                            setLength(e.target.value);
                                           }}
-                                          required
+                                          value={length}
+                                          // required
                                         />
-                                        {desc.weight.length === 0 && (
+                                        {/* {desc.weight.length === 0 && (
                                           <span style={{ color: "red" }}>
                                             *Required
                                           </span>
-                                        )}
+                                        )} */}
                                       </Row>
                                     </Col>
                                     <Col className="m-3">
                                       <Row>
                                         <label
-                                          for="pcs"
+                                          htmlFor="pcs"
                                           style={{ marginLeft: "10px" }}
                                         >
                                           Pcs.
                                         </label>
                                         <input
-                                          style={{ marginLeft: "10px" }}
+                                          style={{
+                                            marginLeft: "10px",
+                                            width: "150px",
+                                          }}
                                           id="pcs"
                                           type="number"
                                           placeholder="Pcs"
                                           name="pcs"
-                                          // value={desc.pcs || ""}
-                                          value={singleOrder.orders}
-                                          onChange={(e) =>
-                                            handleOrderChange(index, e)
-                                          }
+                                          value={pcs}
+                                          onChange={(e) => {
+                                            setDesc({
+                                              ...desc,
+                                              pcs: e.target.value,
+                                            });
+                                            setPcs(e.target.value);
+                                          }}
                                           className="subfields"
-                                          // onChange={handleDesc}
-                                          required
+                                          // required
                                         />
                                         {desc.pcs.length === 0 && (
                                           <span
@@ -874,60 +967,9 @@ const CreateOrder = () => {
                                         )}
                                       </Row>
                                     </Col>
-                                    <Col className="m-3">
-                                      <Row>
-                                        <label
-                                          for="weight"
-                                          style={{ marginLeft: "20px" }}
-                                        >
-                                          Weight
-                                        </label>
-                                        <input
-                                          style={{ marginLeft: "20px" }}
-                                          id="weight"
-                                          type="number"
-                                          placeholder="weight"
-                                          name="weight"
-                                          className="subfields"
-                                          onChange={(e) => {
-                                            handleDesc();
-                                            myWeight();
-                                          }}
-                                          required
-                                        />
-                                        {desc.weight.length === 0 && (
-                                          <span
-                                            style={{
-                                              color: "red",
-                                              marginLeft: "20px",
-                                            }}
-                                          >
-                                            *Required
-                                          </span>
-                                        )}
-                                      </Row>
-                                      <Row>
-                                        {/* <p id="weight">Weight: <span id="result"></span></p> */}
-                                      </Row>
-                                    </Col>
 
                                     <Col className="m-3">
                                       <Row className="mt-3 ml-6 ml-auto col-3">
-                                        {orderList.length - 1 === index &&
-                                          orderList.length < 40 && (
-                                            <button
-                                              style={{ marginLeft: "40px" }}
-                                              className="addButton"
-                                              onClick={handleOrderAdd}
-                                              // onClick={() => {
-                                              //   handleClick();
-                                              //   handleOrderAdd();
-
-                                              // }}
-                                            >
-                                              <i class="fas fa-plus-circle"></i>
-                                            </button>
-                                          )}
                                       </Row>
                                       <Row>
                                         {orderList.length > 1 && (
@@ -937,7 +979,7 @@ const CreateOrder = () => {
                                               handleOrderRemove(index)
                                             }
                                           >
-                                            <i class="fas fa-minus-circle"></i>
+                                            <i className="fas fa-minus-circle"></i>
                                           </button>
                                         )}
                                       </Row>
@@ -948,11 +990,9 @@ const CreateOrder = () => {
                             </Row>
                             <Row>
                               <p id="weight">
-                                TotalWeight: <span id="result"></span>
-
+                                TotalWeight:
+                                <span id="result">{totalWeight}</span>
                               </p>
-                            
-                              
                             </Row>
                           </Container>
                         </Container>
@@ -960,26 +1000,24 @@ const CreateOrder = () => {
                           <Row>
                             <Col className="m-3">
                               <Row>
-                                <label for="thickness">Rate(Basic)</label>
+                                <label htmlFor="thickness">Rate(Basic)</label>
                                 <input
                                   name="rate"
                                   type="number"
-                                  required
+                                  // required
                                   value={rate || ""}
                                   onChange={handleRate}
                                   placeholder="Rate"
                                   className="subfields"
-                                  
                                 />
                               </Row>
                             </Col>
                             <Col className="m-3">
                               <Row>
-                                <label for="thickness">Rate(GST%)</label>
+                                <label htmlFor="thickness">Rate(GST%)</label>
                                 <input
                                   type="text"
                                   value={total || ""}
-                                  // onChange={handleRate}
                                   placeholder="Gst"
                                   className="subfields"
                                   readOnly
@@ -989,11 +1027,8 @@ const CreateOrder = () => {
                             </Col>
                             <Col className="m-3">
                               <Row className="mt-3 ml-auto col-1">
-                                <button
-                                  className="addButton"
-                                  onClick={handleClick}
-                                >
-                                  <i class="fas fa-plus-circle"></i>
+                                <button className="addButton">
+                                  <i className="fas fa-plus-circle"></i>
                                 </button>
                               </Row>
                             </Col>
@@ -1010,30 +1045,54 @@ const CreateOrder = () => {
                       margin: "30px",
                     }}
                   >
-                    {newProduct?.length > 0 && (
-                      <button
-                        style={{
-                          border: "none",
-                          borderRadius: "5px",
-                          backgroundColor: "#98520c",
-                          color: "white",
-                          padding: "10px",
-                        }}
-                        type="submit"
-                        disable={product.length < 0 ? "true" : "false"}
-                      >
-                        {loading ? (
-                          <LoaderComp
-                            type={"TailSpin"}
-                            color={"white"}
-                            hidden={true}
-                            height={30}
-                          />
-                        ) : (
-                          "Submit"
-                        )}
-                      </button>
-                    )}
+                     {
+                      stockAvailable ? (
+                        <p style={{color: "green"}}>Stock Available</p>
+                      ) : (<p style={{color: "red"}}>Stock Not Available</p>)
+                      
+                    }
+
+                 
+                    {/* {newProduct?.length > 0 && ( */}
+                    <button
+                      style={{
+                        border: "none",
+                        borderRadius: "5px",
+                        backgroundColor: isCartEmpty ? "grey" : "orange",
+                        color: "white",
+                        padding: "10px",
+                      }}
+                      type="submit"
+                      disabled={ isCartEmpty || loading}
+                    >
+                      {loading ? (
+                        <LoaderComp
+                          type={"TailSpin"}
+                          color={"white"}
+                          hidden={true} 
+                          height={30}
+                        />
+                      ) : (
+                        "Submit"
+                      )}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleAddToCart}
+                      style={{
+                        border: "none",
+                        borderRadius: "5px",    
+                        backgroundColor: !stockAvailable ? "grey" : "green",
+                        color: "white",
+                        padding: "10px",
+                        marginLeft: "14px",
+                      }}
+                      disabled = {!stockAvailable}
+                    >
+                      Add to cart
+                    </button>
+                   
+                    {/* )} */}
                   </div>
                 </form>
               </Container>
@@ -1055,6 +1114,14 @@ const CreateOrder = () => {
                   </Col>
                   <Col>
                     <h6>{inputs.orderId}</h6>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col>
+                    <h6>Company</h6>
+                  </Col>
+                  <Col>
+                    <h6>{product.company}</h6>
                   </Col>
                 </Row>
                 <Row>
@@ -1094,7 +1161,7 @@ const CreateOrder = () => {
                     <p>weight -</p>
                   </Col>
                   <Col>
-                    <p>{desc.weight}</p>
+                    <p>{totalWeight}</p>
                   </Col>
                 </Row>
                 <Row>
@@ -1107,73 +1174,67 @@ const CreateOrder = () => {
                 </Row>
               </div>
             </Container>
-            <Container
-              className="overflow d-grid"
-              style={{ height: "100vh", boxShadow: "0px 2px 6px solid grey" }}
-            >
-              {newProduct ? (
-                newProduct.map((val, arr) => (
-                  <Container key={val.id}>
-                    <div className=" afterOrder2 d-grid col-xl-6 col-lg-6 col-md-6 col-sm-6">
-                      <Container className="insideAfterOrder">
-                        <Row>
-                          <div className="d-flex">
-                            <h4>
-                              <Badge
-                                style={{ backgroundColor: "#2D3E4D" }}
-                                bg="secondary"
-                              >
-                                {val.select_product}
-                              </Badge>
-                            </h4>
-                            <div className="ms-auto d-grid">
-                              <button
-                                onClick={() => onDeleteByIndex(arr)}
-                                className="ms-auto"
-                                style={{
-                                  color: "red",
-                                  backgroundColor: "none",
-                                  border: "none",
-                                }}
-                              >
-                                <i class="far fa-trash-alt"></i>
-                              </button>
-                            </div>
-                          </div>
-                        </Row>
-                        <Row>
-                          <Col>
-                            <p>Company - {val.company}</p>
-                          </Col>
-                        </Row>
-                        <Row>
-                          <Col>
-                            <p>length - {val.length}</p>
-                          </Col>
-                        </Row>
-                        <Row>
-                          <Col>
-                            <p>width - {val.width}</p>
-                          </Col>
-                        </Row>
-                        <Row>
-                          <Col>
-                            <p>weight - {val.weight}</p>
-                          </Col>
-                        </Row>
-                      </Container>
-                    </div>
-                  </Container>
-                ))
-              ) : (
-                <p>waiting For Products</p>
-              )}
-            </Container>
+        
+{
+    showCartItem && cartItem.map((product,index) => {
+      const data = [
+        { label: "Company", value: product.company },
+        { label: "Grade", value: product.grade  },
+        { label: "Color", value: product.topcolor  },
+        { label: "Coating", value: product.coatingnum},
+        { label: "Temper", value: product.temper },
+        { label: "Guard", value: product.guardfilm },
+        { label: "Thickness", value: desc.thickness},
+        { label: "Width", value: desc.width},
+        { label: "Length", value: desc.length},
+        { label: "Pcs", value: desc.pcs },
+        { label: "Rate(Basic)", value: product.weight },
+        { label: "Rate(GST%)", value: product.weight + ((product.weight) * (18/100)) },
+      ];
+      
+
+  return(
+    <Container className="Cart-Div">
+    <div className="afterOrder2">
+      <Container className="insideAfterOrder">
+        <Row>
+          <div className="d-flex">
+            <div className="ms-auto d-grid">
+              <button
+                onClick={() => deletingCardItems(index)}
+                className="ms-auto"
+                style={{
+                  color: "red",
+                  backgroundColor: "none",
+                  border: "none",
+                  cursor: "pointer"
+                }}
+              >
+                <i className="far fa-trash-alt"></i>
+              </button>
+            </div>
+          </div>
+        </Row>
+        {data.map((item, index) => (
+          <Row key={index}>
+            <Col className='Cart-Data'>
+              <p>{item.label} : </p>
+              <p>{item.value} </p>
+            </Col>
+          </Row>
+        ))}
+      </Container>
+    </div>
+  </Container>
+  )
+    })
+  }
           </Col>
         </Row>
       </Container>
     </>
   );
 };
+
 
 export default CreateOrder;

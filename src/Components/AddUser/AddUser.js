@@ -4,12 +4,13 @@ import { Container, Col, Row, Modal, Alert } from "react-bootstrap";
 import UserProfile from "./UserProfile";
 import LoaderComp from "../Loader/LoaderComp";
 import Axios from "axios";
+import Secret from "../config"
 
 const AddUser = () => {
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
   const [real, setReal] = useState({
-    user_image: "",
+    ProfileImage: "",
   });
   const handleClose = (e) => {
     e.preventDefault();
@@ -21,17 +22,16 @@ const AddUser = () => {
   const [successAlert, setSuccessAlert] = useState(false);
 
   const [input, setInput] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    phone_no: "",
-    role: "",
-    joined_date: "",
-    tenure: "",
-    password: "",
+    UserName: "",
+    LastName: "",
+    Phone: "",
+    Role: "",
+    CurrentDate: "",
+    Tenure: "",
+    Password: "",
   });
   const [image, setImage] = useState({
-    user_image: "",
+    ProfileImage: "",
   });
   const handleChange = (e) => {
     e.preventDefault();
@@ -39,9 +39,8 @@ const AddUser = () => {
   };
   const handleFile = (e) => {
     e.preventDefault();
-    setImage({ user_image: e.target.files[0] });
-    setReal({ user_image: URL.createObjectURL(e.target.files[0]) });
-    console.log(image);
+    setImage({ ProfileImage: e.target.files[0] });
+    setReal({ ProfileImage: URL.createObjectURL(e.target.files[0]) });
   };
 
   const handleSubmit = async (e) => {
@@ -49,32 +48,34 @@ const AddUser = () => {
     setLoading(true);
     try {
       const formData = new FormData();
-      formData.append("firstName", input.firstName);
-      formData.append("lastName", input.lastName);
-      formData.append("tenure", input.tenure);
-      formData.append("password", input.password);
-      formData.append("phone_no", input.phone_no);
-      formData.append("joined_date", input.joined_date);
-      formData.append("role", input.role);
-      formData.append("user_image", image.user_image);
+      formData.append("UserName", input.UserName);
+      formData.append("LastName", input.LastName);
+      formData.append("Tenure", input.Tenure);
+      formData.append("Password", input.Password);
+      formData.append("Phone", input.Phone);
+      formData.append("CurrentDate", input.CurrentDate);
+      formData.append("Role", input.Role);
+      formData.append("ProfileImage", image.ProfileImage);
 
       const token =
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuZXdVc2VyIjp7Il9pZCI6IjYwM2IzNDM5MzViODI2MjBhMDg5ZTkwNyIsInVzZXJuYW1lIjoiYWRtaW4iLCJwYXNzd29yZCI6ImFkbWluIn0sImlhdCI6MTYxNTg5MTU2MSwiZXhwIjoxNjE1OTc3OTYxfQ.exU8x5APvJBqlVKtIHHSYrqXMNKu38GyusySo-ZxCp4";
       await Axios.post(
-        "http://13.234.31.236:3001/user_management/create",
+        `${Secret.Ip}/mobile/MobileReg`,
         formData,
         {
           headers: {
             Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
+            "Content-Type": "multipart/form-data",
             "Access-Control-Allow-Origin": "*",
           },
         }
       ).then((response) => {
-        if (response.status === 201) {
+        if (response.status === 200) {
           setLoading(false);
           setSuccessAlert(true);
-          e.target.reset();
+          console.log("success ", response);
+          e.target.reset(); 
+          window.location.reload(); 
         } else {
           setLoading(false);
           setFailureAlert(true);
@@ -90,7 +91,7 @@ const AddUser = () => {
       }, 2000);
     }
   };
-  
+
   return (
     <>
       <Modal
@@ -149,9 +150,9 @@ const AddUser = () => {
                 }}
               >
                 <Col>
-                  {real?.user_image ? (
+                  {real?.ProfileImage ? (
                     <img
-                      src={real?.user_image}
+                      src={real?.ProfileImage}
                       alt="profilePic"
                       style={{
                         height: "100px",
@@ -159,6 +160,7 @@ const AddUser = () => {
                         borderRadius: "50%",
                         border: "6px solid lightgrey",
                         boxShadow: "0px 2px 6px grey",
+
                       }}
                     />
                   ) : (
@@ -170,11 +172,11 @@ const AddUser = () => {
                 <Col>
                   <input
                     type="text"
-                    name="firstName"
+                    name="UserName"
                     className="modal_input"
                     placeholder="First Name"
                     onChange={handleChange}
-                    value={input.firstName}
+                    value={input.UserName}
                     required
                     maxLength="20"
                   />
@@ -182,11 +184,11 @@ const AddUser = () => {
                 <Col>
                   <input
                     type="text"
-                    name="lastName"
+                    name="LastName"
                     className="modal_input"
                     placeholder="Last Name"
                     onChange={handleChange}
-                    value={input.lastName}
+                    value={input.LastName}
                     required
                     maxLength="20"
                   />
@@ -196,18 +198,18 @@ const AddUser = () => {
                 <Col>
                   <input
                     type="number"
-                    name="phone_no"
+                    name="Phone"
                     className="modal_input"
                     placeholder="Phone No."
                     onChange={handleChange}
-                    value={input.phone_no}
+                    value={input.Phone}
                     required
                     maxLength="10"
                   />
                   <div>
-                    {input.phone_no.length > 1 &&
-                      (input.phone_no.length < 10 ||
-                        input.phone_no.length > 10) && (
+                    {input.Phone.length > 1 &&
+                      (input.Phone.length < 10 ||
+                        input.Phone.length > 10) && (
                         <span style={{ color: "red" }}>
                           * Must be of 10 digits
                         </span>
@@ -217,13 +219,15 @@ const AddUser = () => {
                 <Col>
                   <input
                     type="text"
-                    name="tenure"
+                    name="Tenure"
                     className="modal_input"
                     placeholder="Tenure"
                     onChange={handleChange}
-                    value={input.tenure}
+                    value={input.Tenure}
                     required
                     maxLength="20"
+                    autoComplete="username"
+
                   />
                 </Col>
               </Row>
@@ -231,29 +235,29 @@ const AddUser = () => {
               <Row className="mt-2">
                 <Col>
                   <select
-                    class="form-select modal_input"
+                    className="form-select modal_input"
                     aria-label="Default select example"
                     onChange={handleChange}
-                    value={input.role}
-                    name="role"
+                    value={input.Role}
+                    name="Role"
                     required
                   >
                     <option className="defaultSelect">Role</option>
-                    <option value="0">SalesManager</option>
-                    <option value="1">Production Head</option>
-                    <option value="2">Production Incharge </option>
-                    <option value="3">Dispatch Manager </option>
+                    <option value="salesManager">SalesManager</option>
+                    <option value="ProductionHead">ProductionHead</option>
+                    <option value="ProductionIncharge">ProductionIncharge</option>
+                    <option value="Dispatchmanager">DispatchManager </option>
                   </select>
                 </Col>
 
                 <Col>
                   <input
                     type="date"
-                    name="joined_date"
+                    name="CurrentDate"
                     className="modal_input"
                     placeholder="Joined Date"
                     onChange={handleChange}
-                    value={input.joined_date}
+                    value={input.CurrentDate}
                     required
                   />
                 </Col>
@@ -262,12 +266,13 @@ const AddUser = () => {
                 <Col className="col-lg-6 col-xl-6 col-md-6 col-sm-6phone">
                   <input
                     type="password"
-                    name="password"
+                    name="Password"
                     className="modal_input"
                     placeholder="Password"
                     onChange={handleChange}
-                    value={input.password}
+                    value={input.Password}
                     required
+                    autoComplete="current-password"
                   />
                 </Col>
               </Row>
@@ -276,28 +281,15 @@ const AddUser = () => {
                   <div className="file_container">
                     <input
                       type="file"
-                      name="user_image"
+                      name="ProfileImage"
                       onChange={handleFile}
                       accept="image/*"
                       id="file"
-                      defaultValue={image.user_image.name}
+                      defaultValue={image.ProfileImage}
                     />
-
-                    {/* <label className="custom-file-label" for="customFile">
-                      {image.user_image ? image.user_image.name : "chooseFile"}
-                    </label> */}
-
-                    {/* <button
-                      className="file_button"
-                      id="btn"
-                      
-                    >
-                      {image.user_image ? (
-                        image.user_image.name
-                      ) : (
-                        <i class="fas fa-upload px-4">Profile Image</i>
-                      )}
-                    </button> */}
+                    <div style={{ textAlign: 'center', color: 'red' }}>
+                      <p>Please provide a PNG, JPG, or JPEG file.</p>
+                    </div>
                   </div>
                 </Col>
               </Row>
@@ -312,7 +304,7 @@ const AddUser = () => {
               Close
             </button>
             <button
-              disbaled
+              disbaled="true"
               style={{ height: "auto", minHeight: "45px" }}
               className="submit_button"
               variant="primary"
@@ -337,8 +329,8 @@ const AddUser = () => {
           <div className="d-flex">
             <h4>Users</h4>
             <button className="add_btn ms-auto" onClick={handleShow}>
-              
-              <i class="fas fa-plus me-2">AddUser</i>
+
+              <i className="fas fa-plus me-2">AddUser</i>
             </button>
           </div>
         </Row>

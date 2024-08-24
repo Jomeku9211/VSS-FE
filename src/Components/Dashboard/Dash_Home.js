@@ -1,7 +1,6 @@
 import React from "react";
-import "./dashboard.css";
 import "../Dashboard/dashboard.css";
-import { withRouter } from "react-router";
+import { withRouter } from "react-router-dom";
 import { BrowserRouter as Router, Link, Route, Switch } from "react-router-dom";
 import Sidenav from "./Sidenav";
 import Home from "../Dashboard/Home";
@@ -17,80 +16,74 @@ import BillingList from "../Billing/BillingList";
 import BillingMore from "../Billing/BillingMore";
 
 const Dash_Home = ({ match, location, history }) => {
-  // console.log(match);
   return (
     <>
       <Router>
         <div className="main_container">
-          <Sidenav match={match.path} />
-          <Link to={`${match.path}/create_order`}></Link>
-          <Link to={`${match.path}/listOrder`}></Link>
-          <Link to={`${match.path}/addUser`}></Link>
-          <Link to={`${match.path}/stocks`}></Link>
-          <Link to={`${match.path}/purchase`}></Link>
-          <Link to={`${match.path}/purchase/:id`}></Link>
-          <Link to={`${match.path}/purchase_order`}></Link>
-          <Link to={`${match.path}/listOrder/:id`}></Link>
-          <Link to={`${match.path}/billing/:id`}></Link>
-          <Link to={`${match.path}/billing`}></Link>
+          <Sidenav/>
+          <Link to={`/create_order`}></Link>
+          <Link to={`/listOrder`}></Link>
+          <Link to={`/addUser`}></Link>
+          <Link to={`/stocks`}></Link>
+          <Link to={`/purchase`}></Link>
+          <Link to={`/purchase/:id`}></Link>
+          <Link to={`/purchase_order`}></Link>
+          <Link to={`/listOrder/:id`}></Link>
+          <Link to={`/billing/:id`}></Link>
+          <Link to={`/billing`}></Link>
           <Switch>
-            <Route exact path={`${match.path}`}>
-              <Home match={match.path} />
+            <Route exact path={`/`}>
+              <Home/>
             </Route>
-            <Route exact path={`${match.path}/create_order`}>
+            <Route exact path={`/create_order`}>
               <div className="create_section">
-                <Create match={match.path} />
+                <Create  />
               </div>
             </Route>
-            <Route exact path={`${match.path}/listOrder`}>
+            <Route exact path={"/listOrder"}>
               <div className="listOrder">
-                <ListOrder match={match.path} />
+                <ListOrder/>
               </div>
             </Route>
-            <Route exact path={`${match.path}/listOrder/:id`}>
+            <Route exact path={"/listOrder/:id"}>
               <div className="listOrder">
-                <ViewMoreList match={match.path} />
+                <ViewMoreList/>
               </div>
             </Route>
-            {/* <Route exact path={`${match.path}/addUser`}>
-              <div className="addUser">
-                <AddUser match={match.path}/>
-              </div>
-            </Route> */}
-            <Route exact path={`${match.path}/addUser`}>
+            <Route exact path={"/addUser"}>
               <div className="addUser">
                 <AddUser match={match.path}/>
               </div>
             </Route>
-            <Route exact path={`${match.path}/stocks`}>
+            <Route exact path={"/stocks"}>
               <div className="stocks">
-                <Stocks match={match.path} />
+                <Stocks/>
               </div>
             </Route>
-            <Route exact path={`${match.path}/purchase`}>
+            <Route exact path={"/purchase"}>
               <div className="purchase">
-                <Purchase match={match.path} />
+                <Purchase/>
               </div>
             </Route>
-            <Route exact path={`${match.path}/purchase_order`}>
+            <Route exact path={"/purchase_order"}>
               <div className="purchase">
-                <PurchaseOrder match={match.path} />
+                <PurchaseOrder/>
               </div>
             </Route>
           
-            <Route exact path={`${match.path}/purchase/:id`}>
+            <Route exact path={"/purchase/:id"}>
               <div className="purchase">
-                <PurchaseView match={match.path} />
+                <PurchaseView/>
               </div>
             </Route>
-            <Route exact path={`${match.path}/billing`}>
+            <Route exact path={"/billing"}>
               <div className="purchase">
-                <BillingList match={match.path} />
+                <BillingList/>
               </div>
             </Route>
-            <Route exact path={`${match.path}/billing/:id`}>
+            <Route exact path={"/billing/:id"}>
               <div className="billing">
-                <BillingMore match={match.path} />
+                <BillingMore/>
               </div>
             </Route>
           </Switch>
