@@ -1,29 +1,30 @@
 .orderDiv {
   height: auto;
-  width: 600px;
-  border-radius: 30px;
+  width: 50%;
   background-color: #cddde8;
-  border: none;
+  border-end-end-radius: 50px;
+  border-start-start-radius: 50px;
   box-shadow: 0px 2px 6px lightgrey;
-  margin-right: 550px;
+  margin-right: 645px;
 }
+
+
 .heading {
   font-size: 15px;
   font-weight: bold;
   color: #0e2434;
   opacity: 0.7;
-  /* margin-top: 18px; */
 }
+.Order_heading {
+  margin-left: 20px;
+}
+
 .main_heading {
-  font-size: 20px;
+  font-size: 1rem;
 }
+
 .content {
   font-size: 15px;
-    /* text-decoration: underline; */
-  /* color: black; */
-    /* border-bottom: 1px solid rgb(151, 148, 148);
-    width: 295px; */
-    /* margin-top: 12px; */
 }
 .outest {
   justify-content: center;
@@ -36,4 +37,133 @@
 }
 ._cont {
   font-size: 1rem;
+}
+
+.Header_Div{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 35.1%;
+}
+
+.Header_Div h4{
+  margin-top: 1%;
+}
+
+.create-Button{
+  border-radius: 5%;
+  font-size: 0.9rem;
+  font-weight:500;
+  background-color: white;
+  color: black;
+  border: 2px solid gray;
+}
+
+.create-Button:hover {
+  background-color: green;
+  transition: background-color 0.2s ease, color 0.2s ease, border 0.2s ease;
+  color: white;
+  border: none;
+}
+
+.no_order_box{
+  border: 2px solid black;
+  max-width: 50%;
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 3%;
+}
+
+.delete_button{
+  background-color: transparent;
+  color: red;
+  cursor: pointer;
+  border: 2px solid red;
+  font-size: 0.8rem;
+}
+
+.delete_button:hover {
+  background-color: whitesmoke;
+  color: red;
+}
+
+.view_more{
+  text-decoration: none;
+  color: #0e2434;
+  font-size: 15px;
+  border-radius: 30%;
+}
+
+.view_more button{
+  background-color: #EEEDEB;
+  color: black;
+}
+
+.view_more:hover{
+  background-color: grey;
+}
+
+
+@media only screen and (min-width: 1440px) {
+  .heading {
+    font-size: 15px;
+    font-weight: bold;
+    color: #0e2434;
+    opacity: 0.7;
+  }
+  .Order_heading {
+    margin-left: 20px;
+  }
+  .main_heading {
+    font-size: 20px;
+  }
+  .content {
+    font-size: 15px;
+  }
+  .outest {
+    justify-content: center;
+    align-items: center;
+  }
+  ._head {
+    font-size: 1rem;
+    color: #0e2434;
+    font-weight: 400;
+  }
+  ._cont {
+    font-size: 1rem;
+  }
+}
+
+@media only screen and (min-width: 1024px) {
+
+  .heading {
+    font-size: 15px;
+    font-weight: bold;
+    color: #0e2434;
+    opacity: 0.7;
+  }
+  .Order_heading {
+    margin-left: 20px;
+  }
+  .main_heading {
+    font-size: 20px;
+  }
+  .content {
+    font-size: 15px;
+  }
+  .outest {
+    justify-content: center;
+    align-items: center;
+  }
+  ._head {
+    font-size: 1rem;
+    color: #0e2434;
+    font-weight: 400;
+  }
+  ._cont {
+    font-size: 1rem;
+  }
 }

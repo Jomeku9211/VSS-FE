@@ -1,3 +1,7 @@
+.stock_main_div {
+  margin-left: 10px;
+}
+
 .outer_most_container {
   justify-content: center;
   align-items: left;
@@ -78,7 +82,7 @@ table tr:first-child th:last-child {
   box-shadow: 0px 2px 6px lightgray;
 }
 .addStock_button {
-  background-color: #65cc5a;
+    background-color: rgb(130, 238, 130);
   color: white;
   padding: 10px;
   border: none;
@@ -88,6 +92,12 @@ table tr:first-child th:last-child {
   margin-top: 104px;
   box-shadow: 0px 2px 6px grey;
 }
+
+.addStock_button:hover{
+  background-color: #65cc5a;
+  color: rgb(34, 30, 30);
+}
+
 .modal-header {
   background-color: #cddde8;
   text-align: center;
@@ -144,3 +154,4 @@ table tr:first-child th:last-child {
 .modal-body label {
   color: #5d7479;
 }
+

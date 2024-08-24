@@ -53,10 +53,10 @@ const Coating = [
   { id: "70", name: "Az70" },
   { id: "80", name: "Az100" },
   { id: "90", name: "Az150" },
-  { id: "120", name: "GSM80" },
-  { id: "150 ", name: "GSM90" },
-  { id: "180", name: "GSM120" },
-  { id: "275", name: "GSM180" },
+  { id: "120", name: "80GSM" },
+  { id: "150 ", name: "90GSM" },
+  { id: "180", name: "120GSM" },
+  { id: "275", name: "180GSM" },
 ];
 
 const Temper = [
@@ -81,4 +81,5 @@ const Guard = [
   { id: "Rangoli", name: "Rangoli" },
 ];
 
-export default { Company, Temper, Coating, Product, Color, Grade, Guard };
+const constants= { Company, Temper, Coating, Product, Color, Grade, Guard };
+export default constants

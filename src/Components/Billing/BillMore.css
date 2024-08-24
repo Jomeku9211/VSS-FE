@@ -1,0 +1,114 @@
+body {
+    background: #EEE;
+}
+
+.invoice {
+    background: #fff;
+    width: 970px !important;
+    margin: 50px auto;
+    border: 1px solid rgb(151, 144, 144);
+    border-radius: 10px;
+}
+
+.invoice-header {
+    padding: 25px 25px 15px;
+}
+
+.Customer_Details_Box {
+    border: 2px solid rgb(184, 182, 182);
+    width: 60%;
+    border-radius: 10px;
+}
+
+.Customer_Details_heading {
+    background-color: beige;
+    border-radius: 10px;
+    padding: 5px;
+}
+
+.Customer_Details {
+    font-size: 14px;
+}
+
+.Customer_Details_Inner_Text {
+    margin: 0;
+}
+
+.Customer_Details_Inner_Text dt {
+    float: left;
+    width: 121px;
+    overflow: hidden;
+    clear: left;
+    /* text-align: right; */
+    margin-left: 5px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.Customer_Details_Inner_Text dd {
+    margin-left: 90px;
+}
+
+.Customer_Details_heading h3 {
+    font-size: 20px;
+}
+
+.Service_section {
+    margin-top: 2%;
+}
+
+.Table_section {
+    margin-top: 4%;
+}
+
+.invoice-header h2 {
+    margin: 0;
+}
+
+.invoice-header .media .media-body {
+    font-size: 0.9em;
+    margin: 0;
+}
+
+.invoice-body {
+    border-radius: 10px;
+    padding: 25px;
+    background: #FFF;
+}
+
+.invoice-footer {
+    padding: 15px;
+    font-size: 0.9em;
+    text-align: center;
+    color: #999;
+}
+
+.colfix {
+    width: 70%;
+}
+
+.panel-heading{
+    margin-top: 2.5%;
+    margin-left: 2rem;
+}
+
+.print_btn{
+    background-color: transparent;
+    border: none;
+    box-shadow: 0px 2px 6px lightgrey;
+    width: 100px;
+    padding: 10px;
+    margin-bottom: 2%;
+    margin-left: 2rem;
+}
+
+.print_btn:hover{
+    background-color: lightblue;
+}
+
+
+@media print {
+    .sidenav {
+      display: none !important;
+    }
+  }

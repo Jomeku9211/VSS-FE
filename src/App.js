@@ -4,54 +4,66 @@ import Login from "./Components/Login/Login";
 import {
   Route,
   Redirect,
-  Link,
-  BrowserRouter as Router,
-  useHistory,
+  Switch
 } from "react-router-dom";
 import Dashboard from "./Components/Dashboard/Dash_Home";
 import CreateOrder from "./Components/CreateOrder/CreateOrder";
 import ListOrder from "./Components/ListOrder/ListOrder";
 import AddUser from "./Components/AddUser/AddUser";
 import PurchaseOrder from "./Components/Purchase/Purchase_Order";
+import Stocks from "./Components/Stocks/Stocks";
+import Sidenav from "./Components/Dashboard/Sidenav";
+import BillingList from "./Components/Billing/BillingList";
+import ViewMoreList from "./Components/ListOrder/ViewMoreList";
+import BillingMore from "./Components/Billing/BillingMore";
 
-function App(props) {
-  const history = useHistory();
-  console.log(window.location.pathname);
-  const authGuard = (Component) => () => {
-    return localStorage.getItem("token") ? (
-      <Component />
-    ) : (
-      history.push(`/web-front/login`)
-    );
+
+function App() {
+
+  const isAuthenticated = () => {
+    return localStorage.getItem("token") !== null;
   };
-  const token = localStorage.getItem("token");
+
+  const PrivateRoute = ({ component: Component, ...rest }) => (
+    <Route
+      {...rest}
+      render={(props) =>
+        isAuthenticated() ? (
+          <Component {...props} />
+        ) : (
+          <Redirect to="/login" />
+        )
+      }
+    />
+  );
+
   return (
-    <>
-      <Router {...props}>
-        <Link to="/web-front/login" />
-        <Route path="/web-front" render={authGuard(Dashboard)} />
-        <Route
-          path={`/web-front/login`}
-          component={!token ? Login : Dashboard}
-        />
-        <Route
-          path={`${window.location.pathname}/create_order`}
-          render={authGuard(CreateOrder)}
-        />
-        <Route
-          path={`${window.location.pathname}/purchase_order`}
-          render={authGuard(PurchaseOrder)}
-        />
-        <Route
-          path={`${window.location.pathname}/listOrder`}
-          render={authGuard(ListOrder)}
-        />
-        <Route
-          path={`${window.location.pathname}/addUser`}
-          render={authGuard(AddUser)}
-        />
-      </Router>
-    </>
+      <div>
+        
+          <Sidenav />
+          <Switch>
+        <Route path="/login" component={Login} />
+        <Route exact path={"/listOrder/:id"}>
+              <div className="listOrder">
+                <ViewMoreList/>
+              </div>
+            </Route>
+
+            <Route exact path={"/billing/:id"}>
+              <div className="billing">
+                <BillingMore/>
+              </div>
+            </Route>
+
+        <PrivateRoute path="/" exact component={Dashboard} />
+        <PrivateRoute path="/create_order" exact component={CreateOrder} />
+        <PrivateRoute path="/purchase_order" component={PurchaseOrder} />
+        <PrivateRoute path="/listOrder" component={ListOrder}/>
+        <PrivateRoute path="/addUser" component={AddUser} />
+        <PrivateRoute path="/stocks" component={Stocks} />
+        <PrivateRoute path="/billing" component={BillingList} />
+        </Switch>
+      </div>
   );
 }
 

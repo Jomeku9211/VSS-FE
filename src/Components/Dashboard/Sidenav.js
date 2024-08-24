@@ -1,9 +1,10 @@
 import React from "react";
-import { Link, useHistory, useRouteMatch } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import "./dashboard.css";
-const Sidenav = ({  match }) => {
-  const { path } = useRouteMatch();
+const Sidenav = () => {
+  // const { path } = useRouteMatch();
   // console.log(path);
+  // console.log(match)
   const history = useHistory();
   const handleLogout = () => {
     /* eslint-disable */
@@ -11,7 +12,7 @@ const Sidenav = ({  match }) => {
 
     if (toLogout) {
       localStorage.clear();
-      history.push("/web-front/login");
+      history.push("/login");
       window.location.reload(true);
     }
   };
@@ -34,43 +35,37 @@ const Sidenav = ({  match }) => {
           }}
         >
           <div>
-            <Link className="nav_link d-block" to={`${match}`}>
-              <i class="fas fa-home"></i>
+            <Link className="nav_link d-block" to={"/"}>
+              <i className="fas fa-home"></i>
             </Link>
             <p className="nav_text">Home</p>
           </div>
           <div>
-            <Link className="nav_link" to={`${match}/listOrder`}>
-              <i class="fab fa-opencart"></i>
+            <Link className="nav_link" to="/listOrder">
+              <i className="fab fa-opencart"></i>
             </Link>
             <p className="nav_text">Orders</p>
           </div>
           <div>
-            <Link className="nav_link" to={`${match}/AddUser`}>
-              <i class="fas fa-user-plus"></i>
+            <Link className="nav_link" to="/addUser">
+              <i className="fas fa-user-plus"></i>
             </Link>
             <p className="nav_text">Users</p>
           </div>
           <div>
-            <Link className="nav_link" to={`${match}/stocks`}>
-              <i class="fas fa-cubes"></i>
+            <Link className="nav_link" to="/stocks">
+              <i className="fas fa-cubes"></i>
             </Link>
             <p className="nav_text">Stocks</p>
           </div>
-          {/* <div>
-            <Link className="nav_link" to={`${match}/purchase`}>
-              <i class="fas fa-cart-arrow-down"></i>
-            </Link>
-            <p className="nav_text">Purchase</p>
-          </div> */}
+   
           <div>
-            <Link className="nav_link" to={`${match}/billing`}>
-              <i class="fas fa-file-invoice"></i>
+            <Link className="nav_link" to="/billing">
+              <i className="fas fa-file-invoice"></i>
             </Link>
             <p className="nav_text">Billing</p>
           </div>
           <div>
-            <Link className="nav_link">
               <button
                 onClick={handleLogout}
                 style={{
@@ -79,9 +74,8 @@ const Sidenav = ({  match }) => {
                   color: "white",
                 }}
               >
-                <i class="fas fa-sign-out-alt"></i>
+                <i className="fas fa-sign-out-alt"></i>
               </button>
-            </Link>
             <p className="nav_text">Logout</p>
           </div>
         </div>

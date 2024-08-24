@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { Container, Col, Row, Badge } from "react-bootstrap";
 import Axios from "axios";
 import LoaderComp from "../Loader/LoaderComp";
+import secret from '../config'
 
 const PurchaseView = () => {
   const [purchase, setPurchase] = useState({});
@@ -15,7 +16,7 @@ const PurchaseView = () => {
         try {
           const token =
             "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuZXdVc2VyIjp7Il9pZCI6IjYwM2IzNDM5MzViODI2MjBhMDg5ZTkwNyIsInVzZXJuYW1lIjoiYWRtaW4iLCJwYXNzd29yZCI6ImFkbWluIn0sImlhdCI6MTYxNTg5MTU2MSwiZXhwIjoxNjE1OTc3OTYxfQ.exU8x5APvJBqlVKtIHHSYrqXMNKu38GyusySo-ZxCp4";
-          await Axios.get(`http://13.234.31.236:3001/purchaseStock/by/${id}`, {
+          await Axios.get(`${secret.Ip}/purchaseStock/by/${id}`, {
             headers: {
               Authorization: `Bearer ${token}`,
               "Content-Type": "application/json",
@@ -231,17 +232,6 @@ const PurchaseView = () => {
                       </div>
                     </Row>
                   </Col>
-                  {/* <Col className="m-3">
-                          <Row className="mt-3 ml-auto col-1">
-                            <button
-                              className="addButton"
-                              onClick={handleClick}
-                              type="submit"
-                            >
-                              <i class="fas fa-plus-circle"></i>
-                            </button>
-                          </Row>
-                        </Col> */}
                 </Row>
               </Container>
             </div>

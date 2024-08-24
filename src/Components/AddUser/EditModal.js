@@ -4,17 +4,22 @@ import Axios from "axios";
 import Success from "../Alert/Success";
 import Failure from "../Alert/Failure";
 import LoaderComp from "../Loader/LoaderComp";
+import Secret from '../config'
 
-const EditModal = ({ show, setShow, id }) => {
+
+const EditModal = ({ show, setShow, id, refreshDataCallback }) => {
   const [prev, setPrev] = useState({
-    firstName: "",
-    lastName: "",
-    phone_no: "",
-    tenure: "",
-    role: "",
-    joined_date: "",
-    password: "",
+    UserName: "",
+    LastName: "",
+    Phone: "",
+    Tenure: "",
+    Role: "",
+    CurrentDate: "",
+    Password: "",
+    ProfileImage: "", 
   });
+
+
   const [successfull, setSuccessfull] = useState(false);
   const [failure, setFailure] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -24,42 +29,47 @@ const EditModal = ({ show, setShow, id }) => {
     setPrev({ ...prev, [e.target.name]: e.target.value });
   };
   const formData = {
-    firstName: prev?.firstName,
-    lastName: prev?.lastName,
-    role: prev?.role,
-    phone_no: prev?.phone_no,
-    tenure: prev?.tenure,
-    joined_date: prev?.joined_date,
-    password: prev?.password,
+    UserName: prev?.UserName,
+    LastName: prev?.LastName,
+    Role: prev?.Role,
+    Phone: prev?.Phone,
+    Tenure: prev?.Tenure,
+    CurrentDate: prev?.CurrentDate,
+    Password: prev?.Password,
+    ProfileImage:prev?.ProfileImage
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
-      setTimeout(async () => {
-        const token =
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuZXdVc2VyIjp7Il9pZCI6IjYwM2IzNDM5MzViODI2MjBhMDg5ZTkwNyIsInVzZXJuYW1lIjoiYWRtaW4iLCJwYXNzd29yZCI6ImFkbWluIn0sImlhdCI6MTYxNTg5MTU2MSwiZXhwIjoxNjE1OTc3OTYxfQ.exU8x5APvJBqlVKtIHHSYrqXMNKu38GyusySo-ZxCp4";
-        await Axios.put(
-          `http://13.234.31.236:3001/user_management/edit/${id}`,
-          formData,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-              "Access-Control-Allow-Origin": "*",
-            },
-          }
-        ).then((response) => {
-          if (response.status === 201) {
-            setLoading(false);
-            setSuccessfull(true);
-          }
-        });
-        setTimeout(() => {
-          setSuccessfull(false);
-        }, 3000);
-      });
+      console.log("Form data on submit ", prev);
+  
+      const token =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuZXdVc2VyIjp7Il9pZCI6IjYwM2IzNDM5MzViODI2MjBhMDg5ZTkwNyIsInVzZXJuYW1lIjoiYWRtaW4iLCJwYXNzd29yZCI6ImFkbWluIn0sImlhdCI6MTYxNTg5MTU2MSwiZXhwIjoxNjE1OTc3OTYxfQ.exU8x5APvJBqlVKtIHHSYrqXMNKu38GyusySo-ZxCp4";
+      const response = await Axios.patch(
+        `${Secret.Ip}/mobile/update/${id}`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+          },
+        }
+      );
+      console.log("API Response:", response);
+  
+      if (response.status === 200) {
+        setLoading(false);
+        setSuccessfull(true);
+        setShow(false)
+        refreshDataCallback();
+      }
+  
+      setTimeout(() => {
+        setSuccessfull(false);
+      }, 3000);
     } catch (error) {
       setLoading(false);
       setFailure(true);
@@ -68,25 +78,36 @@ const EditModal = ({ show, setShow, id }) => {
       }, 3000);
     }
   };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuZXdVc2VyIjp7Il9pZCI6IjYwM2IzNDM5MzViODI2MjBhMDg5ZTkwNyIsInVzZXJuYW1lIjoiYWRtaW4iLCJwYXNzd29yZCI6ImFkbWluIn0sImlhdCI6MTYxNTg5MTU2MSwiZXhwIjoxNjE1OTc3OTYxfQ.exU8x5APvJBqlVKtIHHSYrqXMNKu38GyusySo-ZxCp4";
-      await Axios.get(`http://13.234.31.236:3001/user_management/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-        },
-      }).then((response) => {
-        const userValue = response?.data?.res;
-        console.log(userValue);
-        setPrev(userValue);
-      });
-    };
-    fetchData();
-  }, [id]);
+    useEffect(() => {
+      const fetchData = async () => {
+  
+        try{
+          if(!id){
+            console.log("Error ",id)
+          }
+        const token ="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuZXdVc2VyIjp7Il9pZCI6IjYwNTFkMDBkZWRhN2RkYTIwOWJmZjY2NyIsInVzZXJuYW1lIjoiYWRtaW4iLCJwYXNzd29yZCI6IjIxMjMyZjI5N2E1N2E1YTc0Mzg5NGEwZTRhODAxZmMzIn0sImlhdCI6MTYxNzYxNjE0NiwiZXhwIjoxNjE3NzAyNTQ2fQ.oMYd1wQIpCxxRlnl-XNX2oY2YYOlarjK3jk-SSOxdqw";
+          
+        await Axios.get(`http://65.0.32.212:3009/mobile/getById/${id}`, {
+          headers: {
+      
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+          },
+        }).then((response) => {
+          const userValue = response.data.message
+          console.log("get data by id ", response.data.message);
+          setPrev(userValue);
+        });
+      }
+      catch(error){
+       console.log(error)
+      }
+      };
+      fetchData();
+  },[id]);
+  
+   
+  
 
   return (
     <>
@@ -106,7 +127,7 @@ const EditModal = ({ show, setShow, id }) => {
           message={"something Went Wrong"}
         />
         <Modal.Header className="modal_header">
-         
+
         </Modal.Header>
         <form onSubmit={handleSubmit} autoComplete="off" autoCapitalize="true">
           <Modal.Body className="modal_body">
@@ -120,9 +141,9 @@ const EditModal = ({ show, setShow, id }) => {
                 }}
               >
                 <Col>
-                  {prev?.user_image ? (
+                  {prev?.ProfileImage ? (
                     <img
-                      src={"http://" + prev?.user_image}
+                      src={prev?.ProfileImage}
                       alt="profilePic"
                       style={{
                         height: "100px",
@@ -141,24 +162,22 @@ const EditModal = ({ show, setShow, id }) => {
                 <Col>
                   <input
                     type="text"
-                    name="firstName"
+                    name="UserName"
                     className="modal_input"
                     placeholder="First Name"
                     onChange={handleChange}
-                    value={prev?.firstName}
-                    required
+                    value={prev?.UserName}
                     maxLength="20"
                   />
                 </Col>
                 <Col>
                   <input
                     type="text"
-                    name="lastName"
+                    name="LastName"
                     className="modal_input"
                     placeholder="Last Name"
                     onChange={handleChange}
-                    value={prev?.lastName}
-                    required
+                    value={prev?.LastName}
                     maxLength="20"
                   />
                 </Col>
@@ -167,24 +186,22 @@ const EditModal = ({ show, setShow, id }) => {
                 <Col>
                   <input
                     type="number"
-                    name="phone_no"
+                    name="Phone"
                     className="modal_input"
                     placeholder="Phone No."
                     onChange={handleChange}
-                    value={prev?.phone_no}
-                    required
+                    value={prev?.Phone}
                     maxLength="20"
                   />
                 </Col>
                 <Col>
                   <input
                     type="text"
-                    name="tenure"
+                    name="Tenure"
                     className="modal_input"
                     placeholder="Tenure"
                     onChange={handleChange}
-                    value={prev?.tenure}
-                    required
+                    value={prev?.Tenure}
                     maxLength="20"
                   />
                 </Col>
@@ -193,12 +210,11 @@ const EditModal = ({ show, setShow, id }) => {
               <Row className="mt-2">
                 <Col>
                   <select
-                    class="form-select modal_input"
+                    className="form-select modal_input"
                     aria-label="Default select example"
                     onChange={handleChange}
-                    value={prev?.role}
-                    name="role"
-                    required
+                    value={prev?.Role}
+                    name="Role"
                     maxLength="20"
                   >
                     <option className="defaultSelect">Role</option>
@@ -212,12 +228,11 @@ const EditModal = ({ show, setShow, id }) => {
                 <Col>
                   <input
                     type="date"
-                    name="joined_date"
+                    name="CurrnetDate"
                     className="modal_input"
                     placeholder="Joined Date"
                     onChange={handleChange}
-                    value={prev?.joined_date}
-                    required
+                    value={prev?.CurrentDate}
                     maxLength="20"
                   />
                 </Col>
@@ -234,38 +249,17 @@ const EditModal = ({ show, setShow, id }) => {
                   >
                     <input
                       type="password"
-                      name="password"
+                      name="Password"
                       className="modal_input"
                       placeholder="Password"
                       onChange={handleChange}
-                      value={prev?.password}
-                      required
+                      value={prev?.Password}
                     />
                   </div>
                 </Col>
               </Row>
               <Row>
                 <Col>
-                  {/* <div className="file_container">
-                    <input
-                      type="file"
-                      name="user_image"
-                      onChange={handleFile}
-                      id="file"
-                      defaultValue={image.user_image.name}
-                    />
-
-                    <label className="custom-file-label" for="customFile">
-                      {image.user_image ? image.user_image.name : "chooseFile"}
-                    </label>
-                    <button className="file_button" id="btn">
-                      {image.user_image ? (
-                        image.user_image.name
-                      ) : (
-                        <i class="fas fa-upload px-4">Profile Image</i>
-                      )}
-                    </button>
-                  </div> */}
                 </Col>
               </Row>
             </Container>
@@ -277,12 +271,13 @@ const EditModal = ({ show, setShow, id }) => {
               onClick={(e) => {
                 e.preventDefault(e);
                 setShow(false);
+                setLoading(false)
               }}
             >
               Close
             </button>
             <button
-              disbaled
+              disbaled="true"
               style={{ height: "auto", minHeight: "45px" }}
               className="submit_button"
               variant="primary"

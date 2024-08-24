@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Container, Col, Row } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import Axios from "axios";
 import secret from "../config";
+import "../Billing/BillMore.css";
 const BillingMore = () => {
   const { id } = useParams();
   const [item, setItem] = useState({});
@@ -19,9 +19,19 @@ const BillingMore = () => {
           "Access-Control-Allow-Origin": "*",
         },
       }).then((response) => {
-        console.log(response);
+        console.log('response',response);
         const data = response.data.res;
-        const Products = response.data.res.products;
+        console.log("data",data)
+        const Products = response.data.res.products.map(item => ({
+          ...item,
+          length: item.length,
+          width: item.width,
+          thickness: item.thickness,
+          pcs: item.pcs,
+          rate_basic: item.weight,
+          rate_gst: item.weight + (item.weight) * 18/100,
+        }));
+
         setItem(data);
         setProduct(Products);
       });
@@ -31,196 +41,192 @@ const BillingMore = () => {
   };
   useEffect(() => {
     fetchData();
-  }, [item, product]);
+  },[]); //[item, product]
   return (
     <>
-      <Container className="col-xl-6 col-lg-6 col-md-6 col-sm-6 p-auto my-4">
-        <div
-          style={{
-            justifyContent: "center",
-            alignItems: "center",
-            display: "flex",
-          }}
-        >
-          <h3 style={{ textAlign: "center" }}>Vivek Skyline Steel</h3>
-          <button
-            className="ms-auto"
-            style={{
-              backgroundColor: "transparent",
-              border: "none",
-              boxShadow: "0px 2px 6px lightgrey",
-              width: "50px",
-            }}
-            onClick={print}
-          >
-            Print
-          </button>
+     <div className="container invoice">
+      <div className="invoice-header">
+        <div className="row">
+       
         </div>
-        <Container
-          style={{
-            justifyContent: "center",
-            alignItems: "center",
-            display: "block",
-          }}
-        >
-          <Row>
-            <Col className="col-xl-3 col-lg-3 col-md-3 col-sm-3">
-              <h5>OrderId</h5>
-            </Col>
-            <Col className="col-xl-1 col-lg-1 col-md-1 col-sm-1">
-              <h5>-</h5>
-            </Col>
-            <Col className="col-xl-7 col-lg-7 col-md-7 col-sm-7">
-              <h5>{item.orderId}</h5>
-            </Col>
-          </Row>
-          <Row>
-            <Col className="col-xl-3 col-lg-3 col-md-3 col-sm-3">Firm Name</Col>
-            <Col className="col-xl-1 col-lg-1 col-md-1 col-sm-1">-</Col>
-            <Col className="col-xl-7 col-lg-7 col-md-7 col-sm-7">
-              {item.firmName}
-            </Col>
-          </Row>
-          <Row>
-            <Col className="col-xl-3 col-lg-3 col-md-3 col-sm-3">
-              Client Name
-            </Col>
-            <Col className="col-xl-1 col-lg-1 col-md-1 col-sm-1">-</Col>
-            <Col className="col-xl-7 col-lg-7 col-md-7 col-sm-7">
-              {item.clientName}
-            </Col>
-          </Row>
-          <Row>
-            <Col className="col-xl-3 col-lg-3 col-md-3 col-sm-3">Phone</Col>
-            <Col className="col-xl-1 col-lg-1 col-md-1 col-sm-1">-</Col>
-            <Col className="col-xl-7 col-lg-7 col-md-7 col-sm-7">
-              {item.phone_no}
-            </Col>
-          </Row>
-          <Row>
-            <Col className="col-xl-3 col-lg-3 col-md-3 col-sm-3">
-              Delivery Date
-            </Col>
-            <Col className="col-xl-1 col-lg-1 col-md-1 col-sm-1">-</Col>
-            <Col className="col-xl-7 col-lg-7 col-md-7 col-sm-7">
-              {item.deliveryDate}
-            </Col>
-          </Row>
-          <Row>
-            <Col className="col-xl-3 col-lg-3 col-md-3 col-sm-3">Address</Col>
-            <Col className="col-xl-1 col-lg-1 col-md-1 col-sm-1">-</Col>
-            <Col className="col-xl-7 col-lg-7 col-md-7 col-sm-7">
-              {item.address}
-            </Col>
-          </Row>
-          <Row>
-            <Col className="col-xl-3 col-lg-3 col-md-3 col-sm-3">City</Col>
-            <Col className="col-xl-1 col-lg-1 col-md-1 col-sm-1">-</Col>
-            <Col className="col-xl-7 col-lg-7 col-md-7 col-sm-7">
-              {item.city}
-            </Col>
-          </Row>
-          <Row>
-            <Col className="col-xl-3 col-lg-3 col-md-3 col-sm-3">Note</Col>
-            <Col className="col-xl-1 col-lg-1 col-md-1 col-sm-1">-</Col>
-            <Col className="col-xl-7 col-lg-7 col-md-7 col-sm-7">
-              {item.note}
-            </Col>
-          </Row>
-        </Container>
-        <Container>
-          {product.map((val, ind) => (
-            <Container className="mt-4" key={val._id}>
-              <h4>Product - {ind + 1}</h4>
-              <Row className="col-xl-8 col-lg-8 ">
-                <Col>Product</Col>
-                <Col>-</Col>
-                <Col>{val.select_product}</Col>
-              </Row>
-              <Row className="col-xl-8 col-lg-8 ">
-                <Col>Company</Col>
-                <Col>-</Col>
-                <Col>{val.company}</Col>
-              </Row>
-              <Row className="col-xl-8 col-lg-8 ">
-                <Col>Temper</Col>
-                <Col>-</Col>
-                <Col>{val.temper}</Col>
-              </Row>
-              <Row className="col-xl-8 col-lg-8 ">
-                <Col>Coating</Col>
-                <Col>-</Col>
-                <Col>{val.coatingnum}</Col>
-              </Row>
-              <Row className="col-xl-8 col-lg-8 ">
-                <Col>Company</Col>
-                <Col>-</Col>
-                <Col>{val.company}</Col>
-              </Row>
-              <Row className="col-xl-8 col-lg-8 ">
-                <Col>Grade</Col>
-                <Col>-</Col>
-                <Col>{val.grade}</Col>
-              </Row>
-              <Row className="col-xl-8 col-lg-8 ">
-                <Col>Guard Film</Col>
-                <Col>-</Col>
-                <Col>{val.guardfilm}</Col>
-              </Row>
-              <Row className="col-xl-8 col-lg-8 ">
-                <Col>Color</Col>
-                <Col>-</Col>
-                <Col>{val.topcolor}</Col>
-              </Row>
-              <Row className="col-xl-8 col-lg-8 ">
-                <Col>Pcs</Col>
-                <Col>-</Col>
-                {/* <Col>{val.pcs}</Col> */}
-                <Col>
-                  <input className="subfields" name="pcs" type="number"></input>
-                </Col>
-              </Row>
-              <Row className="col-xl-8 col-lg-8 ">
-                <Col>Thickness</Col>
-                <Col>-</Col>
-                <Col>{val.thickness}</Col>
-              </Row>
-              <Row className="col-xl-8 col-lg-8 ">
-                <Col>Weight</Col>
-                <Col>-</Col>
-                {/* <Col>{val.weight}</Col> */}
-                <Col>
-                  <input
-                    className="subfields"
-                    name="Weight"
-                    type="number"
-                  ></input>
-                </Col>
-              </Row>
-              <Row className="col-xl-8 col-lg-8 ">
-                <Col>length</Col>
-                <Col>-</Col>
-                <Col>{val.length}</Col>
-              </Row>
-              <Row className="col-xl-8 col-lg-8 ">
-                <Col>width</Col>
-                <Col>-</Col>
-                <Col>{val.width}</Col>
-              </Row>
-              <Row className="col-xl-8 col-lg-8 ">
-                <Col>Rate</Col>
-                <Col>-</Col>
-                <Col>{val.rate}</Col>
-              </Row>
-              <Row className="col-xl-8 col-lg-8 ">
-                <Col>Gst</Col>
-                <Col>-</Col>
-                <Col>{val.gst}</Col>
-              </Row>
-            </Container>
-          ))}
-        </Container>
-      </Container>
+      </div>
+      <div className="invoice-body">
+        <div className="row">
+          <div className="col-xs-7">
+            <div className="Customer_Details_Box">
+              <div className="Customer_Details_heading">
+                <h3>Customer Details</h3>
+              </div>
+              <div className="Customer_Details_Inner_Box">
+                <dl className="Customer_Details_Inner_Text">
+                  <dt className="clientName">Client Name :</dt>
+                  <dd>{item.clientName}</dd>
+                  <dt className="clientName">First name</dt>
+                  <dd>{item.firmName}</dd>
+                  <dt className="clientName">Address :</dt>
+                  <dd>{item.address}</dd>
+                  <dt>Phone :</dt>
+                  <dd>{item.phone_no}</dd>
+                  <dt>orderId :</dt>
+                  <dd className="mono">{item.orderId}</dd>
+                  <dt>&nbsp;</dt>
+                  <dd>&nbsp;</dd>
+                </dl>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="panel-heading">
+            <h3 className="panel-title">Services / Products</h3>
+        </div>
+        {product.map((item,index) => (
+        <div className="panel panel-default Service_section">
+         
+          <table className="table table-bordered Table_section ">
+            <thead>
+              <tr>
+                <th className="text-center">
+                  <b>Item</b> 
+                </th>
+                <th className="text-center colfix">
+                  <b>Details</b>
+                </th>
+              </tr>
+            </thead>
+              <tbody key={index}>
+                <tr>
+                  <td>
+                    <p className="text-center">
+                      <b>Company</b>
+                    </p>
+                  </td>
+                  <td className="text-center">{item.company}</td>
+                </tr>
+              
+                <tr>
+                  <td>
+                    <p className="text-center">
+                      <b>grade</b>
+                    </p>
+                  </td>
+                  <td className="text-center">{item.grade}</td>
+                </tr>
+                <tr>
+                  <td>
+                    <p className="text-center">
+                      <b>guardfilm</b>
+                    </p>
+                  </td>
+
+                  <td className="text-center">{item.guardfilm}</td>
+                </tr>
+                <tr>
+                  <td>
+                    <p className="text-center">
+                      <b>select_product</b>
+                    </p>
+                  </td>
+
+                  <td className="text-center">{item.select_product}</td>
+                </tr>
+                <tr>
+                  <td>
+                    <p className="text-center">
+                      <b>temper</b>
+                    </p>
+                  </td>
+
+                  <td className="text-center">{item.temper}</td>
+                </tr>
+                <tr>
+                  <td>
+                    <p className="text-center">
+                      <b>topcolor</b>
+                    </p>
+                  </td>
+
+                  <td className="text-center">{item.topcolor}</td>
+                </tr>
+                <tr>
+                  <td>
+                    <p className="text-center">
+                      <b>weight</b>
+                    </p>
+                  </td>
+
+                  <td className="text-center">{item.weight}</td>
+                </tr>
+                <tr>
+                  <td>
+                    <p className="text-center">
+                      <b>length</b>
+                    </p>
+                  </td>
+
+                  <td className="text-center">{item.length}</td>
+                </tr>
+                <tr>
+                  <td>
+                    <p className="text-center">
+                      <b>width</b>
+                    </p>
+                  </td>
+
+                  <td className="text-center">{item.width}</td>
+                </tr>
+                <tr>
+                  <td>
+                    <p className="text-center">
+                      <b>thickness</b>
+                    </p>
+                  </td>
+
+                  <td className="text-center">{item.thickness}</td>
+                </tr>
+                <tr>
+                  <td>
+                    <p className="text-center">
+                      <b>pcs</b>
+                    </p>
+                  </td>
+
+                  <td className="text-center">{item.pcs}</td>
+                </tr>
+                <tr>
+                  <td>
+                    <p className="text-center">
+                      <b>Rate(basic)</b>
+                    </p>
+                  </td>
+
+                  <td className="text-center">{item.rate_basic}</td>
+                </tr>
+                <tr>
+                  <td>
+                    <p className="text-center">
+                      <b>Rate(GST%)</b>
+                    </p>
+                  </td>
+
+                  <td className="text-center">{item.rate_gst}</td>
+                </tr>
+              </tbody>
+          </table>
+        </div>
+            ))}
+
+      </div>
+      
+      <div className="invoice-footer">
+        Thank you for choosing our services. We hope to see you again soon
+      </div>
+      <button
+        className="print_btn"
+        onClick={print}
+      >
+        Print
+      </button>
+    </div>
     </>
   );
 };

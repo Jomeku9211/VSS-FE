@@ -5,6 +5,7 @@ import { useHistory } from "react-router";
 import Axios from "axios";
 import LoaderComp from "../Loader/LoaderComp";
 import Constants from "../constants";
+import secret from '../config'
 
 const Purchase_Order = (props) => {
   const history = useHistory();
@@ -22,7 +23,6 @@ const Purchase_Order = (props) => {
   const [rate, setRate] = useState(0);
   const [gst, setGst] = useState(0);
   const [total, setTotal] = useState("");
-  // const [, setOrders] = useState([newProducts]);
 
   const [inputs, setInputs] = useState({
     vendor: "",
@@ -76,8 +76,8 @@ const Purchase_Order = (props) => {
 
   const today = new Date();
   const dd = String(today.getDate()).padStart(2, "0");
-  const mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
-  const yyyy = today.getFullYear();
+  const mm = String(today.getMonth() + 1).padStart(2, "0"); 
+    const yyyy = today.getFullYear();
   const todays = dd + "/" + mm + "/" + yyyy;
 
   const formData = {
@@ -96,7 +96,6 @@ const Purchase_Order = (props) => {
   const addProducts = (e) => {
     e.preventDefault();
     inputs.products.push(product);
-    // console.log(inputs.products);
     setNewProducts((input) => {
       setNewProducts(inputs.products);
     });
@@ -112,7 +111,7 @@ const Purchase_Order = (props) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    await Axios.post("http://13.234.31.236:3001/purchaseStock/create", formData)
+    await Axios.post(`${secret.Ip}/purchaseStock/create`, formData)
       .then((response) => {
         if (response.status === 200) {
           setLoading(false);
@@ -120,7 +119,7 @@ const Purchase_Order = (props) => {
           e.target.reset();
           window.scrollTo(0, 0);
           //-------------------------------
-          history.push(`./purchase`);
+          history.push("./purchase");
           //---------------------------
         } else {
           setFailureAlert(true);
@@ -171,7 +170,7 @@ const Purchase_Order = (props) => {
                       border: "none",
                     }}
                   >
-                    <i class="far fa-trash-alt"></i>
+                    <i className="far fa-trash-alt"></i>
                   </button>
                 </div>
               </div>
@@ -289,17 +288,6 @@ const Purchase_Order = (props) => {
                   </div>
                 </Row>
               </Col>
-              {/* <Col className="m-3">
-                          <Row className="mt-3 ml-auto col-1">
-                            <button
-                              className="addButton"
-                              onClick={handleClick}
-                              type="submit"
-                            >
-                              <i class="fas fa-plus-circle"></i>
-                            </button>
-                          </Row>
-                        </Col> */}
             </Row>
           </Container>
         </div>
@@ -431,7 +419,6 @@ const Purchase_Order = (props) => {
                             onChange={handleInput}
                             value={inputs.email}
                             maxLength="40"
-                            // pattern="/^[a-zA-Z0-9]+@+[a-zA-Z0-9]+.+[A-z]/"
                             pattern="[a-z0-9._+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
                           />
                         </Col>
@@ -473,16 +460,7 @@ const Purchase_Order = (props) => {
                           -
                         </Col>
                         <Col className="col-lg-7 col-xs-7 col-md-7 col-sm-7 col-xl-7">
-                          {/* <input
-                            className="input_fields"
-                            placeholder="City"
-                            type="text"
-                            required
-                            name="city"
-                            onChange={handleInput}
-                            value={inputs.city}
-                            maxLength="20"
-                          /> */}
+                
 
                           <select
                             className="form-select modals_input  "
@@ -677,7 +655,7 @@ const Purchase_Order = (props) => {
                               }}
                               required
                             />
-                            <i class="fas fa-rupee-sign"></i>
+                            <i className="fas fa-rupee-sign"></i>
                           </div>
                         </Col>
                       </Row>
@@ -701,7 +679,7 @@ const Purchase_Order = (props) => {
                               required
                               readOnly
                             />
-                            <i class="fas fa-rupee-sign"></i>
+                            <i className="fas fa-rupee-sign"></i>
                           </div>
                         </Col>
                       </Row>
@@ -719,9 +697,9 @@ const Purchase_Order = (props) => {
                             onChange={(e) => setSelectProduct(e.target.value)}
                             required
                           >
-                            {Constants.Product.map((val) => (
+                            {Constants.Product.map((val,ind) => (
                               <>
-                                <option value={val.id}>{val.name}</option>
+                                <option value={val.id} key={ind}>{val.name}</option>
                               </>
                             ))}
                           </select>
@@ -741,9 +719,9 @@ const Purchase_Order = (props) => {
                             onChange={(e) => setCompany(e.target.value)}
                             required
                           >
-                            {Constants.Company.map((val) => (
+                            {Constants.Company.map((val,ind) => (
                               <>
-                                <option value={val.id}>{val.name}</option>
+                                <option value={val.id} key={ind}>{val.name}</option>
                               </>
                             ))}
                           </select>
@@ -763,9 +741,9 @@ const Purchase_Order = (props) => {
                             onChange={(e) => setCoating(e.target.value)}
                             required
                           >
-                            {Constants.Coating.map((val) => (
+                            {Constants.Coating.map((val,ind) => (
                               <>
-                                <option value={val.id}>{val.name}</option>
+                                <option value={val.id} key={ind}>{val.name}</option>
                               </>
                             ))}
                           </select>
@@ -785,9 +763,9 @@ const Purchase_Order = (props) => {
                             onChange={(e) => setGuard(e.target.value)}
                             required
                           >
-                            {Constants.Guard.map((val) => (
+                            {Constants.Guard.map((val,ind) => (
                               <>
-                                <option value={val.id}>{val.name}</option>
+                                <option value={val.id} key={ind}>{val.name}</option>
                               </>
                             ))}
                           </select>
@@ -807,9 +785,9 @@ const Purchase_Order = (props) => {
                             onChange={(e) => setTemper(e.target.value)}
                             required
                           >
-                            {Constants.Temper.map((val) => (
+                            {Constants.Temper.map((val,ind) => (
                               <>
-                                <option value={val.id}>{val.name}</option>
+                                <option value={val.id} key={ind}>{val.name}</option>
                               </>
                             ))}
                           </select>
@@ -829,9 +807,9 @@ const Purchase_Order = (props) => {
                             onChange={(e) => setGrade(e.target.value)}
                             required
                           >
-                            {Constants.Grade.map((val) => (
+                            {Constants.Grade.map((val,ind) => (
                               <>
-                                <option value={val.id}>{val.name}</option>
+                                <option value={val.id} key={ind}>{val.name}</option>
                               </>
                             ))}
                           </select>
@@ -851,9 +829,9 @@ const Purchase_Order = (props) => {
                             onChange={(e) => setColor(e.target.value)}
                             required
                           >
-                            {Constants.Color.map((val) => (
+                            {Constants.Color.map((val,ind) => (
                               <>
-                                <option value={val.id}>{val.name}</option>
+                                <option value={val.id} key={ind}>{val.name}</option>
                               </>
                             ))}
                           </select>

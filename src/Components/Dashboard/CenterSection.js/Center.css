@@ -8,15 +8,6 @@
   margin-top: 20px;
 }
 
-/* #card {
-  height: auto;
-  width: auto;
-  border: none;
-  border-radius: 18px;
-  box-shadow: 2px 2px 5px 2px lightgrey;
-  margin-right: 15px;
-  padding: 10px;
-} */
 #card {
   height: auto;
   width: 28%;
@@ -25,6 +16,7 @@
   box-shadow: 2px 2px 5px 2px lightgrey;
   margin-right: 15px;
   text-align: center;
+  padding-top: 10px;
 }
 
 .create-Button {
@@ -33,6 +25,8 @@
   border-radius: 15px;
   height: 35px;
   border: none;
+  padding: auto;
+  margin-top: 10px;
 }
 .create-Button:hover {
   background-color: lightgrey;

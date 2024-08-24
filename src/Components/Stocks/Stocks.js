@@ -6,9 +6,11 @@ import LoaderComp from "../Loader/LoaderComp";
 import EditModal from "./EditModal";
 import secret from "../config";
 import Constants from "../constants";
+import axios from "axios";
 
 const Stocks = ({ match }) => {
   const [item, setItem] = useState({});
+  const [weight, setweight] = useState(null)
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const inputElement = useRef("");
@@ -31,7 +33,6 @@ const Stocks = ({ match }) => {
     weight: "",
     pcs: "",
     guardfilm: "",
-    // grade: "",
   });
 
   const handleChange = (e) => {
@@ -39,14 +40,13 @@ const Stocks = ({ match }) => {
     setItems({ ...items, [e.target.name]: e.target.value });
   };
 
-  
   const formData = {
     product: items.product,
     company: items.company,
     temper: items.temper,
     grade: items.grade,
     topcolor: items.topcolor,
-    thickness:encodeURIComponent(items.thickness),
+    thickness: encodeURIComponent(items.thickness),
     width: parseInt(items.width),
     length: parseInt(items.length),
     coating: encodeURIComponent(items.coating),
@@ -55,7 +55,7 @@ const Stocks = ({ match }) => {
     guardfilm: items.guardfilm,
     density: 0.00000784,
   };
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -69,6 +69,7 @@ const Stocks = ({ match }) => {
       })
         .then((response) => {
           if (response.status === 201) {
+            console.log(response)
             setLoading(false);
             setSuccessAlert(true);
             e.target.reset();
@@ -107,6 +108,7 @@ const Stocks = ({ match }) => {
       },
     }).then((response) => {
       console.log(response);
+      window.location.reload(); // Reload the page
     });
   };
   const handleConfirm = (val, e) => {
@@ -122,7 +124,6 @@ const Stocks = ({ match }) => {
     setSearchTerm(searchTerm);
     if (searchTerm !== "") {
       const newItemsList = item.filter((items) => {
-        // console.log(Object.values(item));
         return Object.values(items)
           .join("")
           .toLowerCase()
@@ -136,7 +137,7 @@ const Stocks = ({ match }) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      Axios.get(`${secret.Ip}/Stock_M/get`, {
+      await Axios.get(`${secret.Ip}/Stock_M/get`, {
         headers: {
           Authorization: `Bearer ${secret.token}`,
           "Content-Type": "application/json",
@@ -144,28 +145,43 @@ const Stocks = ({ match }) => {
         },
       }).then((response) => {
         setItem(response.data.res);
-        // console.log(item);s
+        console.log("response.data.res",response.data.res);
       });
     };
     fetchData();
-  }, [item]);
+  }, []); //item
+
+
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`${secret.Ip}/salesManger/Totalweight`, {
+          headers: {
+            Authorization: `Bearer ${secret.token}`,
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+          },
+        });
+        setweight(response.data);
+        console.log("Total weight is", response.data);
+      } catch (error) {
+        console.error("Error fetching total weight:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   
+
   const ChangeEditShow = (value) => {
     setModalValue(value);
     setLgEditShow(true);
   };
-
-  const product= formData.product;
-  const  countrychange=()=>{
-    if(product=="GC")
-    {
-      console.log("GC Length hide")
-    }
-    
-  }
-
   return (
-    <>
+    <div className="stock_main_div">
       {/* ADDUSER MODEL START  */}
       <Modal
         size="lg"
@@ -228,8 +244,8 @@ const Stocks = ({ match }) => {
                       className="w-100"
                       required
                     >
-                      {Constants.Product.map((val) => (
-                        <option value={val.id}>{val.name}</option>
+                      {Constants.Product.map((val,arr) => (
+                        <option value={val.id} key={arr}>{val.name}</option>
                       ))}
                     </select>
                   </Col>
@@ -241,10 +257,8 @@ const Stocks = ({ match }) => {
                       className="w-100"
                       required
                     >
-                      {Constants.Company.map((val) => (
-                        <>
-                          <option value={val.id}>{val.name}</option>
-                        </>
+                      {Constants.Company.map((val,arr) => (
+                          <option value={val.id} key={arr}>{val.name}</option>
                       ))}
                     </select>
                   </Col>
@@ -260,10 +274,8 @@ const Stocks = ({ match }) => {
                       className="w-100"
                       required
                     >
-                      {Constants.Grade.map((val) => (
-                        <>
-                          <option value={val.id}>{val.name}</option>
-                        </>
+                      {Constants.Grade.map((val,arr) => (
+                          <option value={val.id} key={arr}>{val.name}</option>
                       ))}
                     </select>
                   </Col>
@@ -275,10 +287,8 @@ const Stocks = ({ match }) => {
                       className="w-100"
                       required
                     >
-                      {Constants.Color.map((val) => (
-                        <>
-                          <option value={val.id}>{val.name}</option>
-                        </>
+                      {Constants.Color.map((val,arr) => (
+                          <option value={val.id} key={arr}>{val.name}</option>
                       ))}
                     </select>
                   </Col>
@@ -294,10 +304,8 @@ const Stocks = ({ match }) => {
                       className="w-100"
                       required
                     >
-                      {Constants.Coating.map((val) => (
-                        <>
-                          <option value={val.id}>{val.name}</option>
-                        </>
+                      {Constants.Coating.map((val ,arr) => (
+                          <option value={val.id} key={arr}>{val.name}</option>
                       ))}
                     </select>
                   </Col>
@@ -309,10 +317,8 @@ const Stocks = ({ match }) => {
                       className="w-100"
                       required
                     >
-                      {Constants.Temper.map((val) => (
-                        <>
-                          <option value={val.id}>{val.name}</option>
-                        </>
+                      {Constants.Temper.map((val,arr) => (
+                          <option value={val.id} key={arr}>{val.name}</option>
                       ))}
                     </select>
                   </Col>
@@ -389,15 +395,13 @@ const Stocks = ({ match }) => {
                     <select
                       aria-label="Default select example"
                       name="guardfilm"
-                          onChange={handleChange}
+                      onChange={handleChange}
                       value={items.guardfilm || ""}
                       className="w-100"
                       required
                     >
-                      {Constants.Guard.map((val) => (
-                        <>
-                          <option value={val.id}>{val.name}</option>
-                        </>
+                      {Constants.Guard.map((val,arr) => (
+                          <option value={val.id} key={arr}>{val.name}</option>
                       ))}
                     </select>
                   </Col>
@@ -467,7 +471,11 @@ const Stocks = ({ match }) => {
             style={{ justifyContent: "left", display: "grid" }}
           >
             <h3 className="">Stocks</h3>
-            <span className=" mx-3 ">Total weight:10,000 tonn</span>
+
+            <span className="mx-3">
+              Total weight: {weight === null ? "Loading..." : `${Math.floor(weight.totalweight)} tonn`}
+            </span>
+
           </Container>
           <Container
             className=""
@@ -491,10 +499,9 @@ const Stocks = ({ match }) => {
             className="me-auto searchInput"
             ref={inputElement}
             type="text"
-            placeholder="Search by compnay,product"
+            placeholder="Search by Company product"
             value={searchTerm}
             onChange={getSearchTerm}
-            
           />
           <i className="fas fa-search"></i>
         </Container>
@@ -621,94 +628,108 @@ const Stocks = ({ match }) => {
             <tbody>
               {searchResults.length > 1 || item.length > 1
                 ? (searchTerm.length < 1 ? item : searchResults).map(
-                    (val, index) => (
-                      <tr key={index}>
-                        <td
-                          style={{
-                            backgroundColor: "#f5fafd",
-                          }}
-                        >
-                          {val.product}
-                        </td>
-                        <td style={{ backgroundColor: "#f2f2f2" }}>
-                          {val.company}
-                        </td>
+                  (val, index) => (
+                    <tr key={index}>
+                      <td
+                        style={{
+                          backgroundColor: "#f5fafd",
+                        }}
+                      >
+                        {val.product}
+                      </td>
+                      <td style={{ backgroundColor: "#f2f2f2" }}>
+                        {val.company} 
+                      </td>
 
-                        <td style={{ backgroundColor: "#f2f2f2" }}>
-                          {val.grade}
-                        </td>
-                        <td style={{ backgroundColor: "#f5fafd" }}>
-                          {val.topcolor}
-                        </td>
-                        <td style={{ backgroundColor: "#f2f2f2" }}>
-                          {val.coating}
-                        </td>
-                        <td style={{ backgroundColor: "#f5fafd" }}>
-                          {val.temper}
-                        </td>
-                        <td style={{ backgroundColor: "#f2f2f2" }}>
-                          {val.guardfilm}
-                        </td>
-                        <td style={{ backgroundColor: "#f5fafd" }}>
-                          {val.thickness}
-                        </td>
-                        <td style={{ backgroundColor: "#f2f2f2" }}>
-                          {val.width}
-                        </td>
-                        <td style={{ backgroundColor: "#f5fafd" }}>
-                          {val.length}
-                        </td>
+                      <td style={{ backgroundColor: "#f2f2f2" }}>
+                        {val.grade}
+                      </td>
+                      <td style={{ backgroundColor: "#f5fafd" }}>
+                        {val.topcolor}
+                      </td>
+                      <td style={{ backgroundColor: "#f2f2f2" }}>
+                        {val.coating}
+                      </td>
+                      <td style={{ backgroundColor: "#f5fafd" }}>
+                        {val.temper}
+                      </td>
+                      <td style={{ backgroundColor: "#f2f2f2" }}>
+                        {val.guardfilm}
+                      </td>
+                      <td style={{ backgroundColor: "#f5fafd" }}>
+                        {val.thickness}
+                      </td>
+                      <td style={{ backgroundColor: "#f2f2f2" }}>
+                        {val.width}
+                      </td>
+                      <td style={{ backgroundColor: "#f5fafd" }}>
+                        {val.length}
+                      </td>
 
-                        <td style={{ backgroundColor: "#f2f2f2" }}>
-                          {Math.sign(val.weight) === -1 || val.weight <= 0 ? (
-                            <span style={{ color: "red" }}>Out Of Stocks</span>
-                          ) : (
-                            <span>{val.weight.toFixed(0) + " " + "Kg"}</span>
-                          )}
-                        </td>
-                        <td style={{ backgroundColor: "#f5fafd" }}>
-                          {val.pcs}
-                        </td>
-                        <td style={{ backgroundColor: "#f5fafd" }}>
-                          {val.batch_number}
-                        </td>
-                        <td style={{ backgroundColor: "#f2f2f2" }}>
-                          <div className="d-flex">
-                            <button
-                              style={{
-                                border: "none",
-                                backgroundColor: "transparent",
-                                color: "red",
-                                marginRight: "10px",
-                              }}
-                              onClick={(e) => {
-                                handleConfirm(val.id, e);
-                              }}
-                            >
-                              <i className="far fa-trash-alt"></i>
-                            </button>
-                            <button
-                              style={{
-                                border: "none",
-                                backgroundColor: "transparent",
-                                color: "blue",
-                              }}
-                              onClick={() => ChangeEditShow(val._id)}
-                            >
-                              <i className="far fa-edit"></i>
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    )
+                      <td style={{ backgroundColor: "#f2f2f2" }}>
+                        {Math.sign(val.weight) === -1 || val.weight <= 0 ? (
+                          <span style={{ color: "red" }}>Out Of Stocks</span>
+                        ) : (
+                          <span>{val.weight.toFixed(0) + " " + "Kg"}</span>
+
+                        )}
+                      </td>
+                      <td style={{ backgroundColor: "#f5fafd" }}>
+                        {val.pcs}
+                      </td>
+                      <td style={{ backgroundColor: "#f5fafd" }}>
+                        {val.batch_number.map((item, index) => (
+                          <span key={index}>
+                            {index > 0 && <br />} {/* Add line break after the first item */}
+                            {`${index + 1}.${item}`}
+                          </span>
+                        ))}
+                      </td>
+
+                      <td style={{ backgroundColor: "#f2f2f2" }}>
+                        <div className="d-flex">
+                          <button
+                            style={{
+                              border: "none",
+                              backgroundColor: "transparent",
+                              color: "red",
+                              marginRight: "10px",
+                            }}
+                            onClick={(e) => {
+                              handleConfirm(val.id, e);
+                            }}
+                          >
+                            <i className="far fa-trash-alt"></i>
+                          </button>
+                          <button
+                            style={{
+                              border: "none",
+                              backgroundColor: "transparent",
+                              color: "blue",
+                            }}
+                            onClick={() => ChangeEditShow(val._id)}
+                          >
+                            <i className="far fa-edit"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
                   )
-                : "No orders Found"}
+                )
+                :
+                //  "No orders Found"
+                <tr>
+                      <td colSpan="15">No orders Found</td>
+                </tr>
+
+                
+                }
             </tbody>
           </table>
         </Container>
       </Container>
       {/* STOCKS MAIN CONTAINER END */}
-    </>
+    </div>
   );
 };
 
