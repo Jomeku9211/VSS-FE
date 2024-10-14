@@ -10,7 +10,7 @@ import axios from "axios";
 
 const Stocks = ({ match }) => {
   const [item, setItem] = useState({});
-  const [weight, setweight] = useState(null)
+  const [weight, setweight] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const inputElement = useRef("");
@@ -69,7 +69,7 @@ const Stocks = ({ match }) => {
       })
         .then((response) => {
           if (response.status === 201) {
-            console.log(response)
+            console.log(response);
             setLoading(false);
             setSuccessAlert(true);
             e.target.reset();
@@ -145,25 +145,25 @@ const Stocks = ({ match }) => {
         },
       }).then((response) => {
         setItem(response.data.res);
-        console.log("response.data.res",response.data.res);
+        console.log("response.data.res", response.data.res);
       });
     };
     fetchData();
   }, []); //item
 
-
-
-
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${secret.Ip}/salesManger/Totalweight`, {
-          headers: {
-            Authorization: `Bearer ${secret.token}`,
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-          },
-        });
+        const response = await axios.get(
+          `${secret.Ip}/salesManger/Totalweight`,
+          {
+            headers: {
+              Authorization: `Bearer ${secret.token}`,
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*",
+            },
+          }
+        );
         setweight(response.data);
         console.log("Total weight is", response.data);
       } catch (error) {
@@ -173,8 +173,6 @@ const Stocks = ({ match }) => {
 
     fetchData();
   }, []);
-
-  
 
   const ChangeEditShow = (value) => {
     setModalValue(value);
@@ -244,8 +242,10 @@ const Stocks = ({ match }) => {
                       className="w-100"
                       required
                     >
-                      {Constants.Product.map((val,arr) => (
-                        <option value={val.id} key={arr}>{val.name}</option>
+                      {Constants.Product.map((val, arr) => (
+                        <option value={val.id} key={arr}>
+                          {val.name}
+                        </option>
                       ))}
                     </select>
                   </Col>
@@ -257,8 +257,10 @@ const Stocks = ({ match }) => {
                       className="w-100"
                       required
                     >
-                      {Constants.Company.map((val,arr) => (
-                          <option value={val.id} key={arr}>{val.name}</option>
+                      {Constants.Company.map((val, arr) => (
+                        <option value={val.id} key={arr}>
+                          {val.name}
+                        </option>
                       ))}
                     </select>
                   </Col>
@@ -274,8 +276,10 @@ const Stocks = ({ match }) => {
                       className="w-100"
                       required
                     >
-                      {Constants.Grade.map((val,arr) => (
-                          <option value={val.id} key={arr}>{val.name}</option>
+                      {Constants.Grade.map((val, arr) => (
+                        <option value={val.id} key={arr}>
+                          {val.name}
+                        </option>
                       ))}
                     </select>
                   </Col>
@@ -287,8 +291,10 @@ const Stocks = ({ match }) => {
                       className="w-100"
                       required
                     >
-                      {Constants.Color.map((val,arr) => (
-                          <option value={val.id} key={arr}>{val.name}</option>
+                      {Constants.Color.map((val, arr) => (
+                        <option value={val.id} key={arr}>
+                          {val.name}
+                        </option>
                       ))}
                     </select>
                   </Col>
@@ -304,8 +310,10 @@ const Stocks = ({ match }) => {
                       className="w-100"
                       required
                     >
-                      {Constants.Coating.map((val ,arr) => (
-                          <option value={val.id} key={arr}>{val.name}</option>
+                      {Constants.Coating.map((val, arr) => (
+                        <option value={val.id} key={arr}>
+                          {val.name}
+                        </option>
                       ))}
                     </select>
                   </Col>
@@ -317,8 +325,10 @@ const Stocks = ({ match }) => {
                       className="w-100"
                       required
                     >
-                      {Constants.Temper.map((val,arr) => (
-                          <option value={val.id} key={arr}>{val.name}</option>
+                      {Constants.Temper.map((val, arr) => (
+                        <option value={val.id} key={arr}>
+                          {val.name}
+                        </option>
                       ))}
                     </select>
                   </Col>
@@ -400,8 +410,10 @@ const Stocks = ({ match }) => {
                       className="w-100"
                       required
                     >
-                      {Constants.Guard.map((val,arr) => (
-                          <option value={val.id} key={arr}>{val.name}</option>
+                      {Constants.Guard.map((val, arr) => (
+                        <option value={val.id} key={arr}>
+                          {val.name}
+                        </option>
                       ))}
                     </select>
                   </Col>
@@ -473,9 +485,11 @@ const Stocks = ({ match }) => {
             <h3 className="">Stocks</h3>
 
             <span className="mx-3">
-              Total weight: {weight === null ? "Loading..." : `${Math.floor(weight.totalweight)} tonn`}
+              Total weight:{" "}
+              {weight === null
+                ? "Loading..."
+                : `${Math.floor(weight.totalweight)} tonn`}
             </span>
-
           </Container>
           <Container
             className=""
@@ -626,8 +640,8 @@ const Stocks = ({ match }) => {
               </tr>
             </thead>
             <tbody>
-              {searchResults.length > 1 || item.length > 1
-                ? (searchTerm.length < 1 ? item : searchResults).map(
+              {searchResults.length > 1 || item.length > 1 ? (
+                (searchTerm.length < 1 ? item : searchResults).map(
                   (val, index) => (
                     <tr key={index}>
                       <td
@@ -638,7 +652,7 @@ const Stocks = ({ match }) => {
                         {val.product}
                       </td>
                       <td style={{ backgroundColor: "#f2f2f2" }}>
-                        {val.company} 
+                        {val.company}
                       </td>
 
                       <td style={{ backgroundColor: "#f2f2f2" }}>
@@ -671,16 +685,14 @@ const Stocks = ({ match }) => {
                           <span style={{ color: "red" }}>Out Of Stocks</span>
                         ) : (
                           <span>{val.weight.toFixed(0) + " " + "Kg"}</span>
-
                         )}
                       </td>
-                      <td style={{ backgroundColor: "#f5fafd" }}>
-                        {val.pcs}
-                      </td>
+                      <td style={{ backgroundColor: "#f5fafd" }}>{val.pcs}</td>
                       <td style={{ backgroundColor: "#f5fafd" }}>
                         {val.batch_number.map((item, index) => (
                           <span key={index}>
-                            {index > 0 && <br />} {/* Add line break after the first item */}
+                            {index > 0 && <br />}{" "}
+                            {/* Add line break after the first item */}
                             {`${index + 1}.${item}`}
                           </span>
                         ))}
@@ -716,14 +728,12 @@ const Stocks = ({ match }) => {
                     </tr>
                   )
                 )
-                :
+              ) : (
                 //  "No orders Found"
                 <tr>
-                      <td colSpan="15">No orders Found</td>
+                  <td colSpan="15">No orders Found</td>
                 </tr>
-
-                
-                }
+              )}
             </tbody>
           </table>
         </Container>

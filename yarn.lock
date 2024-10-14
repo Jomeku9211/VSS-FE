@@ -3045,6 +3045,13 @@ binary-extensions@^2.0.0:
   resolved "https://registry.npmjs.org/binary-extensions/-/binary-extensions-2.2.0.tgz"
   integrity sha512-jDctJ/IVQbZoJykoeHbhXpOlNBqGNcwXJKJog42E5HDPUwQTSdjCHdihjj0DlnheQ7blbT6dHOafNAiS8ooQKA==
 
+bindings@^1.5.0:
+  version "1.5.0"
+  resolved "https://registry.npmjs.org/bindings/-/bindings-1.5.0.tgz"
+  integrity sha512-p2q/t/mhvuOj/UeLlV6566GD/guowlr0hHxClI0W9m7MWYkL1F0hLo+0Aexs9HSPCtR1SXQ0TD3MMKrXZajbiQ==
+  dependencies:
+    file-uri-to-path "1.0.0"
+
 bluebird@^3.5.5:
   version "3.7.2"
   resolved "https://registry.npmjs.org/bluebird/-/bluebird-3.7.2.tgz"
@@ -5762,6 +5769,19 @@ fs.realpath@^1.0.0:
   resolved "https://registry.npmjs.org/fs.realpath/-/fs.realpath-1.0.0.tgz"
   integrity sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw==
 
+fsevents@^1.2.7:
+  version "1.2.13"
+  resolved "https://registry.npmjs.org/fsevents/-/fsevents-1.2.13.tgz"
+  integrity sha512-oWb1Z6mkHIskLzEJ/XWX0srkpkTQ7vaopMQkyaEIoq0fmtFVxOthb8cCxeT+p3ynTdkk/RZwbgG4brR5BeWECw==
+  dependencies:
+    bindings "^1.5.0"
+    nan "^2.12.1"
+
+fsevents@^2.1.2, fsevents@^2.1.3, fsevents@~2.3.2:
+  version "2.3.2"
+  resolved "https://registry.npmjs.org/fsevents/-/fsevents-2.3.2.tgz"
+  integrity sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==
+
 function-bind@^1.1.1:
   version "1.1.1"
   resolved "https://registry.npmjs.org/function-bind/-/function-bind-1.1.1.tgz"
@@ -8290,6 +8310,11 @@ multicast-dns@^6.0.1:
   dependencies:
     dns-packet "^1.3.1"
     thunky "^1.0.2"
+
+nan@^2.12.1:
+  version "2.17.0"
+  resolved "https://registry.npmjs.org/nan/-/nan-2.17.0.tgz"
+  integrity sha512-2ZTgtl0nJsO0KQCjEpxcIr5D+Yv90plTitZt9JBfQvVJDS5seMl3FOvsh3+9CoYWXf/1l5OaZzzF6nDm4cagaQ==
 
 nanoid@^3.3.4:
   version "3.3.4"
@@ -12347,6 +12372,40 @@ vm-browserify@^1.0.1:
   version "1.1.2"
   resolved "https://registry.npmjs.org/vm-browserify/-/vm-browserify-1.1.2.tgz"
   integrity sha512-2ham8XPWTONajOR0ohOKOHXkm3+gaBmGut3SRuu75xLd/RRaY6vqgh8NBYYk7+RW3u5AtzPQZG8F10LHkl0lAQ==
+
+"vss_frontend@file:":
+  version "0.1.0"
+  resolved "file:"
+  dependencies:
+    "@material-ui/core" "^4.12.1"
+    "@testing-library/jest-dom" "^5.14.1"
+    "@testing-library/react" "^11.2.7"
+    "@testing-library/user-event" "^12.8.3"
+    apexcharts "^3.27.2"
+    axios "^0.21.1"
+    bootstrap "^5.0.2"
+    canvasjs "^1.8.3"
+    canvasjs-react-charts "^1.0.5"
+    chart.js "^3.7.1"
+    chartjs "^0.3.24"
+    dotenv "^8.2.0"
+    install "^0.13.0"
+    react "^17.0.2"
+    react-apexcharts "^1.3.9"
+    react-bootstrap "^1.6.1"
+    react-calendar "^3.4.0"
+    react-chartjs-2 "^4.0.1"
+    react-datepicker "^4.2.1"
+    react-dom "^17.0.2"
+    react-loader-spinner "^4.0.0"
+    react-moment "^1.1.1"
+    react-paginate "^7.1.3"
+    react-router-dom "^5.2.0"
+    react-router-hash-history "git+https://github.com/ymzuiku/react-router-hash-history.git"
+    react-scripts "4.0.3"
+    recharts "^2.1.9"
+    vss_frontend "file:"
+    web-vitals "^1.1.2"
 
 w3c-hr-time@^1.0.2:
   version "1.0.2"

@@ -1,13 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import './CreateOrder.css';
-import { Container, Col, Row, Badge, Form, Alert } from 'react-bootstrap';
-import Axios from 'axios';
-import LoaderComp from '../Loader/LoaderComp';
-import Constants from '../constants';
-import secret from '../config';
-import '../../Styles/Cart.css';
-
-
+import React, { useState, useEffect } from "react";
+import "./CreateOrder.css";
+import { Container, Col, Row, Badge, Form, Alert } from "react-bootstrap";
+import Axios from "axios";
+import LoaderComp from "../Loader/LoaderComp";
+import Constants from "../constants";
+import secret from "../config";
+import "../../Styles/Cart.css";
 
 const CreateOrder = () => {
   const [checked, setChecked] = useState("");
@@ -36,7 +34,6 @@ const CreateOrder = () => {
   const [showCartItem, setShowCartItem] = useState(false);
   const [isCartEmpty, setISCartEmpty] = useState(cartItem.length === 0);
 
-
   let newArray = [];
 
   const handleOrderRemove = (index, e) => {
@@ -48,8 +45,9 @@ const CreateOrder = () => {
   const datemili = new Date();
   const miliseconds = datemili.getTime().toString();
 
-  const [ inputs, setInputs] = useState({
+  const [inputs, setInputs] = useState({
     firmName: "",
+    Email: "",
     clientName: "",
     orderId: miliseconds,
     address: "",
@@ -77,15 +75,13 @@ const CreateOrder = () => {
     company: company,
     grade: grade,
     topcolor: color,
-    coatingnum: parseInt(coating),
+    coating: parseInt(coating),
     temper: temper,
     guardfilm: guard,
     weight: totalWeight,
-  };   
-
+  };
 
   const [loading, setLoading] = useState(false);
-
 
   // Get today's date in the format YYYY-MM-DD
   const today = new Date().toISOString().split("T")[0];
@@ -119,6 +115,7 @@ const CreateOrder = () => {
   const formData = {
     clientName: inputs.clientName,
     firmName: inputs.firmName,
+    Email: inputs.Email,
     address: inputs.address,
     orderId: inputs.orderId,
     city: inputs.city,
@@ -127,7 +124,7 @@ const CreateOrder = () => {
     products: cartItem,
   };
 
-console.log(formData);
+  console.log("Form Data : " + formData);
   const hadnleFormSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -148,14 +145,14 @@ console.log(formData);
         console.log("enter in post fitchn data");
 
         if (response.status === 201) {
-          console.log(response);
+          console.log("Response : " + response);
           e.target.reset();
           window.scrollTo(0, 0);
           setSuccessAlert(true);
-          setTimeout(() => {
-            setSuccessAlert(false);
-            window.location.href = "/listOrder"
-          }, 1500);
+          // setTimeout(() => {
+          //   setSuccessAlert(false);
+          //   window.location.href = "/listOrder";
+          // }, 1500);
         } else {
           console.log("Created order", response);
           setFailureAlert(true);
@@ -180,96 +177,27 @@ console.log(formData);
     setNewProduct(order);
   };
 
-const resetStates = () => {
-  setCompany(Constants.Company[0].id);
-  setGrade(Constants.Grade[0].id);
-  setColor(Constants.Color[0].id);
-  setCoating(Constants.Coating[0].id);
-  setTemper(Constants.Temper[0].id);
-  setGuard(Constants.Guard[0].id);
-  setLength("");
-  setPcs("");
-  setRate("");
-  setWidth("");
-  setThickness("");
-  setStockAvailable(false);
-  setChecked("");
-};
-
-const [stockAvailable, setStockAvailable] = useState(false);
-
-
-useEffect(() => {
-  const checkStockAvailability = async () => {
-    const weight = length * pcs * 7.86;
-    const rateBasic = weight;
-    const gstPercentage = 18;
-    const gstAmount = (gstPercentage / 100) * rateBasic;
-    const rateGst = rateBasic + gstAmount;
-
-    const product = {
-      select_product: checked,
-      company: company,
-      grade: grade,
-      topcolor: color,
-      coatingnum: parseInt(coating),
-      temper: temper,
-      guardfilm: guard,
-      weight: totalWeight,
-      length: length,
-      width: width,
-      thickness: thickness,
-      pcs: pcs,
-      rate_basic: rateBasic,
-      rate_gst: rateGst,
-    };
-
-    try {
-      const response = await Axios.get(
-        "http://3.109.125.33:3009/sales/availableStock",
-        {
-          params: product,
-          headers: {
-            Authorization: "Bearer THISISMYTOKENKEYNAME",
-          },
-        }
-      );
-
-      console.log("API response:", response.data);
-
-      if (response.data) {
-        setStockAvailable(true); // Product is available
-      } else {
-        setStockAvailable(false); // Product is not available
-      }
-    } catch (error) {
-      console.error("Error checking stock availability:", error);
-      setStockAvailable(false); // Error occurred, assume not available
-    }
+  const resetStates = () => {
+    setCompany(Constants.Company[0].id);
+    setGrade(Constants.Grade[0].id);
+    setColor(Constants.Color[0].id);
+    setCoating(Constants.Coating[0].id);
+    setTemper(Constants.Temper[0].id);
+    setGuard(Constants.Guard[0].id);
+    setLength("");
+    setPcs("");
+    setRate("");
+    setWidth("");
+    setThickness("");
+    setStockAvailable(false);
+    setChecked("");
   };
 
-  // Trigger stock availability check whenever any of these inputs change
-  if (
-    company !== '' &&
-    grade !== '' &&
-    color !== '' &&
-    coating !== '' &&
-    temper !== '' &&
-    guard !== '' &&
-    thickness !== '' &&
-    width !== '' &&
-    length !== '' &&
-    pcs !== ''
-  ) {
-    checkStockAvailability();
-  }
-}, [company, grade, color, coating, temper, guard, thickness, width, length, pcs]);
+  const [stockAvailable, setStockAvailable] = useState(false);
 
-
-
-    const handleAddToCart = async () => {
-        const weight = length * pcs * 7.86;
-
+  useEffect(() => {
+    const checkStockAvailability = async () => {
+      const weight = length * pcs * 7.86;
       const rateBasic = weight;
       const gstPercentage = 18;
       const gstAmount = (gstPercentage / 100) * rateBasic;
@@ -280,7 +208,7 @@ useEffect(() => {
         company: company,
         grade: grade,
         topcolor: color,
-        coatingnum: parseInt(coating),
+        coating: parseInt(coating),
         temper: temper,
         guardfilm: guard,
         weight: totalWeight,
@@ -288,25 +216,97 @@ useEffect(() => {
         width: width,
         thickness: thickness,
         pcs: pcs,
-        rate_basic: rateBasic,
-        rate_gst: rateGst,
+        rate: rateBasic,
+        gst: rateGst,
       };
 
+      try {
+        const response = await Axios.get(
+          "http://3.109.125.33:3009/sales/availableStock",
+          {
+            params: product,
+            headers: {
+              Authorization: "Bearer THISISMYTOKENKEYNAME",
+            },
+          }
+        );
 
-    
-            setCartItem([...cartItem, product]);
-            setShowCartItem(true);
-            setISCartEmpty(false);
-            const scrollPosition = document.body.scrollHeight * 0.35;
-            window.scrollTo(0, scrollPosition);
-            resetStates();
+        console.log("API response:", response.data);
+
+        if (response.data) {
+          setStockAvailable(true); // Product is available
+        } else {
+          setStockAvailable(false); // Product is not available
+        }
+      } catch (error) {
+        console.error("Error checking stock availability:", error);
+        setStockAvailable(false); // Error occurred, assume not available
+      }
     };
 
+    // Trigger stock availability check whenever any of these inputs change
+    if (
+      company !== "" &&
+      grade !== "" &&
+      color !== "" &&
+      coating !== "" &&
+      temper !== "" &&
+      guard !== "" &&
+      thickness !== "" &&
+      width !== "" &&
+      length !== "" &&
+      pcs !== ""
+    ) {
+      checkStockAvailability();
+    }
+  }, [
+    company,
+    grade,
+    color,
+    coating,
+    temper,
+    guard,
+    thickness,
+    width,
+    length,
+    pcs,
+  ]);
 
-  console.log(cartItem);
+  const handleAddToCart = async () => {
+    const weight = length * pcs * 7.86;
+
+    const rateBasic = weight;
+    const gstPercentage = 18;
+    const gstAmount = (gstPercentage / 100) * rateBasic;
+    const rateGst = rateBasic + gstAmount;
+
+    const product = {
+      select_product: checked,
+      company: company,
+      grade: grade,
+      topcolor: color,
+      coating: parseInt(coating),
+      temper: temper,
+      guardfilm: guard,
+      weight: totalWeight,
+      length: length,
+      width: width,
+      thickness: thickness,
+      pcs: pcs,
+      rate: rateBasic,
+      gst: rateGst,
+    };
+
+    setCartItem([...cartItem, product]);
+    setShowCartItem(true);
+    setISCartEmpty(false);
+    const scrollPosition = document.body.scrollHeight * 0.35;
+    window.scrollTo(0, scrollPosition);
+    resetStates();
+  };
+
+  console.log("Cart Item : ", cartItem);
   console.log(handleAddToCart);
-
-  
 
   useEffect(() => {
     const weight = length * pcs * 7.86;
@@ -321,22 +321,20 @@ useEffect(() => {
     }));
   }, [totalWeight]);
 
-
   const deletingCardItems = (index) => {
-     const updatedCartItems = cartItem.filter(
-       (_, itemIndex) => itemIndex !== index
-     );
-     setCartItem(updatedCartItems);
+    const updatedCartItems = cartItem.filter(
+      (_, itemIndex) => itemIndex !== index
+    );
+    setCartItem(updatedCartItems);
 
-     if (updatedCartItems.length === 0) {
+    if (updatedCartItems.length === 0) {
       setISCartEmpty(true);
     }
+  };
 
-   };
+  const [todaysDate, setTodaysDate] = useState("");
 
-   const [todaysDate, setTodaysDate] = useState("");
-
-   useEffect(() => {
+  useEffect(() => {
     const today = new Date();
     const formattedDate = today.toLocaleDateString("en-GB", {
       day: "2-digit",
@@ -345,7 +343,6 @@ useEffect(() => {
     });
     setTodaysDate(formattedDate);
   }, []);
-
 
   return (
     <>
@@ -432,6 +429,22 @@ useEffect(() => {
                     </Col>
                   </Row>
                   <Row className="inputRow">
+                    <Col className="col-lg-4 label">Email</Col>
+                    <Col className="col-lg-1">-</Col>
+                    <Col className="col-lg-7">
+                      <input
+                        className="input_order"
+                        onChange={handleChange}
+                        value={inputs.Email}
+                        type="email"
+                        name="Email"
+                        placeholder="Enter Email Address"
+                        required
+                        maxLength="50"
+                      />
+                    </Col>
+                  </Row>
+                  <Row className="inputRow">
                     <Col className="col-lg-4 label">Address</Col>
                     <Col className="col-lg-1">-</Col>
                     <Col className="col-lg-7">
@@ -455,14 +468,14 @@ useEffect(() => {
                         className="input_order"
                         onChange={handlePhoneChange}
                         value={inputs.phone_no}
-                        type="number"
+                        type="text"
                         name="phone_no"
                         placeholder="Phone No."
                         required
                         maxLength="10"
                       />
 
-                      {inputs.phone_no.length != 10 }
+                      {inputs.phone_no.length != 10}
                     </Col>
                   </Row>
                   <Row className="inputRow">
@@ -603,7 +616,7 @@ useEffect(() => {
                               onChange={handleCheck}
                               name="checked"
                               value="GPC"
-                              checked={checked === 'GPC'}
+                              checked={checked === "GPC"}
                             />
                           </Col>
                           <Col>
@@ -616,7 +629,7 @@ useEffect(() => {
                               onChange={handleCheck}
                               name="checked"
                               value="GPS"
-                              checked={checked === 'GPS'}
+                              checked={checked === "GPS"}
                             />
                           </Col>
                           <Col>
@@ -629,7 +642,7 @@ useEffect(() => {
                               onChange={handleCheck}
                               name="checked"
                               value="Acce."
-                              checked={checked === 'Acce.'}
+                              checked={checked === "Acce."}
                             />
                           </Col>
                         </Row>
@@ -644,8 +657,7 @@ useEffect(() => {
                               onChange={handleCheck}
                               name="checked"
                               value="GC"
-                              checked={checked === 'GC'}
-
+                              checked={checked === "GC"}
                             />
                           </Col>
                           <Col>
@@ -658,7 +670,7 @@ useEffect(() => {
                               onChange={handleCheck}
                               name="checked"
                               value="HR"
-                              checked={checked === 'HR'}
+                              checked={checked === "HR"}
                             />
                           </Col>
                           <Col>
@@ -671,7 +683,7 @@ useEffect(() => {
                               onChange={handleCheck}
                               name="checked"
                               value="CR"
-                              checked={checked === 'CR'}
+                              checked={checked === "CR"}
                             />
                           </Col>
                         </Row>
@@ -686,7 +698,7 @@ useEffect(() => {
                               onChange={handleCheck}
                               name="checked"
                               value="Color"
-                              checked={checked === 'Color'}
+                              checked={checked === "Color"}
                             />
                           </Col>
                           <Col>
@@ -699,7 +711,7 @@ useEffect(() => {
                               onChange={handleCheck}
                               name="checked"
                               value="Profile Sheet"
-                              checked={checked === 'Profile Sheet'}
+                              checked={checked === "Profile Sheet"}
                             />
                           </Col>
 
@@ -713,8 +725,7 @@ useEffect(() => {
                               onChange={handleCheck}
                               name="checked"
                               value="GP ROLL"
-                              checked={checked === 'GP ROLL'}
-
+                              checked={checked === "GP ROLL"}
                             />
                           </Col>
                         </Row>
@@ -754,74 +765,75 @@ useEffect(() => {
                               <p>Product No. - {productKey}</p>
                             </Col>
                           </Row>
-                            <Row>
-                              <Col>
-                                <select
-                                  className="inputSelect"
-                                  aria-label="Default select example"
-                                  value={company}
-                                  onChange={(e) => {
-                                    setCompany(e.target.value);
-                                  }}
-                                  // required  
-                                >
-                                  {Constants.Company.map((val, arr) => (
-                                    <option value={val.id} key={arr}>
-                                      {val.name}
-                                    </option>
-                                  ))}
-                                </select>
-                              </Col>
-                              <Col>
-                                <select
-                                  className="inputSelect"
-                                  aria-label="Default select example"
-                                  value={grade}
-                                  onChange={(e) => {
-                                    setGrade(e.target.value);
-                                  }}
-                                  // required
-                                >
-                                  {Constants.Grade.map((val, arr) => (
-                                    <option value={val.id} key={arr}>
-                                      {val.name}
-                                    </option>
-                                  ))}
-                                </select>
-                              </Col>
-                              <Col>
-                                <select
-                                  className="inputSelect"
-                                  aria-label="Default select example"
-                                  value={color}
-                                  onChange={(e) => setColor(e.target.value)}
-                                  // required
-                                >
-                                  {Constants.Color.map((val, arr) => (
-                                    <option value={val.id} key={arr}>
-                                      {val.name}
-                                    </option>
-                                  ))}
-                                </select>
-                              </Col>
-                            </Row>
-                            <Row className="mt-3">
-                              <Col>
-                                <select
-                                  className="inputSelect"
-                                  aria-label="Default select example"
-                                  onChange={(e) => setCoating(e.target.value)}
-                                  value={coating}
-                                  // required
-                                >
-                                  {Constants.Coating.map((val, arr) => (
-                                    <option value={val.id} key={arr}>
-                                      {val.name}
-                                    </option>
-                                  ))}
-                                </select>
-                              </Col>
-                              <Col>
+                          <Row>
+                            <Col>
+                              <select
+                                className="inputSelect"
+                                aria-label="Default select example"
+                                value={company}
+                                onChange={(e) => {
+                                  setCompany(e.target.value);
+                                }}
+                                // required
+                              >
+                                {Constants.Company.map((val, arr) => (
+                                  <option value={val.id} key={arr}>
+                                    {val.name}
+                                  </option>
+                                ))}
+                              </select>
+                            </Col>
+                            <Col>
+                              <select
+                                className="inputSelect"
+                                aria-label="Default select example"
+                                value={grade}
+                                onChange={(e) => {
+                                  setGrade(e.target.value);
+                                }}
+                                // required
+                              >
+                                {Constants.Grade.map((val, arr) => (
+                                  <option value={val.id} key={arr}>
+                                    {val.name}
+                                  </option>
+                                ))}
+                              </select>
+                            </Col>
+                            <Col>
+                              <select
+                                className="inputSelect"
+                                aria-label="Default select example"
+                                value={color}
+                                onChange={(e) => setColor(e.target.value)}
+                                // required
+                              >
+                                {Constants.Color.map((val, arr) => (
+                                  <option value={val.id} key={arr}>
+                                    {val.name}
+                                  </option>
+                                ))}
+                              </select>
+                            </Col>
+                          </Row>
+                          <Row className="mt-3">
+                            <Col>
+                              <select
+                                className="inputSelect"
+                                aria-label="Default select example"
+                                onChange={(e) => setCoating(e.target.value)}
+                                value={coating}
+                                // required
+                              >
+                                as
+                                {Constants.Coating.map((val, arr) => (
+                                  <option value={val.id} key={arr}>
+                                    {val.name}
+                                  </option>
+                                ))}
+                              </select>
+                            </Col>
+                            <Col>
                               <select
                                 className="inputSelect"
                                 aria-label="Default select example"
@@ -852,7 +864,7 @@ useEffect(() => {
                               </select>
                             </Col>
                           </Row>
-                        </Container>  
+                        </Container>
                         <Container className="subInputs">
                           <Container className="insideInputs">
                             <Row>
@@ -906,7 +918,7 @@ useEffect(() => {
                                         <input
                                           style={{ width: "150px" }}
                                           id="weight"
-                                          type="number"
+                                          type="text"
                                           placeholder="length"
                                           name="weight"
                                           className="subfields"
@@ -941,7 +953,7 @@ useEffect(() => {
                                             width: "150px",
                                           }}
                                           id="pcs"
-                                          type="number"
+                                          type="text"
                                           placeholder="Pcs"
                                           name="pcs"
                                           value={pcs}
@@ -969,8 +981,7 @@ useEffect(() => {
                                     </Col>
 
                                     <Col className="m-3">
-                                      <Row className="mt-3 ml-6 ml-auto col-3">
-                                      </Row>
+                                      <Row className="mt-3 ml-6 ml-auto col-3"></Row>
                                       <Row>
                                         {orderList.length > 1 && (
                                           <button
@@ -1003,7 +1014,7 @@ useEffect(() => {
                                 <label htmlFor="thickness">Rate(Basic)</label>
                                 <input
                                   name="rate"
-                                  type="number"
+                                  type="text"
                                   // required
                                   value={rate || ""}
                                   onChange={handleRate}
@@ -1017,6 +1028,7 @@ useEffect(() => {
                                 <label htmlFor="thickness">Rate(GST%)</label>
                                 <input
                                   type="text"
+                                  name="gst"
                                   value={total || ""}
                                   placeholder="Gst"
                                   className="subfields"
@@ -1045,14 +1057,12 @@ useEffect(() => {
                       margin: "30px",
                     }}
                   >
-                     {
-                      stockAvailable ? (
-                        <p style={{color: "green"}}>Stock Available</p>
-                      ) : (<p style={{color: "red"}}>Stock Not Available</p>)
-                      
-                    }
+                    {stockAvailable ? (
+                      <p style={{ color: "green" }}>Stock Available</p>
+                    ) : (
+                      <p style={{ color: "red" }}>Stock Not Available</p>
+                    )}
 
-                 
                     {/* {newProduct?.length > 0 && ( */}
                     <button
                       style={{
@@ -1063,13 +1073,13 @@ useEffect(() => {
                         padding: "10px",
                       }}
                       type="submit"
-                      disabled={ isCartEmpty || loading}
+                      disabled={isCartEmpty || loading}
                     >
                       {loading ? (
                         <LoaderComp
                           type={"TailSpin"}
                           color={"white"}
-                          hidden={true} 
+                          hidden={true}
                           height={30}
                         />
                       ) : (
@@ -1081,17 +1091,17 @@ useEffect(() => {
                       onClick={handleAddToCart}
                       style={{
                         border: "none",
-                        borderRadius: "5px",    
+                        borderRadius: "5px",
                         backgroundColor: !stockAvailable ? "grey" : "green",
                         color: "white",
                         padding: "10px",
                         marginLeft: "14px",
                       }}
-                      disabled = {!stockAvailable}
+                      disabled={!stockAvailable}
                     >
                       Add to cart
                     </button>
-                   
+
                     {/* )} */}
                   </div>
                 </form>
@@ -1141,6 +1151,14 @@ useEffect(() => {
                       <p>{inputs.firmName}</p>
                     </Col>
                   </Row>
+                  <Row>
+                    <Col>
+                      <p>Email -</p>
+                    </Col>
+                    <Col>
+                      <p>{inputs.Email}</p>
+                    </Col>
+                  </Row>
                   <Col>
                     <p>Address -</p>
                   </Col>
@@ -1172,69 +1190,77 @@ useEffect(() => {
                     <p>{inputs.deliveryDate}</p>
                   </Col>
                 </Row>
+                <Row>
+                  <Col>
+                    <p>City-</p>
+                  </Col>
+                  <Col>
+                    <p>{inputs.city}</p>
+                  </Col>
+                </Row>
               </div>
             </Container>
-        
-{
-    showCartItem && cartItem.map((product,index) => {
-      const data = [
-        { label: "Company", value: product.company },
-        { label: "Grade", value: product.grade  },
-        { label: "Color", value: product.topcolor  },
-        { label: "Coating", value: product.coatingnum},
-        { label: "Temper", value: product.temper },
-        { label: "Guard", value: product.guardfilm },
-        { label: "Thickness", value: desc.thickness},
-        { label: "Width", value: desc.width},
-        { label: "Length", value: desc.length},
-        { label: "Pcs", value: desc.pcs },
-        { label: "Rate(Basic)", value: product.weight },
-        { label: "Rate(GST%)", value: product.weight + ((product.weight) * (18/100)) },
-      ];
-      
 
-  return(
-    <Container className="Cart-Div">
-    <div className="afterOrder2">
-      <Container className="insideAfterOrder">
-        <Row>
-          <div className="d-flex">
-            <div className="ms-auto d-grid">
-              <button
-                onClick={() => deletingCardItems(index)}
-                className="ms-auto"
-                style={{
-                  color: "red",
-                  backgroundColor: "none",
-                  border: "none",
-                  cursor: "pointer"
-                }}
-              >
-                <i className="far fa-trash-alt"></i>
-              </button>
-            </div>
-          </div>
-        </Row>
-        {data.map((item, index) => (
-          <Row key={index}>
-            <Col className='Cart-Data'>
-              <p>{item.label} : </p>
-              <p>{item.value} </p>
-            </Col>
-          </Row>
-        ))}
-      </Container>
-    </div>
-  </Container>
-  )
-    })
-  }
+            {showCartItem &&
+              cartItem.map((product, index) => {
+                const data = [
+                  { label: "Company", value: product.company },
+                  { label: "Grade", value: product.grade },
+                  { label: "Color", value: product.topcolor },
+                  { label: "Coating", value: product.coating },
+                  { label: "Temper", value: product.temper },
+                  { label: "Guard", value: product.guardfilm },
+                  { label: "Thickness", value: desc.thickness },
+                  { label: "Width", value: desc.width },
+                  { label: "Length", value: desc.length },
+                  { label: "Pcs", value: desc.pcs },
+                  { label: "Rate(Basic)", value: product.weight },
+                  {
+                    label: "Rate(GST%)",
+                    value: product.weight + product.weight * (18 / 100),
+                  },
+                ];
+
+                return (
+                  <Container className="Cart-Div">
+                    <div className="afterOrder2">
+                      <Container className="insideAfterOrder">
+                        <Row>
+                          <div className="d-flex">
+                            <div className="ms-auto d-grid">
+                              <button
+                                onClick={() => deletingCardItems(index)}
+                                className="ms-auto"
+                                style={{
+                                  color: "red",
+                                  backgroundColor: "none",
+                                  border: "none",
+                                  cursor: "pointer",
+                                }}
+                              >
+                                <i className="far fa-trash-alt"></i>
+                              </button>
+                            </div>
+                          </div>
+                        </Row>
+                        {data.map((item, index) => (
+                          <Row key={index}>
+                            <Col className="Cart-Data">
+                              <p>{item.label} : </p>
+                              <p>{item.value} </p>
+                            </Col>
+                          </Row>
+                        ))}
+                      </Container>
+                    </div>
+                  </Container>
+                );
+              })}
           </Col>
         </Row>
       </Container>
     </>
   );
 };
-
 
 export default CreateOrder;

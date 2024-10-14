@@ -7,6 +7,7 @@ const Sidenav = () => {
   // console.log(match)
   const history = useHistory();
   const handleLogout = () => {
+    
     /* eslint-disable */
     const toLogout = confirm("Are you sure to logout ?");
 
