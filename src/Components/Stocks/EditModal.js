@@ -1,4 +1,4 @@
-import React, { useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import { Container, Col, Row, Modal } from "react-bootstrap";
 import LoaderComp from "../Loader/LoaderComp";
 import Axios from "axios";
@@ -48,7 +48,8 @@ const EditModal = ({ lgEditShow, setLgEditShow, id }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        if (id) { // Check if id exists
+        if (id) {
+          // Check if id exists
           const response = await Axios.get(`${secret.Ip}/Stock_M/getby/${id}`, {
             headers: {
               Authorization: `Bearer ${secret.token}`,
@@ -60,16 +61,14 @@ const EditModal = ({ lgEditShow, setLgEditShow, id }) => {
           const values = response?.data.res;
           console.log("value", values);
           setItem(values);
-          console.log("item",item)
+          console.log("item", item);
         }
       } catch (error) {
         console.log(error.message);
       }
     };
     fetchData();
-
   }, [id]); // Add id as a dependency
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -86,8 +85,7 @@ const EditModal = ({ lgEditShow, setLgEditShow, id }) => {
           if (response.status === 200) {
             setLoading(false);
             setSuccessfull(true);
-    window.location.reload();
-
+            window.location.reload();
           }
         });
         setTimeout(() => {

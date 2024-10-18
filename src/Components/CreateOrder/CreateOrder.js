@@ -6,6 +6,7 @@ import LoaderComp from "../Loader/LoaderComp";
 import Constants from "../constants";
 import secret from "../config";
 import "../../Styles/Cart.css";
+import EditCart from "./EditCart";
 
 const CreateOrder = () => {
   const [checked, setChecked] = useState("");
@@ -33,6 +34,12 @@ const CreateOrder = () => {
 
   const [showCartItem, setShowCartItem] = useState(false);
   const [isCartEmpty, setISCartEmpty] = useState(cartItem.length === 0);
+
+  const [selectedUnit, setSelectedUnit] = useState("piece");
+  const [selectedGst, setSelectedGst] = useState("Basic");
+
+  const [showEdit, setShowEdit] = useState(false);
+  // const [currentItem, setCurrentItem] = useState(null);
 
   let newArray = [];
 
@@ -292,10 +299,13 @@ const CreateOrder = () => {
       length: length,
       width: width,
       thickness: thickness,
+      // pcs: `${pcs} ${selectedUnit}`,
       pcs: pcs,
       rate: rateBasic,
       gst: rateGst,
     };
+    console.log("pcs:", pcs);
+    console.log("selectedUnit:", selectedUnit);
 
     setCartItem([...cartItem, product]);
     setShowCartItem(true);
@@ -343,6 +353,16 @@ const CreateOrder = () => {
     });
     setTodaysDate(formattedDate);
   }, []);
+
+  // const handleClose = () => {
+  //   setShowEdit(false);
+  //   setCurrentItem(null);
+  // };
+
+  const handleEditShow = () => {
+    // setCurrentItem(index);
+    setShowEdit(true);
+  };
 
   return (
     <>
@@ -930,16 +950,13 @@ const CreateOrder = () => {
                                             setLength(e.target.value);
                                           }}
                                           value={length}
-                                          // required
                                         />
-                                        {/* {desc.weight.length === 0 && (
-                                          <span style={{ color: "red" }}>
-                                            *Required
-                                          </span>
-                                        )} */}
                                       </Row>
                                     </Col>
-                                    <Col className="m-3">
+                                    <Col
+                                      className="m-3"
+                                      style={{ display: "flex" }}
+                                    >
                                       <Row>
                                         <label
                                           htmlFor="pcs"
@@ -977,6 +994,19 @@ const CreateOrder = () => {
                                             *Required
                                           </span>
                                         )}
+                                      </Row>
+                                      <Row>
+                                        <select
+                                          className="pcsInput"
+                                          aria-label="Default select example"
+                                          value={selectedUnit}
+                                          onChange={(e) =>
+                                            setSelectedUnit(e.target.value)
+                                          }
+                                        >
+                                          <option value="piece">piece</option>
+                                          <option value="kg">kg</option>
+                                        </select>
                                       </Row>
                                     </Col>
 
@@ -1038,10 +1068,18 @@ const CreateOrder = () => {
                               </Row>
                             </Col>
                             <Col className="m-3">
-                              <Row className="mt-3 ml-auto col-1">
-                                <button className="addButton">
-                                  <i className="fas fa-plus-circle"></i>
-                                </button>
+                              <Row>
+                                <select
+                                  className="gstDropDown"
+                                  aria-label="Default select example"
+                                  value={selectedGst}
+                                  onChange={(e) =>
+                                    setSelectedGst(e.target.value)
+                                  }
+                                >
+                                  <option value="basic">Basic</option>
+                                  <option value="paid">Paid</option>
+                                </select>
                               </Row>
                             </Col>
                           </Row>
@@ -1213,7 +1251,7 @@ const CreateOrder = () => {
                   { label: "Thickness", value: desc.thickness },
                   { label: "Width", value: desc.width },
                   { label: "Length", value: desc.length },
-                  { label: "Pcs", value: desc.pcs },
+                  { label: "Pcs", value: `${desc.pcs} ${selectedUnit}` },
                   { label: "Rate(Basic)", value: product.weight },
                   {
                     label: "Rate(GST%)",
@@ -1226,20 +1264,45 @@ const CreateOrder = () => {
                     <div className="afterOrder2">
                       <Container className="insideAfterOrder">
                         <Row>
-                          <div className="d-flex">
-                            <div className="ms-auto d-grid">
+                          <div className="cart">
+                            <div className="cart_buttons">
                               <button
                                 onClick={() => deletingCardItems(index)}
-                                className="ms-auto"
                                 style={{
                                   color: "red",
                                   backgroundColor: "none",
                                   border: "none",
                                   cursor: "pointer",
+                                  fontSize: "1.4rem",
                                 }}
                               >
                                 <i className="far fa-trash-alt"></i>
                               </button>
+
+                              <button
+                                onClick={() => handleEditShow(index)}
+                                style={{
+                                  border: "none",
+                                  backgroundColor: "transparent",
+                                  color: "blue",
+                                  cursor: "pointer",
+                                  fontSize: "1.4rem",
+                                }}
+                              >
+                                <i className="fas fa-pencil-alt"></i>
+                              </button>
+                              {/* <button
+                                style={{
+                                  border: "none",
+                                  backgroundColor: "transparent",
+                                  color: "blue",
+                                  cursor: "pointer",
+                                  fontSize: "1.4rem",
+                                }}
+                                // onClick={() => ChangeEditShow(val._id)}
+                              >
+                                <i className="far fa-edit"></i>
+                              </button> */}
                             </div>
                           </div>
                         </Row>
@@ -1253,6 +1316,8 @@ const CreateOrder = () => {
                         ))}
                       </Container>
                     </div>
+
+                    {showEdit && <EditCart />}
                   </Container>
                 );
               })}

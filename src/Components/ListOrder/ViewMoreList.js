@@ -198,7 +198,7 @@ const BillingMore = () => {
                       </p>
                     </td>
 
-                    <td className="text-center">{item.pcs}</td>
+                    <td className="text-center">{item.pcs}Kg</td>
                   </tr>
                   <tr>
                     <td>

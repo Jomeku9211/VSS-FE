@@ -9,7 +9,7 @@ import Constants from "../constants";
 import axios from "axios";
 
 const Stocks = ({ match }) => {
-  const [item, setItem] = useState({});
+  const [item, setItem] = useState([]);
   const [weight, setweight] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -75,13 +75,15 @@ const Stocks = ({ match }) => {
             e.target.reset();
             setTimeout(() => {
               setSuccessAlert(false);
-            }, 3000);
+              window.location.href = "/stocks";
+              window.location.reload();
+            }, 1000);
           } else {
             setLoading(false);
             setFailureAlert(true);
             setTimeout(() => {
               setFailureAlert(false);
-            }, 3000);
+            }, 1500);
           }
         })
         .catch((err) => {
@@ -378,7 +380,7 @@ const Stocks = ({ match }) => {
                         type="number"
                         required
                       />
-                      <span className="py-2">mm</span>
+                      <span className="py-2">m</span>
                     </Container>
                   </Col>
                 </Row>
@@ -486,9 +488,7 @@ const Stocks = ({ match }) => {
 
             <span className="mx-3">
               Total weight:{" "}
-              {weight === null
-                ? "Loading..."
-                : `${Math.floor(weight.totalweight)} tonn`}
+              {weight === null ? "0" : `${Math.floor(weight.totalweight)} Kg`}
             </span>
           </Container>
           <Container
@@ -640,7 +640,7 @@ const Stocks = ({ match }) => {
               </tr>
             </thead>
             <tbody>
-              {searchResults.length > 1 || item.length > 1 ? (
+              {searchResults.length > 0 || item.length > 0 ? (
                 (searchTerm.length < 1 ? item : searchResults).map(
                   (val, index) => (
                     <tr key={index}>
