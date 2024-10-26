@@ -113,6 +113,7 @@ const Stocks = ({ match }) => {
       window.location.reload(); // Reload the page
     });
   };
+
   const handleConfirm = (val, e) => {
     e.preventDefault();
     // eslint-disable-next-line no-restricted-globals
@@ -136,6 +137,16 @@ const Stocks = ({ match }) => {
       setSearchResults(item);
     }
   };
+
+  useEffect(() => {
+    if (lgShow) {
+      const modal = document.querySelector('.modal');
+      if (modal) {
+        modal.style.zIndex = 1050;
+      }
+    }
+  }, [lgShow]);
+  
 
   useEffect(() => {
     const fetchData = async () => {
@@ -180,6 +191,8 @@ const Stocks = ({ match }) => {
     setModalValue(value);
     setLgEditShow(true);
   };
+
+  
   return (
     <div className="stock_main_div">
       {/* ADDUSER MODEL START  */}
@@ -188,6 +201,8 @@ const Stocks = ({ match }) => {
         show={lgShow}
         onHide={() => setLgShow(false)}
         aria-labelledby="example-modal-sizes-title-lg"
+        // backdrop="static"
+        // keyboard={false}
       >
         <Modal.Header closeButton>
           <Modal.Title id="example-modal-sizes-title-lg">

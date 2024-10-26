@@ -92,11 +92,20 @@ body {
     margin-left: 2rem;
 }
 
+.btns{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
 .print_btn{
     background-color: transparent;
     border: none;
     box-shadow: 0px 2px 6px lightgrey;
-    width: 100px;
+    width: 150px;
     padding: 10px;
     margin-bottom: 2%;
     margin-left: 2rem;
@@ -112,3 +121,153 @@ body {
       display: none !important;
     }
   }
+
+  .Pdf_Body {
+    background: #fff;
+    width: 970px !important;
+    margin: 50px auto;
+    border: 1px solid rgb(151, 144, 144);
+    border-radius: 10px;
+}
+
+.pdf_header{
+    display: flex;
+    flex-direction: row;
+     align-items: center;
+     justify-content: space-between;
+     padding: 2rem;
+}
+
+.pdf_no{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.pdf_no h3{
+    font-size: 1.1rem;
+}
+
+
+.pdf_no h4{
+    font-size: 1.1rem;
+}
+
+.Customer_Details_Box_pdf{
+    margin-left: 4rem;
+}
+
+.pdf_table_div{
+    /* width: 100%;? */
+    /* background-color: red; */
+    padding: 2rem;
+
+}
+
+.pdf_DataTable{
+    border: 1px solid black;
+    width: 100%;
+}
+
+.datatable_trs td{
+    border: 1px solid black;
+    font-size: 1rem;
+}
+
+.pdf_footer{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding-right: 2rem;
+    padding-left: 2rem;
+    margin-top: -2rem;
+    margin-bottom: 2rem;
+}
+
+.hindi_texts{
+    width: 40%;
+    font-weight: bold;
+}
+
+.footer_right{
+    display: flex;
+    flex-direction: row;
+    gap: 0.7rem;
+}
+
+.pdf_footer_right{
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+
+.pdf_footer_right :nth-child(3){
+    margin-top: -1rem;
+}
+
+.pdf_btn{
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.pdf_download_btn{
+    background-color: transparent;
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0px 2px 6px lightgrey;
+    width: 130px;
+    padding: 10px;
+    margin-bottom: 2%;
+    margin-left: 2rem;
+}
+
+.pdf_download_btn:hover{
+    background-color: rgb(78, 170, 223);
+    border-radius: 10px;
+    color: white;
+}
+
+.pdf_btn :nth-child(2):hover{
+    background-color: rgb(230, 111, 111);
+    border-radius: 10px;
+    color: white;
+}
+
+
+/* For the background overlay */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.6); 
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.3s ease-in-out;
+  }
+  
+  /* PDF body styling */
+  .Pdf_Body {
+    background-color: white;
+    padding: 20px;
+    width: 80%;
+    max-height: 80%;
+    overflow-y: auto;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+    z-index: 1001;
+    position: relative;
+  }
+  
+  /* Fade-in effect */
+  .overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+  

@@ -3,14 +3,24 @@ import { useParams } from "react-router-dom";
 import Axios from "axios";
 import secret from "../config";
 import "../Billing/BillMore.css";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
+
+
 const BillingMore = () => {
+
   const { id } = useParams();
   const [item, setItem] = useState({});
   const [product, setProduct] = useState([]);
+const [ show, setShow ] = useState(false);
+
   const print = () => {
     window.print();
   };
+
+
   const fetchData = async () => {
+
     try {
       await Axios.get(`${secret.Ip}/BillingManagement/get/${id}`, {
         headers: {
@@ -29,7 +39,7 @@ const BillingMore = () => {
           thickness: item.thickness,
           pcs: item.pcs,
           rate: item.weight,
-          gst: item.weight + (item.weight * 18) / 100,
+          gst: item.weight + (item.weight * 18) / 1000,
         }));
         setItem(data);
         setProduct(Products);
@@ -38,9 +48,27 @@ const BillingMore = () => {
       console.log(err);
     }
   };
+
   useEffect(() => {
     fetchData();
-  }, []); //[item, product]
+  }, []);
+
+  const handleDownloadPdf = async () => {
+    const pdfBody = document.querySelector(".Pdf_Body");
+    const canvas = await html2canvas(pdfBody, { scale: 2 });
+    const imgData = canvas.toDataURL("image/png");
+    const pdf = new jsPDF("p", "mm", "a4");
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+    pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+    pdf.save("orderInvoice.pdf");
+
+    setTimeout(() => {
+      setShow(false);
+    }, 1000);
+  };
+
   return (
     <>
       <div className="container invoice">
@@ -82,7 +110,7 @@ const BillingMore = () => {
           </div>
           {product.map((item, index) => (
             <div className="panel panel-default Service_section">
-              <table className="table table-bordered Table_section ">
+              <table className="table table-bordered Table_section">
                 <thead>
                   <tr>
                     <th className="text-center">
@@ -227,10 +255,120 @@ const BillingMore = () => {
         <div className="invoice-footer">
           Thank you for choosing our services. We hope to see you again soon
         </div>
-        <button className="print_btn" onClick={print}>
-          Print
+
+         <div className="btns">
+         <button className="print_btn" onClick={() => setShow(true)}>
+          Dowanload Pdf
         </button>
+        <button className="print_btn" onClick={print}>
+          print
+        </button>
+         </div>
       </div>
+
+
+       {
+         show && (
+          <div className={`overlay ${show ? "" : "hidden"}`}>
+          <div className="Pdf_Body">
+          <div className="row">
+            <div className="col-xs-7">
+             <div>
+             </div>
+            <div className="pdf_header">
+                <div className="pdf_no">
+                 <h3>Dc No : </h3>
+                 <h4>{item.phone_no}</h4>
+                 </div>
+                 <div className="pdf_no">
+                 <h3>Date : </h3>
+                 <h4>{new Date(item.deliveryDate).toLocaleDateString()}</h4>
+                 </div>
+              </div>
+              <div className="Customer_Details_Box_pdf">
+            
+                <div className="Customer_Details_Inner_Box">
+                  <dl className="Customer_Details_Inner_Text">
+                    <dt className="clientName">M/S : </dt>
+                    <dd>{item.clientName}</dd>
+                    <dt className="clientName">Broker : </dt>
+                    <dd>undefined</dd>
+                    <dt className="clientName">vehicle No : </dt>
+                    <dd>undefined</dd>
+                    <dt className="clientName">Transport :</dt>
+                    <dd>undefined</dd>
+                  </dl>
+                </div>
+              </div>
+            </div>
+          </div>
+            <div className="pdf_table_div">
+              <table className="pdf_DataTable">
+                <thead>
+                  <tr>
+                    <th><b>Item</b> </th>
+                    <th> <b>Thickness</b></th>
+                    <th><b>Width</b></th>
+                    <th><b>Length</b></th>
+                    <th><b>Weight</b> </th>
+                    <th> <b>Pcs</b></th>
+                    <th><b>Rate</b></th>                   
+                     <th><b>Product</b></th>
+                  </tr>
+                </thead>
+                
+          {product.map((item, index) => (
+                    <tbody key={index}>
+                  <tr className="datatable_trs">
+                    <td className="text-center">{item.company}</td>
+                    <td className="text-center">{item.thickness}</td>
+                    <td className="text-center">{item.width}</td>
+                    <td className="text-center">{item.length}</td>
+                    <td className="text-center">{item.weight}</td>
+                    <td className="text-center">{item.pcs} Kg</td>
+                    <td className="text-center">{item.rate}</td>
+                    <td className="text-center">{item.select_product}</td>
+                  </tr>
+ 
+                </tbody>
+                ))}
+              </table>
+            </div>
+ 
+            <div className="pdf_footer">
+              <div className="hindi_texts">
+              "हमारे यहाँ से माल रुकवा एवं प्रीति प्रेषण किया गया है। ट्रक में पर्ची लगाने के
+               उपरांत माल की खपत होने की जिम्मेदारी हमारी नहीं होगी।"
+              </div>
+           <div className="pdf_footer_right">
+             <div className="footer_right">
+                <b>Received By : </b>
+                <b>undefined</b>
+              </div>
+              <div className="footer_right">
+              <b className="clientName">Name : </b>
+              <p>{item.clientName}</p>
+              </div>
+              <div className="footer_right">
+                 <b>Mob : </b>
+                 <p>{item.phone_no}</p>
+              </div>
+           </div>
+            </div>
+            
+            <div className="pdf_btn">
+               <button className="pdf_download_btn" onClick={handleDownloadPdf}>
+                 Download
+               </button>
+               <button className="pdf_download_btn" onClick={() => setShow(false)}>
+                 Close
+               </button>
+            </div>
+            </div>         
+        </div>
+         )
+       }
+     
     </>
   );
 };

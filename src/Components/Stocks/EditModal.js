@@ -30,6 +30,10 @@ const EditModal = ({ lgEditShow, setLgEditShow, id }) => {
     setItem({ ...item, [e.target.name]: e.target.value });
   };
 
+  // const handleChange = (e) => {
+  //   setItem((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  // };
+
   const formData = {
     product: item?.product,
     company: item?.company,
@@ -57,6 +61,16 @@ const EditModal = ({ lgEditShow, setLgEditShow, id }) => {
               "Access-Control-Allow-Origin": "*",
             },
           });
+
+        //   if (response?.data?.res) {
+        //     setItem(response.data.res); // Ensure data exists before setting state
+        //     console.log("Fetched Item:", response.data.res);
+        //   } else {
+        //     console.error("No data found for this ID");
+        //   }
+        // } catch (error) {
+        //   console.error("Fetch Error:", error.message);
+        // }
           console.log(response);
           const values = response?.data.res;
           console.log("value", values);
@@ -101,6 +115,16 @@ const EditModal = ({ lgEditShow, setLgEditShow, id }) => {
     }
   };
 
+  useEffect(() => {
+    if (lgEditShow) {
+      const modal = document.querySelector('.modal');
+      if (modal) {
+        modal.style.zIndex = 1050;
+      }
+    }
+  }, [lgEditShow]);
+  
+
   return (
     <Modal
       size="lg"
@@ -140,7 +164,7 @@ const EditModal = ({ lgEditShow, setLgEditShow, id }) => {
                     name="product"
                     className="w-100"
                     onChange={handleChange}
-                    required
+                    // required
                   >
                     <option value>{item?.product}</option>
                     <option value="GPC">GPC</option>
@@ -261,19 +285,40 @@ const EditModal = ({ lgEditShow, setLgEditShow, id }) => {
                 <Col>
                   <label>Thickness</label>
                   <Container className="measure_conatiner">
-                    <span className="py-2">mm</span>
+                    <input
+                      name="thickness"
+                      placeholder="thickness"
+                      type="number"
+                      // required
+                      value={item?.thickness}
+                      onChange={handleChange}
+                    />
                   </Container>
                 </Col>
                 <Col>
                   <label>Width</label>
                   <Container className="measure_conatiner">
-                    <span className="py-2">mm</span>
+                    <input
+                      name="width"
+                      placeholder="width"
+                      type="number"
+                      // required
+                      value={item?.width}
+                      onChange={handleChange}
+                    />
                   </Container>
                 </Col>
                 <Col>
                   <label>length</label>
                   <Container className="measure_conatiner">
-                    <span className="py-2">mm</span>
+                    <input
+                      name="length"
+                      placeholder="length"
+                      type="number"
+                      // required
+                      value={item?.length}
+                      onChange={handleChange}
+                    />
                   </Container>
                 </Col>
               </Row>
@@ -282,8 +327,16 @@ const EditModal = ({ lgEditShow, setLgEditShow, id }) => {
               <Row>
                 <Col>
                   <label>Pcs</label>
-                  <Container className="measure_conatiner ">
-                    <span className="py-2">mm</span>
+                  <Container className="measure_conatiner">
+                    {/* <span className="py-2">mm</span> */}
+                    <input
+                      name="pcs"
+                      placeholder="pcs"
+                      type="number"
+                      // required
+                      value={item?.pcs}
+                      onChange={handleChange}
+                    />
                   </Container>
                 </Col>
                 <Col>
@@ -293,7 +346,7 @@ const EditModal = ({ lgEditShow, setLgEditShow, id }) => {
                     name="guardfilm"
                     onChange={handleChange}
                     className="w-100"
-                    required
+                    // required
                   >
                     <option value>{item?.guardfilm}</option>
                     <option value="">NA</option>

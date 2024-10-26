@@ -38,7 +38,7 @@ const CreateOrder = () => {
   const [selectedUnit, setSelectedUnit] = useState("piece");
   const [selectedGst, setSelectedGst] = useState("Basic");
 
-  const [showEdit, setShowEdit] = useState(false);
+  // const [showEdit, setShowEdit] = useState(false);
   // const [currentItem, setCurrentItem] = useState(null);
 
   let newArray = [];
@@ -112,7 +112,7 @@ const CreateOrder = () => {
     setRate(e.target.value);
   };
 
-  const sum = +rate * Number(18 / 100);
+  const sum = +rate * Number(18 / 1000);
   const final = +sum + +rate;
   useEffect(() => {
     setTotal(final);
@@ -356,13 +356,11 @@ const CreateOrder = () => {
 
   // const handleClose = () => {
   //   setShowEdit(false);
-  //   setCurrentItem(null);
   // };
 
-  const handleEditShow = () => {
-    // setCurrentItem(index);
-    setShowEdit(true);
-  };
+  // const handleEditShow = () => {
+  //   setShowEdit(true);
+  // };
 
   return (
     <>
@@ -1255,7 +1253,7 @@ const CreateOrder = () => {
                   { label: "Rate(Basic)", value: product.weight },
                   {
                     label: "Rate(GST%)",
-                    value: product.weight + product.weight * (18 / 100),
+                    value: product.weight + product.weight * (18 / 1000),
                   },
                 ];
 
@@ -1279,7 +1277,7 @@ const CreateOrder = () => {
                                 <i className="far fa-trash-alt"></i>
                               </button>
 
-                              <button
+                              {/* <button
                                 onClick={() => handleEditShow(index)}
                                 style={{
                                   border: "none",
@@ -1290,18 +1288,6 @@ const CreateOrder = () => {
                                 }}
                               >
                                 <i className="fas fa-pencil-alt"></i>
-                              </button>
-                              {/* <button
-                                style={{
-                                  border: "none",
-                                  backgroundColor: "transparent",
-                                  color: "blue",
-                                  cursor: "pointer",
-                                  fontSize: "1.4rem",
-                                }}
-                                // onClick={() => ChangeEditShow(val._id)}
-                              >
-                                <i className="far fa-edit"></i>
                               </button> */}
                             </div>
                           </div>
@@ -1317,7 +1303,7 @@ const CreateOrder = () => {
                       </Container>
                     </div>
 
-                    {showEdit && <EditCart />}
+                    {/* {showEdit && <EditCart onClose={handleClose} />} */}
                   </Container>
                 );
               })}
