@@ -4,7 +4,7 @@ import Axios from "axios";
 import Success from "../Alert/Success";
 import Failure from "../Alert/Failure";
 import LoaderComp from "../Loader/LoaderComp";
-import Secret from '../config'
+import secret from '../config'
 
 
 const EditModal = ({ show, setShow, id, refreshDataCallback }) => {
@@ -37,6 +37,7 @@ const EditModal = ({ show, setShow, id, refreshDataCallback }) => {
     CurrentDate: prev?.CurrentDate,
     Password: prev?.Password,
     ProfileImage:prev?.ProfileImage
+
   };
 
   const handleSubmit = async (e) => {
@@ -48,7 +49,7 @@ const EditModal = ({ show, setShow, id, refreshDataCallback }) => {
       const token =
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuZXdVc2VyIjp7Il9pZCI6IjYwM2IzNDM5MzViODI2MjBhMDg5ZTkwNyIsInVzZXJuYW1lIjoiYWRtaW4iLCJwYXNzd29yZCI6ImFkbWluIn0sImlhdCI6MTYxNTg5MTU2MSwiZXhwIjoxNjE1OTc3OTYxfQ.exU8x5APvJBqlVKtIHHSYrqXMNKu38GyusySo-ZxCp4";
       const response = await Axios.patch(
-        `${Secret.Ip}/mobile/update/${id}`,
+        `${secret.Ip}/mobile/update/${id}`,
         formData,
         {
           headers: {
@@ -89,7 +90,7 @@ const EditModal = ({ show, setShow, id, refreshDataCallback }) => {
           }
         const token ="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuZXdVc2VyIjp7Il9pZCI6IjYwNTFkMDBkZWRhN2RkYTIwOWJmZjY2NyIsInVzZXJuYW1lIjoiYWRtaW4iLCJwYXNzd29yZCI6IjIxMjMyZjI5N2E1N2E1YTc0Mzg5NGEwZTRhODAxZmMzIn0sImlhdCI6MTYxNzYxNjE0NiwiZXhwIjoxNjE3NzAyNTQ2fQ.oMYd1wQIpCxxRlnl-XNX2oY2YYOlarjK3jk-SSOxdqw";
           
-        await Axios.get(`http://65.0.32.212:3009/mobile/getById/${id}`, {
+        await Axios.get(`${secret.Ip}/mobile/getById/${id}`, {
           headers: {
       
             "Content-Type": "application/json",
@@ -109,6 +110,14 @@ const EditModal = ({ show, setShow, id, refreshDataCallback }) => {
   },[id]);
   
    
+  useEffect(() => {
+    if (show) {
+      const modal = document.querySelector('.modal');
+      if (modal) {
+        modal.style.zIndex = 1050;
+      }
+    }
+  }, [show]);
   
 
   return (
@@ -217,17 +226,17 @@ const EditModal = ({ show, setShow, id, refreshDataCallback }) => {
                     onChange={handleChange}
                     value={prev?.Role}
                     name="Role"
-                    maxLength="20"
                   >
                     <option className="defaultSelect">Role</option>
-                    <option value="0">SalesManager</option>
-                    <option value="1">Production Head</option>
-                    <option value="2">Production Incharge </option>
-                    <option value="3">Dispatch Manager </option>
+                    <option className="stockManager">StockManager</option>
+                    <option value="salesManager">SalesManager</option>
+                    <option value="ProductionHead">ProductionHead</option>
+                    <option value="ProductionIncharge">ProductionIncharge</option>
+                    <option value="Dispatchmanager">DispatchManager </option>
                   </select>
                 </Col>
 
-                <Col>
+                {/* <Col>
                   <input
                     type="date"
                     name="CurrnetDate"
@@ -237,7 +246,7 @@ const EditModal = ({ show, setShow, id, refreshDataCallback }) => {
                     value={prev?.CurrentDate}
                     maxLength="20"
                   />
-                </Col>
+                </Col> */}
               </Row>
               <Row className="mt-2">
                 <Col>

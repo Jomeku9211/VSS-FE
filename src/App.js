@@ -55,7 +55,7 @@ function App() {
               </div>
             </Route>
 
-        <PrivateRoute path="/" exact component={Dashboard} />
+        <PrivateRoute path="/" exact component={ListOrder} />
         <PrivateRoute path="/create_order" exact component={CreateOrder} />
         <PrivateRoute path="/purchase_order" component={PurchaseOrder} />
         <PrivateRoute path="/listOrder" component={ListOrder}/>

@@ -56,6 +56,17 @@
   margin-top: 15px;
   color: #646667;
 }
+
+.custom{
+  border: none;
+  width: 9rem;
+}
+
+.row_1{
+  display: flex;
+  flex-direction: row;
+}
+
 .checkbox {
   padding: auto;
   font-size: 18px;
@@ -121,12 +132,14 @@
   border-radius: 10px;
   background-color: white;
 }
+
 .modal_body {
   background-color: #ffffff;
   height: auto;
   justify-content: center;
   align-items: center;
 }
+
 .modals_input {
   width: 100px;
   height: 60px;
@@ -137,6 +150,7 @@
   padding-left: 5px;
   outline-style: none;
 }
+
 .modal_header {
   background-color: #cddde8;
   border-top-right-radius: 80px;

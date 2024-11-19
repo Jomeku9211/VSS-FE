@@ -889,10 +889,12 @@ const CreateOrder = () => {
                               <Col className="m-2">
                                 <Row>
                                   <label htmlFor="thick">Thickness</label>
+                                  <Container className="measure_conatiner">
                                   <input
                                     type="text"
-                                    className="custom_input"
+                                    className="custom"
                                     id="thickness"
+                                    min="0.1"
                                     placeholder="thickness"
                                     onChange={(e) => {
                                       setDesc({
@@ -903,15 +905,17 @@ const CreateOrder = () => {
                                     }}
                                     value={thickness}
                                   ></input>
+                                  <span className="py-2 px-1">mm</span>
+                                  </Container>
                                 </Row>
                               </Col>
 
                               <Col className="m-2">
                                 <Row>
                                   <label htmlFor="thick">Width</label>
-
+                                  <Container className="measure_conatiner">
                                   <input
-                                    className="custom_input"
+                                    className="custom"
                                     type="text"
                                     placeholder="width"
                                     value={width}
@@ -923,6 +927,8 @@ const CreateOrder = () => {
                                       setWidth(e.target.value);
                                     }}
                                   ></input>
+                                  <span className="py-2 px-1">mm</span>
+                                  </Container>
                                 </Row>
                               </Col>
                             </Row>
@@ -933,13 +939,14 @@ const CreateOrder = () => {
                                     <Col className="m-3">
                                       <Row>
                                         <label htmlFor="length">Length</label>
+                                        <Container className="measure_conatiner">
                                         <input
                                           style={{ width: "150px" }}
                                           id="weight"
                                           type="text"
                                           placeholder="length"
                                           name="weight"
-                                          className="subfields"
+                                          className="custom"
                                           onChange={(e) => {
                                             setDesc({
                                               ...desc,
@@ -949,6 +956,8 @@ const CreateOrder = () => {
                                           }}
                                           value={length}
                                         />
+                                          <span className="py-2 px-1">m</span>
+                                          </Container>
                                       </Row>
                                     </Col>
                                     <Col

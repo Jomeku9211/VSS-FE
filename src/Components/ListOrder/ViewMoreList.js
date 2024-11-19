@@ -69,6 +69,18 @@ const [ show, setShow ] = useState(false);
     }, 1000);
   };
 
+  const [todaysDate, setTodaysDate] = useState("");
+
+  useEffect(() => {
+    const today = new Date();
+    const formattedDate = today.toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+    setTodaysDate(formattedDate);
+  }, []);
+
   return (
     <>
       <div className="container invoice">
@@ -277,26 +289,36 @@ const [ show, setShow ] = useState(false);
              </div>
             <div className="pdf_header">
                 <div className="pdf_no">
-                 <h3>Dc No : </h3>
-                 <h4>{item.phone_no}</h4>
+                 <h3>Order ID : </h3>
+                 <h4>{item.orderId}</h4>
                  </div>
                  <div className="pdf_no">
-                 <h3>Date : </h3>
-                 <h4>{new Date(item.deliveryDate).toLocaleDateString()}</h4>
+                 <h3>Ordered Date : </h3>
+                 <h4>{todaysDate}</h4>
                  </div>
               </div>
               <div className="Customer_Details_Box_pdf">
             
                 <div className="Customer_Details_Inner_Box">
                   <dl className="Customer_Details_Inner_Text">
-                    <dt className="clientName">M/S : </dt>
+                    <dt className="clientName">Mr/Mrs : </dt>
                     <dd>{item.clientName}</dd>
-                    <dt className="clientName">Broker : </dt>
-                    <dd>undefined</dd>
-                    <dt className="clientName">vehicle No : </dt>
-                    <dd>undefined</dd>
-                    <dt className="clientName">Transport :</dt>
-                    <dd>undefined</dd>
+                  </dl>
+                  <dl className="Customer_Details_Inner_Text">
+                    <dt className="clientName">Email : </dt>
+                    <dd>{item.Email}</dd>
+                  </dl>
+                  <dl className="Customer_Details_Inner_Text">
+                    <dt className="clientName">Address : </dt>
+                    <dd>{item.address}</dd>
+                  </dl>
+                  <dl className="Customer_Details_Inner_Text">
+                    <dt className="clientName">Phone no : </dt>
+                    <dd>{item.phone_no}</dd>
+                  </dl>
+                  <dl className="Customer_Details_Inner_Text">
+                    <dt className="clientName">City : </dt>
+                    <dd>{item.city}</dd>
                   </dl>
                 </div>
               </div>
@@ -341,17 +363,13 @@ const [ show, setShow ] = useState(false);
                उपरांत माल की खपत होने की जिम्मेदारी हमारी नहीं होगी।"
               </div>
            <div className="pdf_footer_right">
-             <div className="footer_right">
+             {/* <div className="footer_right">
                 <b>Received By : </b>
                 <b>undefined</b>
-              </div>
+              </div> */}
               <div className="footer_right">
-              <b className="clientName">Name : </b>
-              <p>{item.clientName}</p>
-              </div>
-              <div className="footer_right">
-                 <b>Mob : </b>
-                 <p>{item.phone_no}</p>
+                 <b>Delivery Date : </b>
+                 <p>{item.deliveryDate}</p>
               </div>
            </div>
             </div>

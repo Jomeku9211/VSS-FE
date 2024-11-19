@@ -182,10 +182,7 @@ const UserProfile = () => {
                             </Col>
                             <Col className="col-lg-6">
                               <p className="p_tag">
-                                {moment().format(
-                                  "DD-MMM-YYYY",
-                                  val.CurrentDate
-                                )}
+                              {moment(val.CurrentDate).format("DD/MM/YYYY")}
                               </p>
                             </Col>
                           </Row>

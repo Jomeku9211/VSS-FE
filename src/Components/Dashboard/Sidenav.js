@@ -35,12 +35,12 @@ const Sidenav = () => {
             marginLeft: "10px",
           }}
         >
-          <div>
+          {/* <div>
             <Link className="nav_link d-block" to={"/"}>
               <i className="fas fa-home"></i>
             </Link>
-            <p className="nav_text">Home</p>
-          </div>
+            <p className="nav_text">Home</p> */}
+          {/* </div> */}
           <div>
             <Link className="nav_link" to="/listOrder">
               <i className="fab fa-opencart"></i>
@@ -60,12 +60,12 @@ const Sidenav = () => {
             <p className="nav_text">Stocks</p>
           </div>
    
-          <div>
+          {/* <div>
             <Link className="nav_link" to="/billing">
               <i className="fas fa-file-invoice"></i>
             </Link>
             <p className="nav_text">Billing</p>
-          </div>
+          </div> */}
           <div>
               <button
                 onClick={handleLogout}

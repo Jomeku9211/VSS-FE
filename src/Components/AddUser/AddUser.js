@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./AddUser.css";
 import { Container, Col, Row, Modal, Alert } from "react-bootstrap";
 import UserProfile from "./UserProfile";
@@ -92,6 +92,15 @@ const AddUser = () => {
     }
   };
 
+  useEffect(() => {
+    if (show) {
+      const modal = document.querySelector('.modal');
+      if (modal) {
+        modal.style.zIndex = 1050;
+      }
+    }
+  }, [show]);
+
   return (
     <>
       <Modal
@@ -179,6 +188,11 @@ const AddUser = () => {
                     value={input.UserName}
                     required
                     maxLength="20"
+                    onKeyPress={(e) => {
+                      if (!/^[a-zA-Z\s]*$/.test(e.key)) {
+                        e.preventDefault();
+                      }
+                    }}
                   />
                 </Col>
                 <Col>
@@ -191,6 +205,11 @@ const AddUser = () => {
                     value={input.LastName}
                     required
                     maxLength="20"
+                    onKeyPress={(e) => {
+                      if (!/^[a-zA-Z\s]*$/.test(e.key)) {
+                        e.preventDefault();
+                      }
+                    }}
                   />
                 </Col>
               </Row>
@@ -218,7 +237,7 @@ const AddUser = () => {
                 </Col>
                 <Col>
                   <input
-                    type="text"
+                    type="number"
                     name="Tenure"
                     className="modal_input"
                     placeholder="Tenure"

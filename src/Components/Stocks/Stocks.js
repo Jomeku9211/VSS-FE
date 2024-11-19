@@ -414,7 +414,6 @@ const Stocks = ({ match }) => {
                         type="number"
                         required
                       />
-                      <span className="py-2">mm</span>
                     </Container>
                   </Col>
                   <Col>
@@ -703,15 +702,23 @@ const Stocks = ({ match }) => {
                         )}
                       </td>
                       <td style={{ backgroundColor: "#f5fafd" }}>{val.pcs}</td>
-                      <td style={{ backgroundColor: "#f5fafd" }}>
+                      {/* <td style={{ backgroundColor: "#f5fafd" }}>
                         {val.batch_number.map((item, index) => (
                           <span key={index}>
                             {index > 0 && <br />}{" "}
                             {/* Add line break after the first item */}
-                            {`${index + 1}.${item}`}
-                          </span>
-                        ))}
-                      </td>
+                            {/* {`${index + 1}.${item}`} */}
+                            {/* {`${item}`} */}
+                          {/* </span> */}
+                        {/* ))} */}
+                      {/* </td> */}
+                      <td style={{ backgroundColor: "#f5fafd" }}>
+                        {val.batch_number.map((item, index) => (
+                        <span key={index}>
+                          {item.replace('batch-', '')}
+                        </span>
+                         ))}
+                     </td>
 
                       <td style={{ backgroundColor: "#f2f2f2" }}>
                         <div className="d-flex">
