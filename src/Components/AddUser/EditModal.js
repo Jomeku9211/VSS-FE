@@ -204,6 +204,15 @@ const EditModal = ({ show, setShow, id, refreshDataCallback }) => {
                     value={prev?.Phone}
                     maxLength="20"
                   />
+                  <div>
+                    {prev?.Phone.length > 1 &&
+                      (prev?.Phone.length < 10 ||
+                        prev?.Phone.length > 10) && (
+                        <span style={{ color: "red" }}>
+                          * Must be of 10 digits
+                        </span>
+                      )}
+                 </div>
                 </Col>
                 <Col>
                   <input

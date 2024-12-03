@@ -218,7 +218,7 @@ const CreateOrder = () => {
         coating: parseInt(coating),
         temper: temper,
         guardfilm: guard,
-        weight: totalWeight,
+        weight: weight,
         length: length,
         width: width,
         thickness: thickness,
