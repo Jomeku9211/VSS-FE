@@ -46,6 +46,7 @@ const ListOrder = ({ match }) => {
 
   const handleDelete = async (orderId) => {
     try {
+      alert("Are you sure you want to delete ")
       const token = "your_token_here";
       await Axios.delete(`${secret.Ip}/BillingManagement/delete/${orderId}`, {
         headers: { Authorization: `Bearer ${token} ` },

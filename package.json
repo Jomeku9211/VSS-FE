@@ -34,6 +34,7 @@
     "react-router-hash-history": "git+https://github.com/ymzuiku/react-router-hash-history.git",
     "react-scripts": "4.0.3",
     "recharts": "^2.1.9",
+    "vss_frontend": "file:",
     "web-vitals": "^1.1.2"
   },
   "scripts": {

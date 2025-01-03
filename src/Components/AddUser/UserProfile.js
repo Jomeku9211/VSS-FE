@@ -56,6 +56,7 @@ const UserProfile = () => {
 
   const handleDelete = async (val, e) => {
     e.preventDefault();
+    localStorage.removeItem("stockManagerCredentials");
 
     const token =
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuZXdVc2VyIjp7Il9pZCI6IjYwM2IzNDM5MzViODI2MjBhMDg5ZTkwNyIsInVzZXJuYW1lIjoiYWRtaW4iLCJwYXNzd29yZCI6ImFkbWluIn0sImlhdCI6MTYxNTg5MTU2MSwiZXhwIjoxNjE1OTc3OTYxfQ.exU8x5APvJBqlVKtIHHSYrqXMNKu38GyusySo-ZxCp4";
@@ -102,7 +103,7 @@ const UserProfile = () => {
                       >
                         <i className="fas fa-pencil-alt"></i>
                       </button>
-
+                       
                       <button
                         className="deleteButton mt-2"
                         onClick={(e) => handleConfirm(val, e)}

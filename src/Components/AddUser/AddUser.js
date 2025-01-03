@@ -45,6 +45,8 @@ const AddUser = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("presnet insid role", input.Role)
+
     setLoading(true);
     try {
       const formData = new FormData();
@@ -74,11 +76,26 @@ const AddUser = () => {
           setLoading(false);
           setSuccessAlert(true);
           console.log("success ", response);
+
+          if (input.Role === "StockManager") {
+            // Retrieve existing credentials or initialize an empty array
+            const existingCredentials = JSON.parse(localStorage.getItem("stockManagerCredentials")) || [];
+          
+            // Add the new stock manager's credentials to the array
+            existingCredentials.push({
+              username: input.UserName,
+              password: input.Password,
+            });
+          
+            // Save the updated array back to localStorage
+            localStorage.setItem("stockManagerCredentials", JSON.stringify(existingCredentials));
+            console.log("Stock Manager Credentials Updated");
+          }
+          
           e.target.reset(); 
           window.location.reload(); 
         } else {
-          setLoading(false);
-          setFailureAlert(true);
+          setLoading(false); 
           setTimeout(() => {
             setFailureAlert(false);
           }, 2000);
@@ -266,6 +283,7 @@ const AddUser = () => {
                     <option value="ProductionHead">ProductionHead</option>
                     <option value="ProductionIncharge">ProductionIncharge</option>
                     <option value="Dispatchmanager">DispatchManager </option>
+                    <option value="StockManager">StockManager</option>
                   </select>
                 </Col>
 
@@ -361,4 +379,4 @@ const AddUser = () => {
   );
 };
 
-export default AddUser;
+export default AddUser; 

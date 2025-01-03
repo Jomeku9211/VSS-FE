@@ -33,38 +33,65 @@ const Login = () => {
     setLoading(true);
   
     try {
-      const userData = {
-        username: info.username,
-        password: info.password,
-      };
+      // Retrieve all stock manager credentials from localStorage
+      const stockManagerCredentials = JSON.parse(localStorage.getItem("stockManagerCredentials")) || [];
   
-      console.log("API Request Initiated:", userData);
+      console.log("stockManagerCredentials", stockManagerCredentials);
   
-      const response = await axios.post(`${secret.Ip}/admin/login`, userData);
+      // Check if the entered username and password match any stock manager
+      const matchedManager = stockManagerCredentials.find(
+        (manager) =>
+          manager.username === info.username && manager.password === info.password
+      );
   
-      console.log("API Response Received:", response);
-      console.log(response.data.data.token)
-      if (response.data.data.token) {
-        console.log("Inside the If")
-        console.log(response.data.data.token)
-        localStorage.setItem("token", response.data.data.token);
-        console.log("Authentication Successful:", response.data.data);
-        history.push("/");
+      if (matchedManager) {
+        // Stock Manager Login
+        const userData = {
+          UserName: info.username,
+          Password: info.password,
+          Role: "StockManager",
+        };
+  
+        console.log("userData", userData);
+        const response = await axios.post(`${secret.Ip}/Mobile/MobileLogin`, userData);
+        console.log("Stock Manager Login Response:", response.data);
+  
+        if (response.data.data?.token) {
+          localStorage.setItem("token", response.data.data.token);
+          localStorage.setItem("role", "StockManager");
+          history.push("/stocks");
+        } else {
+          setError(true);
+          setTimeout(() => setError(false), 3000);
+        }
       } else {
-        const errorMessage = response.data.message || "No error message provided";
-        console.log("Authentication Failed:", errorMessage);
-        setError(true);
-        setTimeout(() => setError(false), 3000);
+        // Admin Login (if no matching stock manager credentials are found)
+        const userData = {
+          username: info.username,
+          password: info.password,
+        };
+  
+        const response = await axios.post(`${secret.Ip}/admin/login`, userData);
+        console.log("Admin Login Response:", response.data);
+  
+        if (response.data.data?.token) {
+          localStorage.setItem("token", response.data.data.token);
+          localStorage.setItem("role", "Admin"); 
+          history.push("/");
+        } else {
+          setError(true);
+          setTimeout(() => setError(false), 3000);
+        }
       }
-      
     } catch (error) {
-      console.error("API Request Error:", error);
+      console.error("Login Error:", error);
       setError(true);
       setTimeout(() => setError(false), 3000);
     } finally {
       setLoading(false);
     }
   };
+  
   
   const classes = useStyles();
 

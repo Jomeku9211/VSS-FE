@@ -1,6 +1,6 @@
 const Company = [
   { id: "", name: "Company" },
-  { id: "NA", name: "NA" },
+
   { id: "NSAIL", name: "NSAIL" },
   { id: "JSW", name: "JSW" },
   { id: "Manoj", name: "Manoj" },
@@ -9,6 +9,7 @@ const Company = [
   { id: "ESSAR", name: "ESSAR" },
   { id: "SAIL", name: "SAIL" },
   { id: "ASIAN INVETORY", name: "ASIAN INVENTORY" },
+  
 ];
 const Product = [
   { id: "", name: "Product" },
@@ -21,10 +22,12 @@ const Product = [
   { id: "Color", name: "Color" },
   { id: "Profile Sheet", name: "Profile Sheet" },
   { id: "Acce.", name: "Acce." },
+  { id: "GC Sheet", name: "GC Sheet" },
+  {id:"GP Sheet",name:"GP Sheet"},
+
 ];
 const Grade = [
   { id: "", name: "Grade" },
-  { id: "NA", name: "NA" },
   { id: "PRIME", name: "PRIME" },
   { id: "SECOND", name: "SECOND" },
   { id: "DEFECTIVE", name: "DEFECTIVE" },
@@ -32,7 +35,6 @@ const Grade = [
 ];
 const Color = [
   { id: "", name: "Color" },
-  { id: "NA", name: "NA" },
   { id: "REG", name: "REG" },
   { id: "SP", name: "SP" },
   { id: "TL", name: "TL" },
@@ -60,7 +62,6 @@ const Coating = [
 
 const Temper = [
   { id: "", name: "Temper" },
-  { id: "NA", name: "NA" },
   { id: "Full Hard", name: "Full Hard" },
   { id: "Semi Hard", name: "Semi Hard" },
   { id: "Soft", name: "Soft" },
@@ -72,7 +73,6 @@ const Temper = [
 ];
 const Guard = [
   { id: "", name: "Guard" },
-  { id: "NA", name: "NA" },
   { id: "Without", name: "Without" },
   { id: "SkyLine", name: "SkyLine" },
   { id: "Hindustan", name: "Hindustan" },

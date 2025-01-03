@@ -371,7 +371,7 @@ const EditModal = ({ lgEditShow, setLgEditShow, id }) => {
                     />
                     <span className="py-2">kg</span>
                   </Container>
-                </Col>
+                </Col>23
               </Row>
             </Container>
           </Container>

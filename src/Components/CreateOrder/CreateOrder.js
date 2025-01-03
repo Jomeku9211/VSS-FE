@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import qs from "qs"; 
 import "./CreateOrder.css";
 import { Container, Col, Row, Badge, Form, Alert } from "react-bootstrap";
 import Axios from "axios";
@@ -6,10 +7,12 @@ import LoaderComp from "../Loader/LoaderComp";
 import Constants from "../constants";
 import secret from "../config";
 import "../../Styles/Cart.css";
-import EditCart from "./EditCart";
+
+
 
 const CreateOrder = () => {
   const [checked, setChecked] = useState("");
+  const [Weight2 , setWeight2]=useState("")
   const [company, setCompany] = useState("");
   const [guard, setGuard] = useState("");
   const [color, setColor] = useState("");
@@ -48,6 +51,7 @@ const CreateOrder = () => {
     list.splice(index, 1);
     setOrderList(list);
   };
+
 
   const datemili = new Date();
   const miliseconds = datemili.getTime().toString();
@@ -156,6 +160,8 @@ const CreateOrder = () => {
           e.target.reset();
           window.scrollTo(0, 0);
           setSuccessAlert(true);
+          window.location.href = "/listOrder";
+
           // setTimeout(() => {
           //   setSuccessAlert(false);
           //   window.location.href = "/listOrder";
@@ -178,11 +184,11 @@ const CreateOrder = () => {
     }
   };
 
-  const onDeleteByIndex = (ind) => {
-    const order = newProduct;
-    order.splice(ind, 1);
-    setNewProduct(order);
-  };
+  // const onDeleteByIndex = (ind) => {
+  //   const order = newProduct;
+  //   order.splice(ind, 1);
+  //   setNewProduct(order);
+  // };
 
   const resetStates = () => {
     setCompany(Constants.Company[0].id);
@@ -203,53 +209,51 @@ const CreateOrder = () => {
   const [stockAvailable, setStockAvailable] = useState(false);
 
   useEffect(() => {
-    const checkStockAvailability = async () => {
-      const weight = length * pcs * 7.86;
-      const rateBasic = weight;
-      const gstPercentage = 18;
-      const gstAmount = (gstPercentage / 100) * rateBasic;
-      const rateGst = rateBasic + gstAmount;
+   const checkStockAvailability = async () => {
+  const weight = length * pcs * 7.86;
 
-      const product = {
-        select_product: checked,
-        company: company,
-        grade: grade,
-        topcolor: color,
-        coating: parseInt(coating),
-        temper: temper,
-        guardfilm: guard,
-        weight: weight,
-        length: length,
-        width: width,
-        thickness: thickness,
-        pcs: pcs,
-        rate: rateBasic,
-        gst: rateGst,
-      };
+  const product = {
+    product: checked,
+    company: company,
+    grade: grade,
+    topcolor: color,
+    coating: parseInt(coating),
+    temper: temper,
+    guardfilm: guard,
+    thickness: thickness,
+    width: width,
+    weight: totalWeight,
+  };
 
-      try {
-        const response = await Axios.get(
-          "http://3.109.125.33:3009/sales/availableStock",
-          {
-            params: product,
-            headers: {
-              Authorization: "Bearer THISISMYTOKENKEYNAME",
-            },
-          }
-        );
+  console.log("value of temper is", temper);
 
-        console.log("API response:", response.data);
-
-        if (response.data) {
-          setStockAvailable(true); // Product is available
-        } else {
-          setStockAvailable(false); // Product is not available
-        }
-      } catch (error) {
-        console.error("Error checking stock availability:", error);
-        setStockAvailable(false); // Error occurred, assume not available
+  try {
+    console.log("my items =", product);
+    const response = await Axios.get(
+      "http://3.111.40.233:3009/sales/availableStock",
+      {
+        params: product,
+        headers: {
+          Authorization: "Bearer THISISMYTOKENKEYNAME",
+        },
       }
-    };
+    );
+             
+
+    console.log("API response:", response.data);
+
+    if (response.data) {
+      setStockAvailable(true); // Product is available
+    } else {
+      setStockAvailable(false); // Product is not available
+    }
+  } catch (error) {
+    console.error("Error checking stock availability:", error);
+    setStockAvailable(false); // Error occurred, assume not available
+  }
+};
+                                                                                                                                                                              
+    
 
     // Trigger stock availability check whenever any of these inputs change
     if (
@@ -268,6 +272,7 @@ const CreateOrder = () => {
     }
   }, [
     company,
+    checked,
     grade,
     color,
     coating,
@@ -277,11 +282,12 @@ const CreateOrder = () => {
     width,
     length,
     pcs,
+    totalWeight
   ]);
 
   const handleAddToCart = async () => {
+    
     const weight = length * pcs * 7.86;
-
     const rateBasic = weight;
     const gstPercentage = 18;
     const gstAmount = (gstPercentage / 100) * rateBasic;
@@ -306,7 +312,6 @@ const CreateOrder = () => {
     };
     console.log("pcs:", pcs);
     console.log("selectedUnit:", selectedUnit);
-
     setCartItem([...cartItem, product]);
     setShowCartItem(true);
     setISCartEmpty(false);
@@ -416,86 +421,216 @@ const CreateOrder = () => {
                     <Col className="col-lg-7">{todaysDate}</Col>
                   </Row>
                   <Row className="inputRow">
-                    <Col className="col-lg-4 label">Client Name</Col>
-                    <Col className="col-lg-1">-</Col>
-                    <Col className="col-lg-7">
-                      <input
-                        className="input_order"
-                        onChange={handleChange}
-                        value={inputs.clientName}
-                        type="text"
-                        name="clientName"
-                        required
-                        placeholder="Client Name"
-                      />
-                    </Col>
-                  </Row>
-                  <Row className="inputRow">
-                    <Col className="col-lg-4 label">Firm Name</Col>
-                    <Col className="col-lg-1">-</Col>
-                    <Col className="col-lg-7">
-                      <input
-                        className="input_order"
-                        onChange={handleChange}
-                        value={inputs.firmName}
-                        type="text"
-                        name="firmName"
-                        placeholder="Firm Name"
-                        required
-                        maxLength="20"
-                      />
-                    </Col>
-                  </Row>
-                  <Row className="inputRow">
-                    <Col className="col-lg-4 label">Email</Col>
-                    <Col className="col-lg-1">-</Col>
-                    <Col className="col-lg-7">
-                      <input
-                        className="input_order"
-                        onChange={handleChange}
-                        value={inputs.Email}
-                        type="email"
-                        name="Email"
-                        placeholder="Enter Email Address"
-                        required
-                        maxLength="50"
-                      />
-                    </Col>
-                  </Row>
-                  <Row className="inputRow">
-                    <Col className="col-lg-4 label">Address</Col>
-                    <Col className="col-lg-1">-</Col>
-                    <Col className="col-lg-7">
-                      <input
-                        className="input_order"
-                        onChange={handleChange}
-                        value={inputs.address}
-                        type="text"
-                        name="address"
-                        required
-                        placeholder="Address"
-                        maxLength="20"
-                      />
-                    </Col>
-                  </Row>
-                  <Row className="inputRow">
-                    <Col className="col-lg-4 label">Phone</Col>
-                    <Col className="col-lg-1">-</Col>
-                    <Col className="col-lg-5">
-                      <input
-                        className="input_order"
-                        onChange={handlePhoneChange}
-                        value={inputs.phone_no}
-                        type="text"
-                        name="phone_no"
-                        placeholder="Phone No."
-                        required
-                        maxLength="10"
-                      />
+  <Col className="col-lg-4 label">Client Name</Col>
+  <Col className="col-lg-1">-</Col>
+  <Col className="col-lg-7">
+    <input
+      className="input_order"
+      onChange={(e) => {
+        const { value } = e.target;
+        handleChange(e); // Existing handler to update inputs
+        if (inputs.errors?.clientName) {
+          setInputs((prev) => ({
+            ...prev,
+            errors: { ...prev.errors, clientName: false },
+          }));
+        }
+      }}
+      value={inputs.clientName}
+      type="text"
+      name="clientName"
+      placeholder="Client Name"
+      required
+      onKeyPress={(e) => {
+        if (!/^[a-zA-Z\s]*$/.test(e.key)) {
+          e.preventDefault();
+        }
+      }}
+      onBlur={(e) => {
+        if (!e.target.value.trim()) {
+          setInputs((prev) => ({
+            ...prev,
+            errors: { ...prev.errors, clientName: true },
+          }));
+        }
+      }}
+    />
+    {inputs.errors?.clientName && (
+      <div style={{ color: 'red', marginTop: '5px' }}>
+        * Client Name is required
+      </div>
+    )}
+  </Col>
+</Row>
 
-                      {inputs.phone_no.length != 10}
-                    </Col>
-                  </Row>
+               <Row className="inputRow">
+  <Col className="col-lg-4 label">Firm Name</Col>
+  <Col className="col-lg-1">-</Col>
+  <Col className="col-lg-7">
+    <input
+      className="input_order"
+      onChange={(e) => {
+        const { value } = e.target;
+        handleChange(e); // Existing handler to update inputs
+        if (inputs.errors?.firmName) {
+          setInputs((prev) => ({
+            ...prev,
+            errors: { ...prev.errors, firmName: false },
+          }));
+        }
+      }}
+      value={inputs.firmName}
+      type="text"
+      name="firmName"
+      placeholder="Firm Name"
+      required
+      maxLength="20"
+      onKeyPress={(e) => {
+        if (!/^[a-zA-Z\s]*$/.test(e.key)) {
+          e.preventDefault();
+        }
+      }}
+      onBlur={(e) => {
+        const value = e.target.value.trim();
+        if (!value || !/^[a-zA-Z\s]+$/.test(value)) {
+          setInputs((prev) => ({
+            ...prev,
+            errors: { ...prev.errors, firmName: true },
+          }));
+        }
+      }}
+    />
+    {inputs.errors?.firmName && (
+      <div style={{ color: 'red', marginTop: '5px' }}>
+        * Firm Name is required
+      </div>
+    )}
+  </Col>
+</Row>
+
+
+
+<Row className="inputRow">
+  <Col className="col-lg-4 label">Email</Col>
+  <Col className="col-lg-1">-</Col>
+  <Col className="col-lg-7">
+    <input
+      className="input_order"
+      onChange={handleChange}
+      value={inputs.Email}
+      type="email"
+      name="Email"
+      placeholder="Enter Email Address"
+      required
+      maxLength="50"
+      onBlur={(e) => {
+        const value = e.target.value.trim();
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        if (!value || !emailRegex.test(value)) {
+          setInputs((prev) => ({
+            ...prev,
+            errors: { ...prev.errors, Email: true },
+          }));
+        } else {
+          setInputs((prev) => ({
+            ...prev,
+            errors: { ...prev.errors, Email: false },
+          }));
+        }
+        
+      }}
+    />
+    {inputs.errors?.Email && (
+      <div style={{ color: "red", marginTop: "5px" }}>
+        * Please enter a valid Email address
+      </div>
+    )}
+  </Col>
+</Row>
+
+<Row className="inputRow">
+  <Col className="col-lg-4 label">Address</Col>
+  <Col className="col-lg-1">-</Col>
+  <Col className="col-lg-7">
+    <input
+      className="input_order"
+      onChange={(e) => {
+        const { value } = e.target;
+        handleChange(e);
+        if (inputs.errors?.address) {
+          setInputs((prev) => ({
+            ...prev,
+            errors: { ...prev.errors, address: false },
+          }));
+        }
+      }}
+      value={inputs.address}
+      type="text"
+      name="address"
+      placeholder="Address"
+      required
+      maxLength="20"
+      onBlur={(e) => {
+        if (!e.target.value.trim()) {
+          setInputs((prev) => ({
+            ...prev,
+            errors: { ...prev.errors, address: true },
+          }));
+        }
+      }}
+    />
+    {inputs.errors?.address && (
+      <div style={{ color: 'red', marginTop: '5px' }}>
+        * Address is required
+      </div>
+    )}
+  </Col>
+</Row>
+
+<Row className="inputRow">
+  <Col className="col-lg-4 label">Phone</Col>
+  <Col className="col-lg-1">-</Col>
+  <Col className="col-lg-5">
+    <input
+      className="input_order"
+      onChange={(e) => {
+        const { value } = e.target;
+        handlePhoneChange(e);
+        if (inputs.errors?.phone_no && value.length === 10) {
+          setInputs((prev) => ({
+            ...prev,
+            errors: { ...prev.errors, phone_no: false },
+          }));
+        }
+      }}
+      value={inputs.phone_no}
+      type="text"
+      name="phone_no"
+      placeholder="Phone No."
+      required
+      maxLength="10"
+      onKeyPress={(e) => {
+        if (!/^[0-9]*$/.test(e.key)) {
+          e.preventDefault();
+        }
+      }}
+      onBlur={(e) => {
+        if (e.target.value.length !== 10) {
+          setInputs((prev) => ({
+            ...prev,
+            errors: { ...prev.errors, phone_no: true },
+          }));
+        }
+      }}
+    />
+    {inputs.errors?.phone_no && (
+      <div style={{ color: 'red', marginTop: '5px' }}>
+        * Phone number must be exactly 10 digits
+      </div>
+    )}
+  </Col>
+</Row>
+
                   <Row className="inputRow">
                     <Col className="col-lg-4 label">City</Col>
                     <Col className="col-lg-1">-</Col>
@@ -712,7 +847,7 @@ const CreateOrder = () => {
                               id="radio"
                               type="radio"
                               aria-label="option 1"
-                              label="Color Col"
+                              label="Color"
                               onChange={handleCheck}
                               name="checked"
                               value="Color"
@@ -746,6 +881,33 @@ const CreateOrder = () => {
                               checked={checked === "GP ROLL"}
                             />
                           </Col>
+                          <Col>
+                            <Form.Check
+                              className="radio"
+                              id="radio"
+                              type="radio"
+                              aria-label="option 1"
+                              label="GP Sheet"
+                              onChange={handleCheck}
+                              name="checked"
+                              value="GP Sheet"
+                              checked={checked === "GP Sheet"}
+                            />
+                          </Col>
+                          <Col>
+                            <Form.Check
+                              className="radio"
+                              id="radio"
+                              type="radio"
+                              aria-label="option 1"
+                              label="GC Sheet"
+                              onChange={handleCheck}
+                              name="checked"
+                              value="GC Sheet"
+                              checked={checked === "GC Sheet"}
+                            />
+                          </Col>
+                    
                         </Row>
                       </Container>
                     </Row>
@@ -812,7 +974,7 @@ const CreateOrder = () => {
                                 // required
                               >
                                 {Constants.Grade.map((val, arr) => (
-                                  <option value={val.id} key={arr}>
+                                  <option value={val.id} key={arr}>                                 
                                     {val.name}
                                   </option>
                                 ))}
@@ -891,7 +1053,7 @@ const CreateOrder = () => {
                                   <label htmlFor="thick">Thickness</label>
                                   <Container className="measure_conatiner">
                                   <input
-                                    type="text"
+                                    type="number"
                                     className="custom"
                                     id="thickness"
                                     min="0.1"
@@ -916,7 +1078,7 @@ const CreateOrder = () => {
                                   <Container className="measure_conatiner">
                                   <input
                                     className="custom"
-                                    type="text"
+                                    type="number"
                                     placeholder="width"
                                     value={width}
                                     onChange={(e) => {
@@ -943,7 +1105,7 @@ const CreateOrder = () => {
                                         <input
                                           style={{ width: "150px" }}
                                           id="weight"
-                                          type="text"
+                                          type="number"
                                           placeholder="length"
                                           name="weight"
                                           className="custom"
@@ -977,7 +1139,7 @@ const CreateOrder = () => {
                                             width: "150px",
                                           }}
                                           id="pcs"
-                                          type="text"
+                                          type="number"
                                           placeholder="Pcs"
                                           name="pcs"
                                           value={pcs}
@@ -1150,6 +1312,14 @@ const CreateOrder = () => {
                     {/* )} */}
                   </div>
                 </form>
+
+
+
+
+
+
+
+
               </Container>
             </Container>
           </Col>
@@ -1190,7 +1360,7 @@ const CreateOrder = () => {
                   </Row>
                   <Row>
                     <Col>
-                      <p>First Name -</p>
+                      <p>Firm Name -</p>
                     </Col>
                     <Col>
                       <p>{inputs.firmName}</p>
@@ -1219,14 +1389,14 @@ const CreateOrder = () => {
                     <p>{inputs.phone_no}</p>
                   </Col>
                 </Row>
-                <Row>
+                {/* <Row>
                   <Col>
                     <p>weight -</p>
                   </Col>
                   <Col>
                     <p>{totalWeight}</p>
                   </Col>
-                </Row>
+                </Row> */}
                 <Row>
                   <Col>
                     <p>Delivery Date -</p>
@@ -1249,6 +1419,7 @@ const CreateOrder = () => {
             {showCartItem &&
               cartItem.map((product, index) => {
                 const data = [
+                  {label: "Product", value: product.select_product},
                   { label: "Company", value: product.company },
                   { label: "Grade", value: product.grade },
                   { label: "Color", value: product.topcolor },
