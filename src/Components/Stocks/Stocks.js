@@ -20,7 +20,6 @@ const Stocks = ({ match }) => {
   const [successAlert, setSuccessAlert] = useState(false);
   const [loading, setLoading] = useState(false);
   const [modalValue, setModalValue] = useState("");
-  const [processedData, setProcessedData] = useState([]);
   const [items, setItems] = useState({
     product: "",
     company: "",
@@ -35,34 +34,44 @@ const Stocks = ({ match }) => {
     pcs: "",
     guardfilm: "",
   });
+ 
+  // useEffect(() => {
+  //   const reloadKey = "hasRefreshed";
 
-  const processFetchedData = (data) => {
-    // Step 1: Remove batch_number
-    const sanitizedData = data.map(({ batch_number, ...rest }) => rest);
-  
-    // Step 2: Combine entries with the same attributes
-    const combinedData = sanitizedData.reduce((acc, curr) => {
-      const key = `${curr.product}-${curr.company}-${curr.grade}-${curr.topcolor}-${curr.coating}-${curr.temper}-${curr.guardfilm}-${curr.thickness}-${curr.width}`;
-      if (!acc[key]) {
-        acc[key] = { ...curr };
-      } else {
-        // Sum weights and lengths for duplicate entries
-        acc[key].weight += curr.weight;
-        acc[key].length += curr.length;
-      }
-      return acc;
-    }, {});
-  
-    // Step 3: Convert the combined object back to an array
-    return Object.values(combinedData);
-  };
-  
+   
+  //   if (!window.localStorage.getItem(reloadKey)) {
+  //     window.localStorage.setItem(reloadKey, "true");
+  //     window.location.reload(); 
+  //   }
 
+   
+  //   return () => {
+  //     window.localStorage.removeItem(reloadKey);
+  //   };
+  // }, []);
+
+  // const processFetchedData = (data) => {
+  //   // Step 1: Remove batch_number
+  //   const sanitizedData = data.map(({ batch_number, ...rest }) => rest);
+  
+  //   // Step 2: Combine entries with the same attributes (skip duplicates)
+  //   const combinedData = sanitizedData.reduce((acc, curr) => {
+  //     const key = `${curr.product}-${curr.company}-${curr.grade}-${curr.topcolor}-${curr.coating}-${curr.temper}-${curr.guardfilm}-${curr.thickness}-${curr.width}`;
+  //     if (!acc[key]) {
+  //       acc[key] = { ...curr };
+  //     }
+  //     return acc;
+  //   }, {});
+  
+  //   // Step 3: Convert the combined object back to an array
+  //   return Object.values(combinedData);
+  // };
+  
   const handleChange = (e) => {
     e.preventDefault();
     setItems({ ...items, [e.target.name]: e.target.value });
   };
-
+  
   const formData = {
     product: items.product,
     company: items.company,
@@ -78,7 +87,7 @@ const Stocks = ({ match }) => {
     guardfilm: items.guardfilm,
     density: 0.00000784,
   };
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -91,7 +100,7 @@ const Stocks = ({ match }) => {
         },
       })
         .then((response) => {
-          if (response.status === 201) {
+          if (response.status === 201 || response.status === 200) {
             console.log(response);
             setLoading(false);
             setSuccessAlert(true);
@@ -140,7 +149,7 @@ const Stocks = ({ match }) => {
   const handleConfirm = (val, e) => {
     e.preventDefault();
     // eslint-disable-next-line no-restricted-globals
-    const toDelete = confirm("Want to Delete this User?");
+    const toDelete = confirm("Want to Delete this Stock?");
     if (toDelete) {
       onDelete(val, e);
     }
@@ -171,29 +180,20 @@ const Stocks = ({ match }) => {
   }, [lgShow]);
   
   useEffect(() => {
-    console.log("Fetching data from API");
     const fetchData = async () => {
-        try {
-            const response = await Axios.get(`${secret.Ip}/Stock_M/get`, {
-                headers: {
-                    Authorization: `Bearer ${secret.token}`,
-                    "Content-Type": "application/json",
-                    "Access-Control-Allow-Origin": "*",
-                },
-            });
-
-            const fetchedData = response.data.res;
-            const processed = processFetchedData(fetchedData);
-            console.log("Fetched data:", fetchedData);
-            setItem(fetchedData);
-            setProcessedData(processed);
-        } catch (error) {
-            console.error("Error fetching data:", error);
-        }
+      await Axios.get(`${secret.Ip}/Stock_M/get`, {
+        headers: {
+          Authorization: `Bearer ${secret.token}`,
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
+      }).then((response) => {
+        setItem(response.data.res);
+        console.log("response.data.res", response.data.res);
+      });
     };
-
     fetchData();
-}, []);
+  }, []); //item
 
 
   useEffect(() => {
@@ -591,47 +591,55 @@ const Stocks = ({ match }) => {
       </tr>
     </thead>
     <tbody>
-      {(searchResults.length > 0 ? searchResults : processedData).map((val, index) => (
-        <tr key={index}>
-          <td style={{ backgroundColor: "#f5fafd" }}>{val.product}</td>
-          <td style={{ backgroundColor: "#f2f2f2" }}>{val.company}</td>
-          <td style={{ backgroundColor: "#f2f2f2" }}>{val.grade}</td>
-          <td style={{ backgroundColor: "#f5fafd" }}>{val.topcolor}</td>
-          <td style={{ backgroundColor: "#f2f2f2" }}>{val.coating}</td>
-          <td style={{ backgroundColor: "#f5fafd" }}>{val.temper}</td>
-          <td style={{ backgroundColor: "#f2f2f2" }}>{val.guardfilm}</td>
-          <td style={{ backgroundColor: "#f5fafd" }}>{val.thickness}</td>
-          <td style={{ backgroundColor: "#f2f2f2" }}>{val.width}</td>
-          <td style={{ backgroundColor: "#f5fafd" }}>{val.length}</td>
-          <td style={{ backgroundColor: "#f2f2f2" }}>
-            {Math.sign(val.weight) === -1 || val.weight <= 0 ? (
-              <span style={{ color: "red" }}>Out Of Stocks</span>
-            ) : (
-              <span>{val.weight.toFixed(0)} Kg</span>
-            )}
-          </td>
-         
-          <td style={{ backgroundColor: "#f2f2f2" }}>
-            <div className="d-flex">
-              <button
-                style={{ border: "none", backgroundColor: "transparent", color: "red", marginRight: "10px" }}
-                onClick={(e) => {
-                  handleConfirm(val.id, e);
-                }}
-              >
-                <i className="far fa-trash-alt"></i>
-              </button>
-              <button
-                style={{ border: "none", backgroundColor: "transparent", color: "blue" }}
-                onClick={() => ChangeEditShow(val._id)}
-              >
-                <i className="far fa-edit"></i>
-              </button>
-            </div>
-          </td>
-        </tr>
-      ))}
-    </tbody>
+  {(searchResults.length > 0 || item.length > 0) &&
+    (searchTerm.length < 1 ? item : searchResults).map((val, index) => (
+      <tr key={index}>
+        <td style={{ backgroundColor: "#f5fafd" }}>{val.product}</td>
+        <td style={{ backgroundColor: "#f2f2f2" }}>{val.company}</td>
+        <td style={{ backgroundColor: "#f2f2f2" }}>{val.grade}</td>
+        <td style={{ backgroundColor: "#f5fafd" }}>{val.topcolor}</td>
+        <td style={{ backgroundColor: "#f2f2f2" }}>{val.coating}</td>
+        <td style={{ backgroundColor: "#f5fafd" }}>{val.temper}</td>
+        <td style={{ backgroundColor: "#f2f2f2" }}>{val.guardfilm}</td>
+        <td style={{ backgroundColor: "#f5fafd" }}>{val.thickness}</td>
+        <td style={{ backgroundColor: "#f2f2f2" }}>{val.width}</td>
+        <td style={{ backgroundColor: "#f5fafd" }}>{val.length}</td>
+        <td style={{ backgroundColor: "#f2f2f2" }}>
+          {Math.sign(val.weight) === -1 || val.weight <= 0 ? (
+            <span style={{ color: "red" }}>Out Of Stocks</span>
+          ) : (
+            <span>{val.weight.toFixed(0)} Kg</span>
+          )}
+        </td>
+        <td style={{ backgroundColor: "#f2f2f2" }}>
+          <div className="d-flex">
+            <button
+              style={{
+                border: "none",
+                backgroundColor: "transparent",
+                color: "red",
+                marginRight: "10px",
+              }}
+              onClick={(e) => handleConfirm(val.id, e)}
+            >
+              <i className="far fa-trash-alt"></i>
+            </button>
+            <button
+              style={{
+                border: "none",
+                backgroundColor: "transparent",
+                color: "blue",
+              }}
+              onClick={() => ChangeEditShow(val._id)}
+            >
+              <i className="far fa-edit"></i>
+            </button>
+          </div>
+        </td>
+      </tr>
+    ))}
+</tbody>
+
   </table>
 </Container>
 

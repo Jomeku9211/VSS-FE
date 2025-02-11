@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Container, Alert } from "react-bootstrap";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
@@ -7,6 +7,7 @@ import axios from "axios";
 import LoaderComp from "../Loader/LoaderComp";
 import secret from '../config';
 import "./Login.css";
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -23,9 +24,11 @@ const Login = () => {
   const [info, setInfo] = useState({ username: "", password: "" });
   const history = useHistory();
 
+
   const handleChange = (e) => {
     e.preventDefault();
     setInfo({ ...info, [e.target.name]: e.target.value });
+
   };
 
   const handleSubmit = async (e) => {
@@ -33,56 +36,46 @@ const Login = () => {
     setLoading(true);
   
     try {
-      // Retrieve all stock manager credentials from localStorage
-      const stockManagerCredentials = JSON.parse(localStorage.getItem("stockManagerCredentials")) || [];
+      let userData;
+      let response;
   
-      console.log("stockManagerCredentials", stockManagerCredentials);
-  
-      // Check if the entered username and password match any stock manager
-      const matchedManager = stockManagerCredentials.find(
-        (manager) =>
-          manager.username === info.username && manager.password === info.password
-      );
-  
-      if (matchedManager) {
-        // Stock Manager Login
-        const userData = {
-          UserName: info.username,
-          Password: info.password,
-          Role: "StockManager",
-        };
-  
-        console.log("userData", userData);
-        const response = await axios.post(`${secret.Ip}/Mobile/MobileLogin`, userData);
-        console.log("Stock Manager Login Response:", response.data);
-  
-        if (response.data.data?.token) {
-          localStorage.setItem("token", response.data.data.token);
-          localStorage.setItem("role", "StockManager");
-          history.push("/stocks");
-        } else {
-          setError(true);
-          setTimeout(() => setError(false), 3000);
-        }
-      } else {
-        // Admin Login (if no matching stock manager credentials are found)
-        const userData = {
+      if (info.username === "vickyindore" && info.password === "1234@1234") {
+        // Admin Login
+        userData = {
           username: info.username,
           password: info.password,
         };
-  
-        const response = await axios.post(`${secret.Ip}/admin/login`, userData);
-        console.log("Admin Login Response:", response.data);
-  
+        response = await axios.post(`${secret.Ip}/admin/login`, userData);
         if (response.data.data?.token) {
           localStorage.setItem("token", response.data.data.token);
-          localStorage.setItem("role", "Admin"); 
+          localStorage.setItem("role", "Admin");
           history.push("/");
         } else {
           setError(true);
           setTimeout(() => setError(false), 3000);
         }
+      } else {
+        // Stock Manager Login
+        userData = {
+          UserName: info.username,
+          Password: info.password,
+          Role: "StockManager",
+        };
+        response = await axios.post(`${secret.Ip}/mobile/MobileLogin`, userData);
+        if (response.data.data?.token) {
+          localStorage.setItem("token", response.data.data.token);
+          localStorage.setItem("role", "StockManager");
+         
+          history.push("/stocks");
+          window.location.reload();
+        } else {
+          setError(true);
+          setTimeout(() => setError(false), 3000);
+        }
       }
+  
+      console.log("User Data:", userData);
+      console.log("Login Response:", response.data);
     } catch (error) {
       console.error("Login Error:", error);
       setError(true);
@@ -91,6 +84,22 @@ const Login = () => {
       setLoading(false);
     }
   };
+  
+    useEffect(() => {
+      const token = localStorage.getItem("token");
+      const role = localStorage.getItem("role");
+
+      if (token) {
+        if (role === "Admin") {
+          history.push("/"); 
+        } else if (role === "StockManager") {
+          history.push("/stocks");
+        }
+      }
+    }, [history]);
+
+
+
   
   
   const classes = useStyles();

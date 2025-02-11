@@ -220,26 +220,25 @@ const CreateOrder = () => {
     coating: parseInt(coating),
     temper: temper,
     guardfilm: guard,
-    thickness: thickness,
-    width: width,
-    weight: totalWeight,
+    thickness:  parseInt(thickness),
+    width:  parseInt(width),
+    weight: parseFloat((totalWeight).toFixed(2)),
   };
 
   console.log("value of temper is", temper);
 
   try {
     console.log("my items =", product);
-    const response = await Axios.get(
-      "http://3.111.40.233:3009/sales/availableStock",
+    const response = await Axios.post(
+      "http://3.111.40.233:3009/sales/CheckStock",
+      product,
       {
-        params: product,
         headers: {
           Authorization: "Bearer THISISMYTOKENKEYNAME",
         },
       }
     );
              
-
     console.log("API response:", response.data);
 
     if (response.data) {
@@ -253,8 +252,6 @@ const CreateOrder = () => {
   }
 };
                                                                                                                                                                               
-    
-
     // Trigger stock availability check whenever any of these inputs change
     if (
       company !== "" &&
@@ -266,24 +263,14 @@ const CreateOrder = () => {
       thickness !== "" &&
       width !== "" &&
       length !== "" &&
+      totalWeight!==0 &&
       pcs !== ""
     ) {
       checkStockAvailability();
     }
   }, [
-    company,
-    checked,
-    grade,
-    color,
-    coating,
-    temper,
-    guard,
-    thickness,
-    width,
-    length,
-    pcs,
     totalWeight
-  ]);
+  ]); 
 
   const handleAddToCart = async () => {
     
@@ -754,6 +741,10 @@ const CreateOrder = () => {
                       />
                     </Col>
                   </Row>
+
+
+
+                  
                   <Row className="inputRow">
                     <Col className="col-lg-4 label">Products</Col>
                     <Col className="col-lg-1">-</Col>
@@ -806,11 +797,11 @@ const CreateOrder = () => {
                               id="radio"
                               type="radio"
                               aria-label="option 1"
-                              label="GC"
+                              label="GC Coil"
                               onChange={handleCheck}
                               name="checked"
-                              value="GC"
-                              checked={checked === "GC"}
+                              value="GC Coil"
+                              checked={checked === "GC Coil"}
                             />
                           </Col>
                           <Col>
@@ -847,11 +838,11 @@ const CreateOrder = () => {
                               id="radio"
                               type="radio"
                               aria-label="option 1"
-                              label="Color"
+                              label="Color Coil"
                               onChange={handleCheck}
                               name="checked"
-                              value="Color"
-                              checked={checked === "Color"}
+                              value="Color Coil"
+                              checked={checked === "Color Coil"}
                             />
                           </Col>
                           <Col>
@@ -874,11 +865,11 @@ const CreateOrder = () => {
                               id="radio"
                               type="radio"
                               aria-label="option 1"
-                              label="GP Roll"
+                              label="GP Coil"
                               onChange={handleCheck}
                               name="checked"
-                              value="GP ROLL"
-                              checked={checked === "GP ROLL"}
+                              value="GP Coil"
+                              checked={checked === "GP Coil"}
                             />
                           </Col>
                           <Col>
@@ -912,6 +903,11 @@ const CreateOrder = () => {
                       </Container>
                     </Row>
                   </Row>
+
+
+
+
+
                   <Row>
                     {/* ++++++++++++AFTER Order section ++++++++++++ */}
                     <Container>
@@ -1201,7 +1197,7 @@ const CreateOrder = () => {
                             <Row>
                               <p id="weight">
                                 TotalWeight:
-                                <span id="result">{totalWeight}</span>
+                                <span id="result">{totalWeight===undefined ? totalWeight :totalWeight.toFixed(2)}</span>
                               </p>
                             </Row>
                           </Container>
@@ -1429,7 +1425,8 @@ const CreateOrder = () => {
                   { label: "Thickness", value: desc.thickness },
                   { label: "Width", value: desc.width },
                   { label: "Length", value: desc.length },
-                  { label: "Pcs", value: `${desc.pcs} ${selectedUnit}` },
+                  { label: "Weight", value: product.weight },
+                  { label: "Pcs", value: `${desc.pcs} ${selectedUnit}`},
                   { label: "Rate(Basic)", value: product.weight },
                   {
                     label: "Rate(GST%)",

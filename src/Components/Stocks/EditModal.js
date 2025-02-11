@@ -167,13 +167,15 @@ const EditModal = ({ lgEditShow, setLgEditShow, id }) => {
                     // required
                   >
                     <option value>{item?.product}</option>
+                    <option value="GC Coil">GC Coil</option>
+                    <option value="GP Coil">GP Coil</option>
                     <option value="GPC">GPC</option>
-                    <option value="GPS">GPS</option>
-                    <option value="GP ROLL">GP ROLL</option>
                     <option value="GC">GC</option>
                     <option value="HR">HR</option>
                     <option value="CR">CR</option>
-                    <option value="Color">Color</option>
+                    <option value="Color Coil">Color Coil</option>
+                    <option value="GC Sheet">GC Sheet</option>
+                    <option value="GP Sheet">GP Sheet</option>
                     <option value="Profile Sheet">Profile Sheet</option>
                     <option value="Acce">Acce.</option>
                   </select>

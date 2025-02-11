@@ -53,6 +53,9 @@ const Sidenav = () => {
   }, [history]);
 
 
+    if(!localStorage.getItem("token")) return null
+  
+
   return (
     <>
       <div className="sidenav">
