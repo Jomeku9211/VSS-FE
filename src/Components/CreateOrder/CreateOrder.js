@@ -306,7 +306,7 @@ useEffect(() => {
     try {
       console.log("my items =", product);
       const response = await Axios.post(
-        "http://15.206.145.236:3009/sales/CheckStock",
+        "http://15.206.145.236:3009/sales",
         product,
         {
           headers: {
