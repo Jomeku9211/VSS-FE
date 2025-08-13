@@ -31,18 +31,23 @@ const CreateOrder = () => {
   const [width, setWidth] = useState("");
   const [length, setLength] = useState("");
   const [pcs, setPcs] = useState("");
+  const [recalculateRate, setRecalculateRate] = useState(false);
+  const [previousGstType, setPreviousGstType] = useState("basic");
+
+
+
 
   // Update the orderList state initialization to include lengthInMm
-const [orderList, setOrderList] = useState([{ 
-  orders: "", 
-  lengthType: "feet",
-  length: "",
-  feet: "",
-  inch: "",
-  pcs: "",
-  unit: "piece",
-  lengthInMm: 0 
-}]);
+  const [orderList, setOrderList] = useState([{
+    orders: "",
+    lengthType: "feet",
+    length: "",
+    feet: "",
+    inch: "",
+    pcs: "",
+    unit: "piece",
+    lengthInMm: 0
+  }]);
   const [cartItem, setCartItem] = useState([]);
 
   const [showCartItem, setShowCartItem] = useState(false);
@@ -56,44 +61,44 @@ const [orderList, setOrderList] = useState([{
 
 
   // Add this helper function at the top of your component
-const convertToMm = (feet, inches = 0) => {
-  const totalInches = parseFloat(feet) * 12 + parseFloat(inches);
-  return totalInches * 25.4; // 1 inch = 25.4 mm
-};
+  const convertToMm = (feet, inches = 0) => {
+    const totalInches = parseFloat(feet) * 12 + parseFloat(inches);
+    return totalInches * 25.4; // 1 inch = 25.4 mm
+  };
 
 
-// Add this helper function to calculate weight
-const calculateWeight = (thickness, lengthInMm, width, pcs) => {
-  const thicknessNum = parseFloat(thickness) || 0;
-  const lengthNum = parseFloat(lengthInMm) || 0;
-  const widthNum = parseFloat(width) || 0;
-  const pcsNum = parseFloat(pcs) || 0;
-  
-  // Calculate weight using the formula: thickness * length * width * 0.00000785 * pcs
-  const weight = thicknessNum * lengthNum * widthNum * 0.00000785 * pcsNum;
-  return weight;
-};
+  // Add this helper function to calculate weight
+  const calculateWeight = (thickness, lengthInMm, width, pcs) => {
+    const thicknessNum = parseFloat(thickness) || 0;
+    const lengthNum = parseFloat(lengthInMm) || 0;
+    const widthNum = parseFloat(width) || 0;
+    const pcsNum = parseFloat(pcs) || 0;
+
+    // Calculate weight using the formula: thickness * length * width * 0.00000785 * pcs
+    const weight = thicknessNum * lengthNum * widthNum * 0.00000785 * pcsNum;
+    return weight;
+  };
 
 
 
-// Add this function to update order length and calculate mm
-const updateOrderLength = (index, updates) => {
-  const updatedOrders = [...orderList];
-  const order = { ...updatedOrders[index], ...updates };
-  
-  // Recalculate lengthInMm based on the current lengthType and the updated values
-  if (order.lengthType === "feet") {
-    const feetValue = order.length || 0;
-    order.lengthInMm = convertToMm(feetValue, 0);
-  } else if (order.lengthType === "feetInch") {
-    const feetValue = order.feet || 0;
-    const inchesValue = order.inch || 0;
-    order.lengthInMm = convertToMm(feetValue, inchesValue);
-  }
-  
-  updatedOrders[index] = order;
-  setOrderList(updatedOrders);
-};
+  // Add this function to update order length and calculate mm
+  const updateOrderLength = (index, updates) => {
+    const updatedOrders = [...orderList];
+    const order = { ...updatedOrders[index], ...updates };
+
+    // Recalculate lengthInMm based on the current lengthType and the updated values
+    if (order.lengthType === "feet") {
+      const feetValue = order.length || 0;
+      order.lengthInMm = convertToMm(feetValue, 0);
+    } else if (order.lengthType === "feetInch") {
+      const feetValue = order.feet || 0;
+      const inchesValue = order.inch || 0;
+      order.lengthInMm = convertToMm(feetValue, inchesValue);
+    }
+
+    updatedOrders[index] = order;
+    setOrderList(updatedOrders);
+  };
 
   let newArray = [];
 
@@ -162,14 +167,14 @@ const updateOrderLength = (index, updates) => {
       setInputs({ ...inputs, [name]: value });
     }
   };
-const handleRate = (e) => {
-  e.preventDefault();
-  const value = e.target.value;
-  // Allow only numbers and decimal point
-  if (/^\d*\.?\d*$/.test(value) || value === "") {
-    setRate(value);
-  }
-};
+  const handleRate = (e) => {
+    e.preventDefault();
+    const value = e.target.value;
+    // Allow only numbers and decimal point
+    if (/^\d*\.?\d*$/.test(value) || value === "") {
+      setRate(value);
+    }
+  };
 
   const sum = +rate * Number(18 / 1000);
   const final = +sum + +rate;
@@ -191,20 +196,29 @@ const handleRate = (e) => {
   };
 
 
-// Update the GST dropdown handler
-const handleGstChange = (e) => {
-  setSelectedGst(e.target.value);
-  // Recalculate total when GST type changes
-  if (rate && !isNaN(rate)) {
-    const rateNum = parseFloat(rate);
-    if (e.target.value === "basic") {
-      const gstAmount = rateNum * 0.18;
-      setTotal((rateNum + gstAmount).toFixed(2));
-    } else {
-      setTotal(rateNum.toFixed(2));
+  // Update the GST dropdown handler
+
+  const handleGstChange = (e) => {
+    const newGstType = e.target.value;
+    setPreviousGstType(selectedGst); // Store the previous GST type
+    setSelectedGst(newGstType);
+
+    // If we have a rate value and a valid GST type is selected, recalculate
+    if (rate && !isNaN(rate) && newGstType !== "") {
+      const rateNum = parseFloat(rate);
+
+      if (newGstType === "basic" && previousGstType === "paid") {
+        // Switching from Paid to Basic: convert inclusive rate to exclusive
+        const baseRate = rateNum / 1.18;
+        setRate(baseRate.toFixed(2));
+      } else if (newGstType === "paid" && previousGstType === "basic") {
+        // Switching from Basic to Paid: convert exclusive rate to inclusive
+        const inclusiveRate = rateNum * 1.18;
+        setRate(inclusiveRate.toFixed(2));
+      }
     }
-  }
-};
+  };
+
 
   console.log("Form Data : " + formData);
   const hadnleFormSubmit = async (e) => {
@@ -279,137 +293,161 @@ const handleGstChange = (e) => {
 
   const [stockAvailable, setStockAvailable] = useState(false);
 
-useEffect(() => {
-  const checkStockAvailability = async () => {
-    // Calculate total weight using the new formula for all orders
-    let totalWeightForCheck = 0;
+  useEffect(() => {
+    const checkStockAvailability = async () => {
+      // Calculate total weight using the new formula for all orders
+      let totalWeightForCheck = 0;
+      orderList.forEach(order => {
+        const lengthInMm = order.lengthInMm || 0;
+        const orderWeight = calculateWeight(thickness, lengthInMm, width, order.pcs);
+        totalWeightForCheck += orderWeight;
+      });
+
+      const product = {
+        product: checked,
+        company: company,
+        grade: grade,
+        topcolor: color,
+        coating: parseInt(coating),
+        temper: temper,
+        guardfilm: guard,
+        thickness: parseInt(thickness),
+        width: parseInt(width),
+        weight: parseFloat(totalWeightForCheck.toFixed(2)),
+      };
+
+      console.log("value of temper is", temper);
+      try {
+        console.log("my items =", product);
+        const response = await Axios.post(
+          "http://65.0.249.42:3009/sales",
+          product,
+          {
+            headers: {
+              Authorization: "Bearer THISISMYTOKENKEYNAME",
+            },
+          }
+        );
+        console.log("API response:", response.data);
+        if (response.data) {
+          setStockAvailable(true); // Product is available
+        } else {
+          setStockAvailable(false); // Product is not available
+        }
+      } catch (error) {
+        console.error("Error checking stock availability:", error);
+        setStockAvailable(false); // Error occurred, assume not available
+      }
+    };
+
+    // Check if all required fields are filled and total weight is greater than 0
+    if (
+      company !== "" &&
+      grade !== "" &&
+      color !== "" &&
+      coating !== "" &&
+      temper !== "" &&
+      guard !== "" &&
+      thickness !== "" &&
+      width !== "" &&
+      checked !== "" && // Added check for product selection
+      orderList.length > 0 && // Ensure there's at least one order
+      orderList.some(order => order.pcs && (order.length || (order.feet && order.inch))) // Ensure at least one order has valid dimensions and pcs
+    ) {
+      // Calculate total weight to verify it's greater than 0
+      let totalWeightForCheck = 0;
+      orderList.forEach(order => {
+        const lengthInMm = order.lengthInMm || 0;
+        const orderWeight = calculateWeight(thickness, lengthInMm, width, order.pcs);
+        totalWeightForCheck += orderWeight;
+      });
+
+      if (totalWeightForCheck > 0) {
+        checkStockAvailability();
+      } else {
+        setStockAvailable(false);
+      }
+    } else {
+      setStockAvailable(false);
+    }
+  }, [
+    thickness,
+    width,
+    orderList,
+    company,
+    grade,
+    color,
+    coating,
+    temper,
+    guard,
+    checked,
+    pcs // Added pcs to dependency array
+  ]);
+
+  const handleAddToCart = async () => {
+    // Check if GST type is selected
+    if (!selectedGst) {
+      alert("Please select a GST type before adding to cart");
+      return;
+    }
+
+    // Calculate total weight for all orders
+    let totalWeightForCart = 0;
+
     orderList.forEach(order => {
       const lengthInMm = order.lengthInMm || 0;
       const orderWeight = calculateWeight(thickness, lengthInMm, width, order.pcs);
-      totalWeightForCheck += orderWeight;
+      totalWeightForCart += orderWeight;
     });
 
+    // Calculate total pieces
+    let totalPcs = 0;
+    orderList.forEach(order => {
+      totalPcs += parseFloat(order.pcs) || 0;
+    });
+
+    // Calculate rate and GST based on user input and GST type
+    let baseRate, totalAmount, gstAmount;
+    const rateValue = parseFloat(rate) || 0;
+
+    if (selectedGst === "basic") {
+      // For Basic: rate is exclusive of GST
+      baseRate = rateValue;
+      gstAmount = baseRate * 0.18;
+      totalAmount = baseRate + gstAmount;
+    } else {
+      // For Paid: rate includes GST
+      totalAmount = rateValue;
+      // Calculate base rate and GST amount
+      baseRate = totalAmount / 1.18;
+      gstAmount = totalAmount - baseRate;
+    }
+
     const product = {
-      product: checked,
+      select_product: checked,
       company: company,
       grade: grade,
       topcolor: color,
       coating: parseInt(coating),
       temper: temper,
       guardfilm: guard,
-      thickness: parseInt(thickness),
-      width: parseInt(width),
-      weight: parseFloat(totalWeightForCheck.toFixed(2)),
+      weight: totalWeightForCart,
+      width: width,
+      thickness: thickness,
+      pcs: totalPcs,
+      rate: baseRate,
+      gst: totalAmount,
+      gstType: selectedGst,
+      gstAmount: gstAmount,
     };
-    
-    console.log("value of temper is", temper);
-    try {
-      console.log("my items =", product);
-      const response = await Axios.post(
-        "http://65.0.249.42:3009/sales",
-        product,
-        {
-          headers: {
-            Authorization: "Bearer THISISMYTOKENKEYNAME",
-          },
-        }
-      );
-      console.log("API response:", response.data);
-      if (response.data) {
-        setStockAvailable(true); // Product is available
-      } else {
-        setStockAvailable(false); // Product is not available
-      }
-    } catch (error) {
-      console.error("Error checking stock availability:", error);
-      setStockAvailable(false); // Error occurred, assume not available
-    }
-  };
-  
-  // Check if all required fields are filled and total weight is greater than 0
-  if (
-    company !== "" &&
-    grade !== "" &&
-    color !== "" &&
-    coating !== "" &&
-    temper !== "" &&
-    guard !== "" &&
-    thickness !== "" &&
-    width !== "" &&
-    checked !== "" && // Added check for product selection
-    orderList.length > 0 && // Ensure there's at least one order
-    orderList.some(order => order.pcs && (order.length || (order.feet && order.inch))) // Ensure at least one order has valid dimensions and pcs
-  ) {
-    // Calculate total weight to verify it's greater than 0
-    let totalWeightForCheck = 0;
-    orderList.forEach(order => {
-      const lengthInMm = order.lengthInMm || 0;
-      const orderWeight = calculateWeight(thickness, lengthInMm, width, order.pcs);
-      totalWeightForCheck += orderWeight;
-    });
-    
-    if (totalWeightForCheck > 0) {
-      checkStockAvailability();
-    } else {
-      setStockAvailable(false);
-    }
-  } else {
-    setStockAvailable(false);
-  }
-}, [
-  thickness,
-  width,
-  orderList,
-  company,
-  grade,
-  color,
-  coating,
-  temper,
-  guard,
-  checked,
-  pcs // Added pcs to dependency array
-]);
 
-const handleAddToCart = async () => {
-  // Calculate total weight for all orders
-  let totalWeightForCart = 0;
-  
-  orderList.forEach(order => {
-    const lengthInMm = order.lengthInMm || 0;
-    const orderWeight = calculateWeight(thickness, lengthInMm, width, order.pcs);
-    totalWeightForCart += orderWeight;
-  });
-  
-  const rateBasic = totalWeightForCart;
-  const gstPercentage = 18;
-  const gstAmount = (gstPercentage / 100) * rateBasic;
-  const rateGst = rateBasic + gstAmount;
-  
-  const product = {
-    select_product: checked,
-    company: company,
-    grade: grade,
-    topcolor: color,
-    coating: parseInt(coating),
-    temper: temper,
-    guardfilm: guard,
-    weight: totalWeightForCart,
-    length: length,
-    width: width,
-    thickness: thickness,
-    pcs: pcs,
-    rate: rateBasic,
-    gst: rateGst,
+    setCartItem([...cartItem, product]);
+    setShowCartItem(true);
+    setISCartEmpty(false);
+    const scrollPosition = document.body.scrollHeight * 0.35;
+    window.scrollTo(0, scrollPosition);
+    resetStates();
   };
-  
-  setCartItem([...cartItem, product]);
-  setShowCartItem(true);
-  setISCartEmpty(false);
-  const scrollPosition = document.body.scrollHeight * 0.35;
-  window.scrollTo(0, scrollPosition);
-  resetStates();
-};
-
 
   console.log("Cart Item : ", cartItem);
   console.log(handleAddToCart);
@@ -417,27 +455,25 @@ const handleAddToCart = async () => {
   useEffect(() => {
     const weight = length * pcs * 7.86;
     setTotalWeight(weight);
-    setRate(weight);
   }, [thickness, width, length, pcs]);
 
 
   // Update the weight calculation to use the converted length
-// Update the useEffect for weight calculation
-useEffect(() => {
-  let totalWeight = 0;
-  
-  orderList.forEach(order => {
-    // Get length in mm (already converted)
-    const lengthInMm = order.lengthInMm || 0;
-    
-    // Calculate weight for this order
-    const orderWeight = calculateWeight(thickness, lengthInMm, width, order.pcs);
-    totalWeight += orderWeight;
-  });
-  
-  setTotalWeight(totalWeight);
-  setRate(totalWeight);
-}, [orderList, thickness, width]);
+  // Update the useEffect for weight calculation
+  useEffect(() => {
+    let totalWeight = 0;
+
+    orderList.forEach(order => {
+      // Get length in mm (already converted)
+      const lengthInMm = order.lengthInMm || 0;
+
+      // Calculate weight for this order
+      const orderWeight = calculateWeight(thickness, lengthInMm, width, order.pcs);
+      totalWeight += orderWeight;
+    });
+
+    setTotalWeight(totalWeight);
+  }, [orderList, thickness, width]);
 
 
   useEffect(() => {
@@ -471,27 +507,37 @@ useEffect(() => {
   }, []);
 
 
-  // Add this useEffect to handle GST calculations
-// Update the useEffect for GST calculations
-useEffect(() => {
-  if (rate && !isNaN(rate)) {
-    const rateNum = parseFloat(rate);
-    
-    if (selectedGst === "basic") {
-      // For Basic: add 18% GST to the rate
-      const gstAmount = rateNum * 0.18;
-      setTotal((rateNum + gstAmount).toFixed(2));
-    } else {
-      // For Paid: the rate already includes GST, so we calculate the base rate
+  // Add a useEffect to handle rate recalculation
+  useEffect(() => {
+    if (recalculateRate && rate && !isNaN(rate)) {
+      const rateNum = parseFloat(rate);
+      // When switching to "basic", the current rate includes GST, so we need to extract the base rate
       const baseRate = rateNum / 1.18;
-      const gstAmount = rateNum - baseRate;
-      // You can store these values if needed for display
-      setTotal(rateNum.toFixed(2));
+      setRate(baseRate.toFixed(2));
+      setRecalculateRate(false);
     }
-  } else {
-    setTotal("");
-  }
-}, [rate, selectedGst]);
+  }, [recalculateRate, rate]);
+
+  // Add this useEffect to handle GST calculations
+  // Update the useEffect for GST calculations
+  // Update the useEffect for GST calculations
+  // Update the useEffect for GST calculations to handle empty selection
+  useEffect(() => {
+    if (rate && !isNaN(rate) && selectedGst !== "") {
+      const rateNum = parseFloat(rate);
+
+      if (selectedGst === "basic") {
+        // For Basic: add 18% GST to the rate
+        const gstAmount = rateNum * 0.18;
+        setTotal((rateNum + gstAmount).toFixed(2));
+      } else if (selectedGst === "paid") {
+        // For Paid: the rate already includes GST, so total is the same as rate
+        setTotal(rateNum.toFixed(2));
+      }
+    } else {
+      setTotal("");
+    }
+  }, [rate, selectedGst]);
 
   // const handleClose = () => {
   //   setShowEdit(false);
@@ -1273,28 +1319,44 @@ useEffect(() => {
                               </Col>
 
                               <Col className="m-2">
-<Row>
-  <label htmlFor="width">Width</label>
-  <Container className="measure_conatiner">
-    <select
-      className="custom"
-      value={width}
-      onChange={(e) => {
-        setDesc({
-          ...desc,
-          width: e.target.value,
-        });
-        setWidth(e.target.value);
-      }}
-    >
-      <option value="">Select width</option>
-      <option value="1440">1440</option>
-      <option value="1220">1220</option>
-    </select>
-    <span className="py-2 px-1">mm</span>
-  </Container>
-</Row>
-
+                                <Row>
+                                  <label htmlFor="width">Width</label>
+                                  <Container className="measure_conatiner">
+                                    {checked === "Profile Sheet" ? (
+                                      <select
+                                        className="custom"
+                                        value={width}
+                                        onChange={(e) => {
+                                          setDesc({
+                                            ...desc,
+                                            width: e.target.value,
+                                          });
+                                          setWidth(e.target.value);
+                                        }}
+                                      >
+                                        <option value="">Select width</option>
+                                        <option value="1440">1440</option>
+                                        <option value="1220">1220</option>
+                                      </select>
+                                    ) : (
+                                      <input
+                                        type="number"
+                                        className="custom"
+                                        value={width}
+                                        onChange={(e) => {
+                                          setDesc({
+                                            ...desc,
+                                            width: e.target.value,
+                                          });
+                                          setWidth(e.target.value);
+                                        }}
+                                        placeholder="Enter width"
+                                        min="1"
+                                      />
+                                    )}
+                                    <span className="py-2 px-1">mm</span>
+                                  </Container>
+                                </Row>
                               </Col>
                             </Row>
 <Row>
@@ -1304,7 +1366,7 @@ useEffect(() => {
         <Col className="m-3">
           <Row>
             <label htmlFor="length" style={{ marginRight: '10px' }}>Length</label>
-            <Container 
+            <Container
               className="measure_container"
               style={{
                 display: "flex",
@@ -1315,7 +1377,7 @@ useEffect(() => {
             >
               {/* Length type selection */}
               <select
-                style={{ 
+                style={{
                   width: "100px",
                   padding: "6px",
                   borderRadius: "4px",
@@ -1329,14 +1391,15 @@ useEffect(() => {
                 <option value="feet">Feet</option>
                 <option value="feetInch">Feet & Inch</option>
               </select>
-              
+
               {/* Conditional Inputs */}
               {singleOrder.lengthType === "feetInch" ? (
                 <>
+                  {/* Feet Input */}
                   <div style={{ display: "flex", alignItems: "center" }}>
                     <input
-                      style={{ 
-                        width: "80px", 
+                      style={{
+                        width: "80px",
                         padding: "6px",
                         borderRadius: "4px",
                         border: "1px solid #ccc",
@@ -1351,11 +1414,12 @@ useEffect(() => {
                     />
                     <span style={{ marginRight: "12px" }}>ft</span>
                   </div>
-                  
+
+                  {/* Inch Input with Validation */}
                   <div style={{ display: "flex", alignItems: "center" }}>
                     <input
-                      style={{ 
-                        width: "80px", 
+                      style={{
+                        width: "80px",
                         padding: "6px",
                         borderRadius: "4px",
                         border: "1px solid #ccc",
@@ -1365,7 +1429,16 @@ useEffect(() => {
                       placeholder="Inch"
                       value={singleOrder.inch || ""}
                       onChange={(e) => {
-                        updateOrderLength(index, { inch: e.target.value });
+                        let inchValue = parseInt(e.target.value, 10) || 0;
+                        let feetValue = parseInt(singleOrder.feet || 0, 10);
+
+                        // Auto carry over extra inches to feet
+                        if (inchValue > 11) {
+                          feetValue += Math.floor(inchValue / 12);
+                          inchValue = inchValue % 12;
+                        }
+
+                        updateOrderLength(index, { feet: feetValue, inch: inchValue });
                       }}
                     />
                     <span>in</span>
@@ -1374,7 +1447,7 @@ useEffect(() => {
               ) : (
                 <div style={{ display: "flex", alignItems: "center" }}>
                   <input
-                    style={{ 
+                    style={{
                       width: "150px",
                       padding: "6px",
                       borderRadius: "4px",
@@ -1391,7 +1464,7 @@ useEffect(() => {
                   <span>ft</span>
                 </div>
               )}
-              
+
               {/* Display converted length in mm */}
               <div style={{ marginLeft: "10px", color: "#666" }}>
                 {singleOrder.lengthInMm > 0 && (
@@ -1401,25 +1474,25 @@ useEffect(() => {
             </Container>
           </Row>
         </Col>
-        
+
         {/* Pcs Column */}
         <Col className="m-3" style={{ display: "flex" }}>
           <Row>
             <label htmlFor="pcs" style={{ marginLeft: "10px" }}>Pcs.</label>
-<input
-  style={{ marginLeft: "10px", width: "150px" }}
-  type="number"
-  placeholder="Pcs"
-  value={singleOrder.pcs || ""}
-  onChange={(e) => {
-    const updatedOrders = [...orderList];
-    updatedOrders[index].pcs = e.target.value;
-    setOrderList(updatedOrders);
-  }}
-  className="subfields"
-/>
+            <input
+              style={{ marginLeft: "10px", width: "150px" }}
+              type="number"
+              placeholder="Pcs"
+              value={singleOrder.pcs || ""}
+              onChange={(e) => {
+                const updatedOrders = [...orderList];
+                updatedOrders[index].pcs = e.target.value;
+                setOrderList(updatedOrders);
+              }}
+              className="subfields"
+            />
           </Row>
-          <Row>
+          <Row style={{ marginTop: "24px" }}>
             <select
               className="pcsInput"
               aria-label="Default select example"
@@ -1435,7 +1508,7 @@ useEffect(() => {
             </select>
           </Row>
         </Col>
-        
+
         {/* Remove Button */}
         <Col className="m-3">
           <Row className="mt-3 ml-6 ml-auto col-3"></Row>
@@ -1455,6 +1528,7 @@ useEffect(() => {
   })}
 </Row>
 
+
                             <Row>
                               <p id="weight">
                                 TotalWeight:
@@ -1464,62 +1538,75 @@ useEffect(() => {
                           </Container>
                         </Container>
                         <Container className="justify-content-center">
-<Row>
-  <Col className="m-3">
-    <Row>
-      <label htmlFor="rate">
-        {selectedGst === "basic" ? "Rate (Excl. GST)" : "Rate (Incl. GST)"}
-      </label>
-      <input
-        name="rate"
-        type="text"
-        value={rate || ""}
-        onChange={handleRate}
-        placeholder={selectedGst === "basic" ? "Enter rate excl. GST" : "Enter rate incl. GST"}
-        className="subfields"
-      />
-    </Row>
-  </Col>
-  <Col className="m-3">
-    <Row>
-      <label htmlFor="gst">
-        {selectedGst === "basic" ? "Total (with GST)" : "Total (Incl. GST)"}
-      </label>
-      <input
-        type="text"
-        name="gst"
-        value={total || ""}
-        placeholder="Total amount"
-        className="subfields"
-        readOnly
-      />
-    </Row>
-  </Col>
-  <Col className="m-3">
-    <Row>
-      <select
-        className="gstDropDown"
-        aria-label="Default select example"
-        value={selectedGst}
-        onChange={handleGstChange}
-      >
-        <option value="basic">Basic</option>
-        <option value="paid">Paid</option>
-      </select>
-    </Row>
-  </Col>
-</Row>
+                          <Row>
+                            <Col className="m-3">
+                              <Row>
+                                <label htmlFor="rate">
+                                  {selectedGst === "basic" ? "Rate (Excl. GST)" :
+                                    selectedGst === "paid" ? "Rate (Incl. GST)" : "Rate"}
+                                </label>
+                                <input
+                                  name="rate"
+                                  type="text"
+                                  value={rate || ""}
+                                  onChange={handleRate}
+                                  placeholder={selectedGst === "basic" ? "Enter rate excl. GST" :
+                                    selectedGst === "paid" ? "Enter rate incl. GST" :
+                                      "Enter rate"}
+                                  className="subfields"
+                                  disabled={!selectedGst} // Disable rate input until GST type is selected
+                                />
+                              </Row>
+                            </Col>
+                            <Col className="m-3">
+                              <Row>
+                                <label htmlFor="gst">
+                                  Total Amount
+                                </label>
+                                <input
+                                  type="text"
+                                  name="gst"
+                                  value={total || ""}
+                                  placeholder="Total amount"
+                                  className="subfields"
+                                  readOnly
+                                />
+                              </Row>
+                            </Col>
+                            <Col className="mx-2" >
+                              <Row>
+                                <select
+                                  className="gstDropDown"
+                                  aria-label="Default select example"
+                                  value={selectedGst}
+                                  onChange={handleGstChange}
+                                  id="gstType"
+                                  required
+                                >
+                                  <option value="">Select GST Type</option>
+                                  <option value="basic">Basic (GST Extra)</option>
+                                  <option value="paid">Paid (GST Inclusive)</option>
+                                </select>
+                                {!selectedGst && (
+                                  <small style={{ color: "red", marginTop: "5px" }}>
+                                    Please select a GST type
+                                  </small>
+                                )}
+                              </Row>
+                            </Col>
+                          </Row>
+                          {selectedGst === "paid" && rate && !isNaN(rate) && (
+                            <Row className="mt-2">
+                              <Col className="m-3">
+                                <div style={{ fontSize: "0.85rem", color: "#666" }}>
+                                  <p>Base Rate: ₹{(parseFloat(rate) / 1.18).toFixed(2)}</p>
+                                  <p>GST Amount (18%): ₹{(parseFloat(rate) - (parseFloat(rate) / 1.18)).toFixed(2)}</p>
+                                </div>
+                              </Col>
+                            </Row>
+                          )}
 
-{selectedGst === "paid" && rate && !isNaN(rate) && (
-  <Row className="mt-2">
-    <Col className="m-3">
-      <div style={{ fontSize: "0.85rem", color: "#666" }}>
-        <p>Base Rate: ₹{(parseFloat(rate) / 1.18).toFixed(2)}</p>
-        <p>GST Amount (18%): ₹{(parseFloat(rate) - (parseFloat(rate) / 1.18)).toFixed(2)}</p>
-      </div>
-    </Col>
-  </Row>
-)}
+
 
                         </Container>
                       </div>
@@ -1700,11 +1787,8 @@ useEffect(() => {
                   { label: "Length", value: desc.length },
                   { label: "Weight", value: product.weight },
                   { label: "Pcs", value: `${desc.pcs} ${selectedUnit}` },
-                  { label: "Rate(Basic)", value: product.weight },
-                  {
-                    label: "Rate(GST%)",
-                    value: product.weight + product.weight * (18 / 1000),
-                  },
+                  { label: "Rate (Base)", value: product.rate.toFixed(2) },
+                  { label: "Total (with GST)", value: product.gst.toFixed(2) }
                 ];
 
                 return (
@@ -1750,6 +1834,26 @@ useEffect(() => {
                             </Col>
                           </Row>
                         ))}
+
+                        // Add a special section for GST details
+                        <Row>
+                          <Col className="Cart-Data">
+                            <p>Base Rate : </p>
+                            <p>₹{product.rate.toFixed(2)}</p>
+                          </Col>
+                        </Row>
+                        <Row>
+                          <Col className="Cart-Data">
+                            <p>GST Amount (18%) : </p>
+                            <p>₹{product.gstAmount.toFixed(2)}</p>
+                          </Col>
+                        </Row>
+                        <Row>
+                          <Col className="Cart-Data">
+                            <p>Total Amount : </p>
+                            <p>₹{product.gst.toFixed(2)}</p>
+                          </Col>
+                        </Row>
                       </Container>
                     </div>
 

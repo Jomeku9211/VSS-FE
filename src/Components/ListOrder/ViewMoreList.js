@@ -38,8 +38,8 @@ const [ show, setShow ] = useState(false);
           width: item.width,
           thickness: item.thickness,
           pcs: item.pcs,
-          rate: item.weight,
-          gst: item.weight + (item.weight * 18) / 1000,
+          rate: item.rate,
+          gst: item.gst,
         }));
         setItem(data);
         setProduct(Products);
