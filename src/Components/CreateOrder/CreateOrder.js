@@ -37,6 +37,7 @@ const CreateOrder = () => {
 
 
 
+
   // Update the orderList state initialization to include lengthInMm
   const [orderList, setOrderList] = useState([{
     orders: "",
@@ -69,7 +70,8 @@ const CreateOrder = () => {
 
   // Add this helper function to calculate weight
   const calculateWeight = (thickness, lengthInMm, width, pcs) => {
-    const thicknessNum = parseFloat(thickness) || 0;
+    
+    const thicknessNum = parseFloat(thickness);
     const lengthNum = parseFloat(lengthInMm) || 0;
     const widthNum = parseFloat(width) || 0;
     const pcsNum = parseFloat(pcs) || 0;
@@ -311,7 +313,7 @@ const CreateOrder = () => {
         coating: parseInt(coating),
         temper: temper,
         guardfilm: guard,
-        thickness: parseInt(thickness),
+        thickness: Number(thickness),
         width: parseInt(width),
         weight: parseFloat(totalWeightForCheck.toFixed(2)),
       };
@@ -440,6 +442,7 @@ const CreateOrder = () => {
       gstType: selectedGst,
       gstAmount: gstAmount,
     };
+    
 
     setCartItem([...cartItem, product]);
     setShowCartItem(true);
